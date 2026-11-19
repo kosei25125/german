@@ -1,0 +1,2430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ドイツ語ドリル">
+<meta name="theme-color" content="#0f172a">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>ドイツ語 総合学習スタジオ（教科書 全20課・600問）</title>
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --bg-subtle: #e2e8f0;
+    --card: #ffffff;
+    --card-elevated: #f8fafc;
+    --text: #0f172a;
+    --text-secondary: #475569;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: #eff6ff;
+    --primary-border: #bfdbfe;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+    --success-border: #bbf7d0;
+    --success-text: #14532d;
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+    --danger-text: #7f1d1d;
+    --accent: #d97706;
+    --accent-bg: #fffbeb;
+    --accent-border: #fde68a;
+    --accent-text: #92400e;
+    --tb: #0d9488;
+    --tb-bg: #f0fdfa;
+    --tb-border: #99f6e4;
+    --tb-text: #0f766e;
+    --header-bg: #0f172a;
+    --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  }
+
+  [data-theme="dark"] {
+    --bg: #0b1120;
+    --bg-subtle: #1e293b;
+    --card: #131c31;
+    --card-elevated: #1a2642;
+    --text: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --muted: #94a3b8;
+    --border: #24324d;
+    --border-strong: #334155;
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --primary-light: rgba(59, 130, 246, 0.16);
+    --primary-border: rgba(59, 130, 246, 0.4);
+    --success: #22c55e;
+    --success-bg: rgba(34, 197, 94, 0.14);
+    --success-border: rgba(34, 197, 94, 0.4);
+    --success-text: #86efac;
+    --danger: #ef4444;
+    --danger-bg: rgba(239, 68, 68, 0.14);
+    --danger-border: rgba(239, 68, 68, 0.4);
+    --danger-text: #fca5a5;
+    --accent: #f59e0b;
+    --accent-bg: rgba(245, 158, 11, 0.14);
+    --accent-border: rgba(245, 158, 11, 0.35);
+    --accent-text: #fcd34d;
+    --tb: #14b8a6;
+    --tb-bg: rgba(20, 184, 166, 0.12);
+    --tb-border: rgba(20, 184, 166, 0.35);
+    --tb-text: #5eead4;
+    --header-bg: #070b14;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  header {
+    background: var(--header-bg);
+    color: #fff;
+    padding: calc(12px + env(safe-area-inset-top)) 20px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 3px solid #f59e0b;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; letter-spacing: 0.01em; }
+  .flag {
+    display: inline-flex; flex-direction: column; width: 24px; height: 16px;
+    border-radius: 3px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.25);
+    flex-shrink: 0;
+  }
+  .flag span:nth-child(1) { background: #000; flex: 1; }
+  .flag span:nth-child(2) { background: #dd0000; flex: 1; }
+  .flag span:nth-child(3) { background: #ffce00; flex: 1; }
+
+  .header-controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .btn-sm {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 11px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-sm:hover { background: rgba(255,255,255,0.2); }
+  .btn-sm.active { background: #f59e0b; color: #0f172a; border-color: #f59e0b; }
+
+  .container { max-width: 880px; margin: 18px auto; padding: 0 16px 72px; }
+
+  /* Mode Switcher */
+  .mode-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+    background: var(--card);
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .mode-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 8px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .mode-btn:hover { color: var(--text); background: var(--card-elevated); }
+  .mode-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .tab {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 8px 13px;
+    border-radius: 10px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+    transition: 0.15s;
+  }
+  .tab:hover { border-color: var(--border-strong); color: var(--text); }
+  .tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .tab.tb-tab.active {
+    background: var(--tb);
+    border-color: var(--tb);
+    color: #fff;
+  }
+  .badge-count {
+    background: rgba(0,0,0,0.14);
+    padding: 1px 7px;
+    border-radius: 99px;
+    font-size: 0.76rem;
+  }
+  .tab:not(.active) .badge-count { background: var(--bg-subtle); color: var(--muted); }
+
+  /* Textbook filter bar */
+  .tb-filter-bar {
+    background: var(--tb-bg);
+    border: 1px solid var(--tb-border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tb-filter-bar.show { display: flex; }
+  .tb-filter-row {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+  }
+  .tb-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--tb-border);
+    background: var(--card);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--tb-text);
+    max-width: 100%;
+  }
+  .type-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill {
+    padding: 5px 11px;
+    border-radius: 99px;
+    border: 1px solid var(--tb-border);
+    background: var(--card);
+    color: var(--tb-text);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .pill.active { background: var(--tb); color: #fff; border-color: var(--tb); }
+  .progress-wrap { width: 100%; }
+  .progress-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--tb-text); font-weight: 700; margin-bottom: 4px; }
+  .progress-bar { width: 100%; height: 8px; background: rgba(20, 184, 166, 0.2); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--tb); width: 0%; transition: width 0.35s ease; }
+
+  /* Stats & Audio bar */
+  .stats-bar {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    font-size: 0.84rem; color: var(--muted); margin-bottom: 12px;
+  }
+  .audio-controls {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .mini-select {
+    padding: 4px 8px;
+    border-radius: 7px;
+    border: 1px solid var(--border-strong);
+    background: var(--card);
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .mini-toggle {
+    padding: 4px 9px;
+    border-radius: 7px;
+    border: 1px solid var(--border-strong);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .mini-toggle.active {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary-border);
+  }
+
+  /* Main Card */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-top {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .tag-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag {
+    font-size: 0.76rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;
+    background: var(--bg-subtle); color: var(--text-secondary);
+  }
+  .tag.tb-badge { background: var(--tb-bg); color: var(--tb-text); border: 1px solid var(--tb-border); }
+  .tag.orig-badge { background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border); }
+  .tag.var-badge { background: var(--accent-bg); color: var(--accent-text); border: 1px solid var(--accent-border); }
+
+  .audio-btn {
+    background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border);
+    padding: 6px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+    transition: 0.15s;
+  }
+  .audio-btn:hover { filter: brightness(0.95); }
+
+  .base-lemma {
+    display: inline-block;
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    border: 1px solid var(--accent-border);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .sentence-de {
+    font-size: 1.42rem;
+    font-weight: 700;
+    margin: 6px 0 8px;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+  }
+  .blank {
+    display: inline-block;
+    min-width: 78px;
+    border-bottom: 3px solid var(--primary);
+    color: var(--primary);
+    text-align: center;
+    padding: 0 8px;
+    margin: 0 2px;
+    background: var(--primary-light);
+    border-radius: 6px 6px 0 0;
+    transition: 0.2s;
+  }
+  .blank.solved {
+    border-bottom-color: var(--success);
+    color: var(--success);
+    background: var(--success-bg);
+  }
+  .sentence-ja {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+  }
+  .hint-box {
+    background: var(--card-elevated);
+    border-left: 3px solid var(--muted);
+    padding: 8px 12px;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    margin-bottom: 18px;
+    border-radius: 0 8px 8px 0;
+  }
+  .hint-box.hidden { display: none; }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .opt-btn {
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 13px 14px;
+    border-radius: 12px;
+    font-size: 1.02rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.12s;
+    color: var(--text);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .opt-key {
+    position: absolute;
+    left: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: var(--bg-subtle);
+    padding: 1px 6px;
+    border-radius: 5px;
+  }
+  .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); transform: translateY(-1px); }
+  .opt-btn.correct { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+  .opt-btn.wrong { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+  .opt-btn:disabled { cursor: default; transform: none; }
+
+  .typing-area { display: none; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .typing-area.show { display: flex; }
+  .typing-row { display: flex; gap: 8px; }
+  .typing-input {
+    flex: 1; padding: 12px 14px; font-size: 1.05rem; font-weight: 600;
+    border: 2px solid var(--border-strong); border-radius: 10px; outline: none;
+    background: var(--card); color: var(--text);
+  }
+  .typing-input:focus { border-color: var(--primary); }
+  .umlaut-bar { display: flex; gap: 6px; flex-wrap: wrap; }
+  .umlaut-btn {
+    background: var(--bg-subtle); color: var(--text); border: 1px solid var(--border-strong); padding: 5px 12px;
+    border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.95rem;
+  }
+  .umlaut-btn:hover { filter: brightness(0.92); }
+
+  .feedback {
+    display: none;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin-top: 12px;
+    font-size: 0.94rem;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text); }
+  .feedback.ng { background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); }
+
+  .next-row { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; gap: 10px; flex-wrap: wrap; }
+  .shortcut-hint { font-size: 0.78rem; color: var(--muted); }
+  .btn-primary {
+    background: var(--primary); color: #fff; border: none;
+    padding: 11px 22px; border-radius: 10px; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; transition: 0.15s;
+  }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-secondary {
+    background: var(--bg-subtle); color: var(--text); border: 1px solid var(--border-strong);
+    padding: 9px 16px; border-radius: 10px; font-size: 0.88rem; font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-danger {
+    background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border);
+    padding: 8px 14px; border-radius: 8px; font-size: 0.84rem; font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Flashcard Mode */
+  .flashcard {
+    min-height: 230px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 28px 20px;
+    background: var(--card-elevated);
+    border: 2px dashed var(--border-strong);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin: 12px 0 16px;
+  }
+  .flashcard:hover { border-color: var(--primary); }
+  .fc-front { font-size: 1.45rem; font-weight: 800; color: var(--text); }
+  .fc-sub { font-size: 0.85rem; color: var(--muted); margin-top: 10px; }
+  .fc-back {
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
+    width: 100%; text-align: left; display: none;
+  }
+  .fc-back.show { display: block; }
+  .fc-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+  /* Conjugation Mode */
+  .conj-header {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+  }
+  .conj-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .conj-item {
+    background: var(--card-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .conj-pronoun { font-weight: 800; min-width: 78px; color: var(--primary); font-size: 0.95rem; }
+  .conj-input {
+    flex: 1; padding: 8px 10px; border-radius: 8px; border: 2px solid var(--border-strong);
+    background: var(--card); color: var(--text); font-weight: 700; font-size: 0.98rem; min-width: 0;
+  }
+  .conj-input.ok { border-color: var(--success); background: var(--success-bg); color: var(--success-text); }
+  .conj-input.ng { border-color: var(--danger); background: var(--danger-bg); color: var(--danger-text); }
+
+  /* Listening Mode */
+  .listen-box {
+    text-align: center;
+    padding: 26px 16px;
+    background: var(--card-elevated);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .listen-play-big {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 99px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    transition: 0.15s;
+  }
+  .listen-play-big:hover { transform: scale(1.03); background: var(--primary-hover); }
+
+  /* Modal */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.65);
+    z-index: 50; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--card); color: var(--text); border-radius: 16px; max-width: 760px; width: 100%;
+    max-height: 88vh; overflow-y: auto; padding: 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+  }
+  .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .modal-head h2 { margin: 0; font-size: 1.15rem; }
+  .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--muted); }
+  table.grammar { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 16px; }
+  table.grammar th, table.grammar td { border: 1px solid var(--border); padding: 6px 8px; text-align: center; }
+  table.grammar th { background: var(--card-elevated); }
+  .form-group { margin-bottom: 10px; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 0.9rem;
+    background: var(--card); color: var(--text);
+  }
+
+  /* Dashboard */
+  .dash-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .dash-stat {
+    background: var(--card-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+  }
+  .dash-val { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+  .dash-lbl { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+  .dash-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .dash-lesson {
+    background: var(--card-elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+  }
+  .dash-lesson-top { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px; }
+
+  @media (max-width: 640px) {
+    .mode-bar { grid-template-columns: repeat(2, 1fr); }
+    .tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+    .tab { white-space: nowrap; flex-shrink: 0; }
+    .sentence-de { font-size: 1.22rem; }
+    .card { padding: 18px 16px; }
+    .opt-key { display: none; }
+    .shortcut-hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="flag"><span></span><span></span><span></span></div>
+    <span>ドイツ語 総合学習スタジオ</span>
+  </div>
+  <div class="header-controls">
+    <button class="btn-sm active" id="toggleHintBtn" onclick="toggleHint()">💡 ヒント: ON</button>
+    <button class="btn-sm" id="toggleTypeBtn" onclick="toggleTyping()">⌨️ 4択モード</button>
+    <button class="btn-sm" onclick="openDashboard()">📊 学習記録</button>
+    <button class="btn-sm" onclick="openModal('grammarModal')">📖 文法表</button>
+    <button class="btn-sm" onclick="openModal('addModal')">＋ 問題追加</button>
+    <button class="btn-sm" id="themeBtn" onclick="toggleTheme()">🌙 ダーク</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- モード切替 -->
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="drill" onclick="setMode('drill')">📝 穴埋めドリル</button>
+    <button class="mode-btn" data-mode="flashcard" onclick="setMode('flashcard')">🃏 単語・例文カード</button>
+    <button class="mode-btn" data-mode="conjugation" onclick="setMode('conjugation')">⚡ 動詞活用道場</button>
+    <button class="mode-btn" data-mode="listening" onclick="setMode('listening')">🎧 リスニング</button>
+  </div>
+
+  <!-- ジャンル・課フィルタ（ドリル／カード／リスニング共通） -->
+  <div id="filterContainer">
+    <div class="tabs" id="tabsBar"></div>
+
+    <div class="tb-filter-bar" id="tbFilterBar">
+      <div class="tb-filter-row">
+        <select class="tb-select" id="lessonSelect" onchange="onLessonChange()"></select>
+        <div class="type-pills">
+          <button class="pill active" data-sub="all" onclick="setSubFilter('all')">すべて (30)</button>
+          <button class="pill" data-sub="orig" onclick="setSubFilter('orig')">📖 教科書本文</button>
+          <button class="pill" data-sub="var" onclick="setSubFilter('var')">🔄 類題</button>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="lessonProgressLabel">Lektion 1 習得状況</span>
+          <span id="lessonProgressCount">0 / 30 問クリア</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="lessonProgressFill"></div></div>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <span id="poolInfo">出題対象: 0問</span>
+      <div class="audio-controls">
+        <span>🔊速度:</span>
+        <select class="mini-select" id="rateSelect" onchange="onRateChange()">
+          <option value="0.75">0.75x ゆっくり</option>
+          <option value="0.92" selected>0.92x 標準</option>
+          <option value="1.1">1.10x 自然</option>
+        </select>
+        <button class="mini-toggle active" id="autoSpeakBtn" onclick="toggleAutoSpeak()">自動再生: ON</button>
+      </div>
+      <span>正答: <strong id="sessionScore">0 / 0</strong>（連続: <strong id="streakCount">0</strong>）</span>
+    </div>
+  </div>
+
+  <!-- 1. 穴埋めドリルエリア -->
+  <div class="card" id="drillCard">
+    <div class="card-top">
+      <div class="tag-group" id="cardTags"></div>
+      <button class="audio-btn" onclick="speakCurrent()">🔊 音声再生 (R)</button>
+    </div>
+    <div class="base-lemma" id="baseLemma">原形 / 手がかり</div>
+    <div class="sentence-de" id="sentenceDe">読み込み中...</div>
+    <div class="sentence-ja" id="sentenceJa"></div>
+    <div class="hint-box" id="hintBox"></div>
+
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <div class="typing-area" id="typingArea">
+      <div class="umlaut-bar">
+        <button type="button" class="umlaut-btn" onclick="insertChar('typingInput','ä')">ä</button>
+        <button type="button" class="umlaut-btn" onclick="insertChar('typingInput','ö')">ö</button>
+        <button type="button" class="umlaut-btn" onclick="insertChar('typingInput','ü')">ü</button>
+        <button type="button" class="umlaut-btn" onclick="insertChar('typingInput','ß')">ß</button>
+        <button type="button" class="umlaut-btn" onclick="insertChar('typingInput','Ä')">Ä</button>
+        <button type="button" class="umlaut-btn" onclick="insertChar('typingInput','Ö')">Ö</button>
+        <button type="button" class="umlaut-btn" onclick="insertChar('typingInput','Ü')">Ü</button>
+      </div>
+      <div class="typing-row">
+        <input type="text" class="typing-input" id="typingInput" placeholder="ドイツ語を入力してEnter..." onkeydown="if(event.key==='Enter') submitTyping()">
+        <button class="btn-primary" onclick="submitTyping()">解答する</button>
+      </div>
+    </div>
+
+    <div class="feedback" id="feedbackBox"></div>
+
+    <div class="next-row">
+      <span class="shortcut-hint">ショートカット: [1-4] 選択 / [Enter] 次へ / [H] ヒント / [R] 音声</span>
+      <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">次の問題へ →</button>
+    </div>
+  </div>
+
+  <!-- 2. フラッシュカードエリア -->
+  <div class="card" id="flashcardArea" style="display:none;">
+    <div class="card-top">
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <div class="type-pills">
+          <button class="pill active" id="fcTypeVocab" onclick="setFcType('vocab')">📖 教科書単語</button>
+          <button class="pill" id="fcTypeSent" onclick="setFcType('sentence')">💬 例文カード</button>
+        </div>
+        <div class="tag-group" id="fcTags"></div>
+      </div>
+      <button class="audio-btn" onclick="speakCurrent()">🔊 音声再生 (R)</button>
+    </div>
+    <div class="flashcard" onclick="flipFlashcard()">
+      <div class="fc-front" id="fcFront">読み込み中...</div>
+      <div class="fc-sub" id="fcPrompt">クリック（またはSpace）で日本語訳・ポイントを表示</div>
+      <div class="fc-back" id="fcBack">
+        <div style="font-size:1.08rem; font-weight:700; margin-bottom:6px;" id="fcJa"></div>
+        <div style="font-size:0.9rem; color:var(--text-secondary);" id="fcExp"></div>
+      </div>
+    </div>
+    <div class="fc-actions">
+      <button class="btn-danger" onclick="markFlashcard(false)">🔥 もう一度</button>
+      <button class="btn-secondary" onclick="flipFlashcard()">🔄 めくる (Space)</button>
+      <button class="btn-primary" onclick="markFlashcard(true)">✅ 覚えた！次へ →</button>
+    </div>
+  </div>
+
+  <!-- 3. 動詞活用道場エリア -->
+  <div class="card" id="conjugationArea" style="display:none;">
+    <div class="conj-header">
+      <div>
+        <span class="tag orig-badge">⚡ 動詞活用トレーニング</span>
+        <h2 style="margin:6px 0 2px; font-size:1.3rem;" id="conjTitle">fahren（乗り物で行く）</h2>
+        <div style="font-size:0.86rem; color:var(--muted);" id="conjNote">現在人称変化（a → ä 幹母音変化）</div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <select class="tb-select" id="conjSelect" onchange="loadConjugationByIndex()"></select>
+        <button class="audio-btn" onclick="speakConjugation()">🔊 読み上げ</button>
+      </div>
+    </div>
+
+    <div class="umlaut-bar" style="margin-bottom:12px;">
+      <span style="font-size:0.8rem; color:var(--muted); align-self:center;">入力補助:</span>
+      <button type="button" class="umlaut-btn" onclick="insertCharActive('ä')">ä</button>
+      <button type="button" class="umlaut-btn" onclick="insertCharActive('ö')">ö</button>
+      <button type="button" class="umlaut-btn" onclick="insertCharActive('ü')">ü</button>
+      <button type="button" class="umlaut-btn" onclick="insertCharActive('ß')">ß</button>
+    </div>
+
+    <div class="conj-grid" id="conjGrid"></div>
+    <div id="conj3Forms" style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:14px; display:none;"></div>
+
+    <div class="next-row">
+      <button class="btn-secondary" onclick="showConjAnswers()">👀 答えを見る</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-primary" onclick="checkConjugation()">採点する</button>
+        <button class="btn-secondary" onclick="nextConjugation()">次の動詞 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. リスニングモードエリア -->
+  <div class="card" id="listeningArea" style="display:none;">
+    <div class="card-top">
+      <div class="tag-group" id="listenTags"></div>
+      <span class="tag" id="listenModeBadge">🎧 聴解チャレンジ</span>
+    </div>
+    <div class="listen-box">
+      <button class="listen-play-big" onclick="speakCurrent()">🔊 ドイツ語を聞く</button>
+      <p style="font-size:0.86rem; color:var(--muted); margin:10px 0 0;">音声を聞いて、空欄に入る正しい語句を選んでください</p>
+      <div class="sentence-de" id="listenMaskedSentence" style="margin-top:14px; font-size:1.25rem;"></div>
+      <div class="sentence-ja" id="listenJa" style="display:none; margin-top:6px;"></div>
+    </div>
+
+    <div class="options-grid" id="listenOptionsGrid"></div>
+    <div class="feedback" id="listenFeedback"></div>
+    <div class="next-row">
+      <button class="btn-secondary" onclick="toggleListenScript()">👀 原文・訳を見る</button>
+      <button class="btn-primary" onclick="nextQuestion()">次の問題へ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- 学習記録ダッシュボードモーダル -->
+<div class="modal-backdrop" id="dashboardModal" onclick="if(event.target===this) closeModal('dashboardModal')">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>📊 学習ダッシュボード</h2>
+      <button class="close-btn" onclick="closeModal('dashboardModal')">×</button>
+    </div>
+    <div class="dash-summary" id="dashSummary"></div>
+    <h4 style="margin:0 0 10px;">📘 教科書 全20課の達成状況</h4>
+    <div class="dash-list" id="dashLessonList"></div>
+    <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:14px;">
+      <button class="btn-danger" onclick="resetWrong()">🔥 苦手リストを空にする</button>
+      <button class="btn-danger" onclick="resetAllProgress()">🗑️ 学習履歴をすべてリセット</button>
+    </div>
+  </div>
+</div>
+
+<!-- 文法表モーダル -->
+<div class="modal-backdrop" id="grammarModal" onclick="if(event.target===this) closeModal('grammarModal')">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>📖 ドイツ語 クイック文法カンペ表</h2>
+      <button class="close-btn" onclick="closeModal('grammarModal')">×</button>
+    </div>
+    <h4>1. 定冠詞の格変化 (der / die / das / die)</h4>
+    <table class="grammar">
+      <tr><th>格</th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><td>1格 (主語)</td><td>der</td><td>die</td><td>das</td><td>die</td></tr>
+      <tr><td>2格 (〜の)</td><td>des (+s/es)</td><td>der</td><td>des (+s/es)</td><td>der</td></tr>
+      <tr><td>3格 (〜に)</td><td>dem</td><td>der</td><td>dem</td><td>den (+n)</td></tr>
+      <tr><td>4格 (〜を)</td><td>den</td><td>die</td><td>das</td><td>die</td></tr>
+    </table>
+    <h4>2. 形容詞の格変化（弱変化 / 混合変化 / 強変化）</h4>
+    <table class="grammar">
+      <tr><th>種類</th><th>男性 1/4格</th><th>女性 1/4格</th><th>中性 1/4格</th><th>複数 & 2/3格</th></tr>
+      <tr><td>定冠詞類の後 (弱変化)</td><td>1格 -e / 4格 -en</td><td>-e</td><td>-e</td><td>すべて -en</td></tr>
+      <tr><td>不定冠詞類の後 (混合)</td><td>1格 -er / 4格 -en</td><td>-e</td><td>-es</td><td>すべて -en</td></tr>
+      <tr><td>無冠詞 (強変化)</td><td>1格 -er / 4格 -en</td><td>-e</td><td>-es</td><td>3格 -en / 2格男中 -en</td></tr>
+    </table>
+    <h4>3. 前置詞の格支配</h4>
+    <p style="font-size:0.88rem; margin:0;">
+      <strong>3格支配：</strong> aus, bei, mit, nach, seit, von, zu<br>
+      <strong>4格支配：</strong> bis, durch, für, gegen, ohne, um<br>
+      <strong>3・4格支配（静=3格 / 動=4格）：</strong> an, auf, hinter, in, neben, über, unter, vor, zwischen
+    </p>
+  </div>
+</div>
+
+<!-- 問題追加モーダル -->
+<div class="modal-backdrop" id="addModal" onclick="if(event.target===this) closeModal('addModal')">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>＋ オリジナル問題の追加</h2>
+      <button class="close-btn" onclick="closeModal('addModal')">×</button>
+    </div>
+    <div class="form-group">
+      <label>単元・課ラベル</label>
+      <input type="text" id="addLesson" value="追加問題">
+    </div>
+    <div class="form-group">
+      <label>ドイツ語例文（空欄にしたい部分を ___ にする）</label>
+      <input type="text" id="addDe" placeholder="例: Ich ___ morgen nach Berlin.">
+    </div>
+    <div class="form-group">
+      <label>正解の語句（複数空欄は ... で区切る）</label>
+      <input type="text" id="addAns" placeholder="例: fahre または steht ... auf">
+    </div>
+    <div class="form-group">
+      <label>ダミー選択肢（カンマ区切りで3つ）</label>
+      <input type="text" id="addDist" placeholder="例: fährt, fährst, fahren">
+    </div>
+    <div class="form-group">
+      <label>日本語訳</label>
+      <input type="text" id="addJa" placeholder="例: 私は明日ベルリンへ行きます。">
+    </div>
+    <div class="form-group">
+      <label>ヒント・解説</label>
+      <input type="text" id="addExp" placeholder="例: ich に対する現在人称変化は語尾 -e。">
+    </div>
+    <button class="btn-primary" onclick="saveCustomQuestion()">問題を保存する</button>
+    <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:14px;">
+      <h4 style="margin:0 0 8px;">📋 登録済みのオリジナル問題</h4>
+      <div id="customList" style="display:flex; flex-direction:column; gap:8px; font-size:0.86rem;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- 1. 基本内蔵ドリル（45問） ---
+const BASE_QUESTIONS = [
+  { cat: "verb", lemma: "fahren (ich)", de: "Ich ___ morgen mit dem Zug nach München.", ans: "fahre", dist: ["fährst", "fährt", "fahren"], ja: "私は明日電車でミュンヘンへ行きます。", hint: "1人称単数 ich の語尾は -e", exp: "ich に対する現在形は語幹 fahr + e = fahre です（幹母音変化するのは du と er/sie/es のみ）。" },
+  { cat: "verb", lemma: "sprechen (du)", de: "___ du gut Deutsch?", ans: "Sprichst", dist: ["Sprechst", "Spricht", "Sprecht"], ja: "君はドイツ語を上手に話しますか？", hint: "e→i 型の幹母音変化動詞（du）", exp: "sprechen は du と er/sie/es で幹母音 e が i に変化します（du sprichst）。" },
+  { cat: "verb", lemma: "lesen (er)", de: "Er ___ jeden Morgen die Zeitung.", ans: "liest", dist: ["lest", "lese", "lesen"], ja: "彼は毎朝新聞を読みます。", hint: "e→ie 型の幹母音変化動詞（er）", exp: "lesen は er/sie/es で幹母音 e が ie に変わり、語幹が -s で終わるため liest になります。" },
+  { cat: "verb", lemma: "nehmen (du)", de: "Was ___ du zum Frühstück?", ans: "nimmst", dist: ["nehmst", "nimmt", "nehmt"], ja: "君は朝食に何をとりますか？", hint: "nehmen の不規則な幹母音変化（du）", exp: "nehmen は du で e→i かつ h が落ちて m が重なり、nimmst になります。" },
+  { cat: "verb", lemma: "sehen (sie / 彼女)", de: "Sie ___ den Film im Kino.", ans: "sieht", dist: ["seht", "sehe", "sehen"], ja: "彼女は映画館でその映画を見ます。", hint: "e→ie 型の幹母音変化（3人称単数）", exp: "sehen は 3人称単数で sieht になります。" },
+  { cat: "verb", lemma: "arbeiten (du)", de: "Wo ___ du jetzt?", ans: "arbeitest", dist: ["arbeitst", "arbeitet", "arbeiten"], ja: "君は今どこで働いていますか？", hint: "語幹が -t で終わる動詞（du）", exp: "語幹が -t, -d で終わる動詞は発音上 du に -est をつけます（arbeitest）。" },
+  { cat: "verb", lemma: "heißen (du)", de: "Wie ___ du?", ans: "heißt", dist: ["heißst", "heiße", "heißen"], ja: "君の名前は何と言いますか？", hint: "語幹が -ß で終わる動詞（du）", exp: "語幹が -s, -ss, -ß, -z で終わる動詞は du の語尾が -t のみになります（heißt）。" },
+  { cat: "verb", lemma: "aufstehen (er)", de: "Er ___ um sieben Uhr ___.", ans: "steht ... auf", dist: ["aufsteht", "stehst ... auf", "stehen ... auf"], ja: "彼は7時に起きます。", hint: "分離動詞 aufstehen の現在形", exp: "分離動詞は定動詞が2番目、前つづり auf が文末に置かれます。" },
+  { cat: "verb", lemma: "müssen (wir)", de: "Wir ___ heute viel lernen.", ans: "müssen", dist: ["musst", "muss", "müsst"], ja: "私たちは今日たくさん勉強しなければなりません。", hint: "話法の助動詞 müssen（wir）", exp: "複数形（wir / Sie / sie）では不定詞と同じ müssen になります。" },
+  { cat: "verb", lemma: "dürfen (man)", de: "Hier ___ man nicht rauchen.", ans: "darf", dist: ["dürft", "darfst", "dürfen"], ja: "ここではタバコを吸ってはいけません。", hint: "man は3人称単数扱い", exp: "dürfen の3人称単数は darf です。nicht とともに「禁止」を表します。" },
+  { cat: "verb", lemma: "gehen (現在完了)", de: "Gestern ___ ich ins Konzert gegangen.", ans: "bin", dist: ["habe", "war", "werde"], ja: "昨日私はコンサートに行きました。", hint: "場所の移動を表す自動詞の完了助動詞", exp: "gehen は場所の移動を表す自動詞なので完了の助動詞に sein（ich bin）を使います。" },
+  { cat: "verb", lemma: "schreiben (現在完了)", de: "Hast du den Bericht schon ___?", ans: "geschrieben", dist: ["geschreibt", "schrieb", "schreiben"], ja: "もうレポートを書きましたか？", hint: "schreiben の過去分詞（不規則）", exp: "schreiben の3基本形は schreiben - schrieb - geschrieben です。" },
+  { cat: "art", lemma: "der Mann (4格)", de: "Kennst du ___ Mann dort?", ans: "den", dist: ["der", "dem", "des"], ja: "君はあそこにいる男性を知っていますか？", hint: "kennen + 4格目的語（男性単数）", exp: "男性単数4格の定冠詞は den です。" },
+  { cat: "art", lemma: "das Kind (3格)", de: "Sie gibt ___ Kind Schokolade.", ans: "dem", dist: ["das", "den", "des"], ja: "彼女はその子にチョコレートをあげます。", hint: "geben + 3格（〜に）+ 4格（〜を）", exp: "中性単数3格の定冠詞は dem です。" },
+  { cat: "art", lemma: "die Kinder (複数3格)", de: "Ich zeige ___ Kindern Fotos.", ans: "den", dist: ["die", "der", "dem"], ja: "私はその子どもたちに写真を見せます。", hint: "複数3格の定冠詞と名詞語尾 -n", exp: "複数3格の定冠詞は den で、名詞にも -n がつきます。" },
+  { cat: "art", lemma: "ein Lehrer (男性2格)", de: "Sie ist die Tochter ___ Lehrers.", ans: "eines", dist: ["einem", "einen", "einer"], ja: "彼女は教師の娘です。", hint: "男性単数2格（所有関係）", exp: "男性単数2格の不定冠詞は eines で、名詞に -s がつきます。" },
+  { cat: "art", lemma: "der Student (弱変化・3格)", de: "Sie hilft dem ___ oft.", ans: "Studenten", dist: ["Student", "Students", "Studente"], ja: "彼女はその学生をよく手伝います。", hint: "男性弱変化名詞（helfen + 3格）", exp: "Student は男性弱変化名詞のため、単数2・3・4格と複数全格で -en がつきます。" },
+  { cat: "art", lemma: "du (人称代名詞3格)", de: "Ich helfe ___ gern.", ans: "dir", dist: ["dich", "du", "dein"], ja: "喜んで君を手伝うよ。", hint: "helfen は3格目的語をとる動詞", exp: "du の3格は dir です（4格は dich）。" },
+  { cat: "art", lemma: "er (人称代名詞4格)", de: "Ich kenne ___ schon lange.", ans: "ihn", dist: ["ihm", "er", "sein"], ja: "私は彼をずっと前から知っています。", hint: "kennen は4格目的語をとる動詞", exp: "er の4格は ihn です（3格は ihm）。" },
+  { cat: "art", lemma: "sie / 彼女 (人称代名詞3格)", de: "Der Rock gefällt ___ sehr gut.", ans: "ihr", dist: ["sie", "ihm", "ihnen"], ja: "そのスカートを彼女はとても気に入っています。", hint: "gefallen は3格（〜に気に入られる）をとる", exp: "sie（彼女）の3格は ihr です。" },
+  { cat: "art", lemma: "unser (男性4格)", de: "Kennst du ___ Lehrer?", ans: "unseren", dist: ["unser", "unserem", "unseres"], ja: "君は私たちの先生を知っていますか？", hint: "男性単数4格の所有冠詞", exp: "男性単数4格では不定冠詞類に -en がつきます（unseren）。" },
+  { cat: "art", lemma: "kein (複数4格)", de: "Ich habe leider ___ Geschwister.", ans: "keine", dist: ["kein", "keinen", "keiner"], ja: "残念ながら私には兄弟がいません。", hint: "複数4格の否定冠詞", exp: "複数1・4格の否定冠詞は keine です。" },
+  { cat: "prep", lemma: "mit + 3格 (der Freund)", de: "Sie fliegt mit ___ Freund nach Japan.", ans: "ihrem", dist: ["ihren", "ihr", "ihres"], ja: "彼女はボーイフレンドと日本へ行きます。", hint: "mit は常に3格支配（男性単数3格）", exp: "mit + 男性単数3格なので ihrem Freund となります。" },
+  { cat: "prep", lemma: "seit + 3格 (die Jahre / 複数)", de: "Wir wohnen seit drei ___ hier.", ans: "Jahren", dist: ["Jahre", "Jahr", "Jahres"], ja: "私たちは3年前からここに住んでいます。", hint: "seit は3格支配（複数3格は -n）", exp: "seit + 複数3格なので Jahren と -n をつけます。" },
+  { cat: "prep", lemma: "zu + dem (融合形)", de: "Geh doch einmal ___ Arzt!", ans: "zum", dist: ["zur", "ins", "ans"], ja: "一度医者に診てもらいなさい！", hint: "zu + dem（男性名詞 der Arzt）の融合形", exp: "zu + dem = zum になります（女性名詞なら zu + der = zur）。" },
+  { cat: "prep", lemma: "durch + 4格 (der Park)", de: "Ich gehe durch ___ Park zum Bahnhof.", ans: "den", dist: ["dem", "der", "des"], ja: "私は公園を通って駅へ行きます。", hint: "durch は常に4格支配（男性単数4格）", exp: "durch + 男性単数4格なので den Park になります。" },
+  { cat: "prep", lemma: "für + 4格 (du)", de: "Das Geschenk ist für ___!", ans: "dich", dist: ["dir", "du", "dein"], ja: "そのプレゼントは君のためだよ！", hint: "für は常に4格支配", exp: "für + 4格なので du の4格 dich を使います。" },
+  { cat: "prep", lemma: "auf + 3格 (静止・場所)", de: "Das Buch liegt auf ___ Tisch.", ans: "dem", dist: ["den", "der", "das"], ja: "本は机の上にあります。", hint: "liegen（横たわっている）＝静止なので3格", exp: "場所・状態を表すときは3格（男性単数3格 dem）を使います。" },
+  { cat: "prep", lemma: "auf + 4格 (移動・方向)", de: "Leg das Buch bitte auf ___ Tisch!", ans: "den", dist: ["dem", "der", "das"], ja: "本を机の上へ置いてください！", hint: "legen（置く）＝方向・移動なので4格", exp: "方向・移動を表すときは4格（男性単数4格 den）を使います。" },
+  { cat: "prep", lemma: "in + das (融合形)", de: "Ich gehe heute Abend ___ Kino.", ans: "ins", dist: ["im", "ans", "zum"], ja: "私は今晩映画館へ行きます。", hint: "das Kino への移動（in + das）", exp: "中性名詞 das Kino への移動は in + das = ins になります。" },
+  { cat: "prep", lemma: "in + dem (融合形)", de: "Er ist jetzt ___ Kino.", ans: "im", dist: ["ins", "am", "zum"], ja: "彼は今映画館にいます。", hint: "das Kino での存在（in + dem）", exp: "中性名詞 das Kino での静止は in + dem = im になります。" },
+  { cat: "prep", lemma: "während + 2格 (die Ferien / 複数)", de: "Sie macht während ___ Ferien den Führerschein.", ans: "der", dist: ["den", "die", "dem"], ja: "彼女は休暇の間に運転免許を取ります。", hint: "während は2格支配（複数2格）", exp: "während + 複数2格なので der Ferien となります。" },
+  { cat: "adj", lemma: "der + neu (男性1格)", de: "Der ___ Wagen gehört meinem Bruder.", ans: "neue", dist: ["neuer", "neuen", "neues"], ja: "その新しい車は兄のものです。", hint: "定冠詞 + 男性1格 → 弱変化", exp: "定冠詞 der の後の男性1格は語尾 -e です。" },
+  { cat: "adj", lemma: "den + neu (男性4格)", de: "Kennst du den ___ Kollegen schon?", ans: "neuen", dist: ["neue", "neuer", "neuem"], ja: "新しく来た同僚をもう知っていますか？", hint: "定冠詞 + 男性4格 → 弱変化", exp: "定冠詞 den の後の男性4格は語尾 -en です。" },
+  { cat: "adj", lemma: "die + rot (女性1格)", de: "Die ___ Bluse steht dir sehr gut.", ans: "rote", dist: ["roten", "roter", "rotes"], ja: "その赤いブラウスは君にとてもよく似合います。", hint: "定冠詞 + 女性1格 → 弱変化", exp: "定冠詞 die の後の女性1格は語尾 -e です。" },
+  { cat: "adj", lemma: "die + deutsch (複数4格)", de: "Ich bringe die ___ Gäste ins Hotel.", ans: "deutschen", dist: ["deutsche", "deutscher", "deutsches"], ja: "私はドイツのお客さんたちをホテルまで連れて行きます。", hint: "定冠詞 + 複数4格 → 弱変化", exp: "定冠詞類の後では、複数形はすべて語尾 -en になります。" },
+  { cat: "adj", lemma: "ein + schön (男性1格)", de: "Das ist aber ein ___ Garten!", ans: "schöner", dist: ["schöne", "schönen", "schönes"], ja: "とてもきれいなお庭ですね！", hint: "不定冠詞 + 男性1格 → 混合変化", exp: "ein には性語尾がないため、形容詞が男性1格の -er を引き受けます。" },
+  { cat: "adj", lemma: "einen + deutsch (男性4格)", de: "Sie hat einen ___ Freund.", ans: "deutschen", dist: ["deutscher", "deutsche", "deutsches"], ja: "彼女にはドイツ人の友だちがいます。", hint: "不定冠詞 + 男性4格 → 混合変化", exp: "男性4格は弱変化・混合変化ともに -en です。" },
+  { cat: "adj", lemma: "kein + japanisch (中性1格)", de: "In dieser Stadt gibt es kein ___ Restaurant.", ans: "japanisches", dist: ["japanische", "japanischen", "japanischer"], ja: "この町には日本料理の店はありません。", hint: "不定冠詞類 + 中性1/4格 → 混合変化", exp: "kein には性語尾がないため、形容詞が中性4格の -es を引き受けます。" },
+  { cat: "adj", lemma: "einer + klein (女性3格)", de: "Wir wohnen in einer ___ Stadt in Bayern.", ans: "kleinen", dist: ["kleine", "kleiner", "kleines"], ja: "私たちはバイエルン州にある小さな町に住んでいます。", hint: "不定冠詞 + 女性3格 → 混合変化", exp: "単数2格・3格は弱変化・混合変化ともにすべて -en です。" },
+  { cat: "adj", lemma: "無冠詞 + französisch (男性1格)", de: "Zu diesem Essen passt ___ Wein.", ans: "französischer", dist: ["französische", "französischen", "französisches"], ja: "この食事にはフランスワインが合います。", hint: "無冠詞 + 男性1格 → 強変化", exp: "冠詞がないため、定冠詞 der と同じ語尾 -er を形容詞につけます。" },
+  { cat: "adj", lemma: "無冠詞 + deutsch (中性1格)", de: "___ Brot schmeckt mir.", ans: "Deutsches", dist: ["Deutsche", "Deutschen", "Deutscher"], ja: "ドイツのパンはおいしいと思います。", hint: "無冠詞 + 中性1格 → 強変化", exp: "無冠詞の中性1格なので、定冠詞 das と同じ語尾 -es をつけます。" },
+  { cat: "adj", lemma: "無冠詞 + schwarz (複数4格)", de: "Sie hat ___ Haare.", ans: "schwarze", dist: ["schwarzen", "schwarzer", "schwarzes"], ja: "彼女は髪が黒いです。", hint: "無冠詞 + 複数4格 → 強変化", exp: "無冠詞の複数4格は定冠詞 die と同じ語尾 -e をつけます。" },
+  { cat: "adj", lemma: "am + 3. (序数3格)", de: "Ich habe am ___ Oktober Geburtstag.", ans: "dritten", dist: ["dritte", "dritter", "drittes"], ja: "私の誕生日は10月3日です。", hint: "am (= an dem) の後ろの序数", exp: "am (an dem) の後ろは男性3格扱いとなり、序数 dritt- に -en をつけます。" },
+  { cat: "adj", lemma: "etwas + kalt (形容詞の名詞化)", de: "Ich möchte etwas ___ trinken.", ans: "Kaltes", dist: ["kalte", "Kalten", "kalter"], ja: "何か冷たいものが飲みたいです。", hint: "etwas の後の形容詞は中性名詞化して大文字", exp: "etwas の後ろは中性強変化（-es）となり、名詞化するため語頭を大文字にします。" }
+];
+
+// --- 2. 教科書 Lektion 1〜20 全600問（各課30問） ---
+const LESSON_TITLES = [
+  "Lektion 1: 発音・基本あいさつ",
+  "Lektion 2: 動詞の人称変化・文の構造",
+  "Lektion 3: 不規則動詞・命令文",
+  "Lektion 4: 名詞・冠詞の格変化",
+  "Lektion 5: 人称代名詞・冠詞類・基数",
+  "Lektion 6: 分離動詞・非分離動詞・es",
+  "Lektion 7: 接続詞(1)・前置詞(1)",
+  "Lektion 8: 前置詞(2)・疑問詞 was/wer",
+  "Lektion 9: 話法の助動詞・möchte",
+  "Lektion 10: 形容詞の格変化・序数",
+  "Lektion 11: 比較級・最上級・再帰動詞",
+  "Lektion 12: 過去形・3基本形",
+  "Lektion 13: 現在完了形・過去完了形",
+  "Lektion 14: zu不定詞の用法",
+  "Lektion 15: 受動態・状態受動・分詞",
+  "Lektion 16: 関係代名詞 (der/wer/was)",
+  "Lektion 17: 関係副詞・指示代名詞",
+  "Lektion 18: 接続法第2式 (仮定・依頼)",
+  "Lektion 19: 接続法第1式 (間接話法)",
+  "Lektion 20: 接続詞(2)・ことわざ名言"
+];
+
+const LESSON_SEEDS = {
+  1: [
+    ["Guten ___!", "Tag", ["Tage", "Tages", "Tagen"], "こんにちは！", "昼間の基本あいさつ", "Guten Tag!（こんにちは）は男性4格の挨拶表現です。"],
+    ["Guten ___!", "Morgen", ["Morgens", "Morgenen", "Morgene"], "おはようございます！", "朝のあいさつ", "Guten Morgen!（おはようございます）です。"],
+    ["Guten ___!", "Abend", ["Abends", "Abende", "Abenden"], "こんばんは！", "夜のあいさつ", "Guten Abend!（こんばんは）です。"],
+    ["Gute ___!", "Nacht", ["Nächte", "Nachts", "Nächten"], "おやすみなさい！", "就寝前のあいさつ（Nachtは女性名詞）", "Nacht は女性名詞なので Gute Nacht! となります。"],
+    ["Auf ___!", "Wiedersehen", ["Wiedersehst", "Wiedersieht", "Wiedersah"], "さようなら！", "別れの丁寧なあいさつ", "Auf Wiedersehen!（またお会いしましょう＝さようなら）です。"],
+    ["Wie ___ du? (heißen)", "heißt", ["heißst", "heiße", "heißen"], "君の名前は何と言うの？", "語幹が -ß で終わる動詞の du 変化", "heißen の語幹は heiß- なので du では -t だけつけて heißt になります。"],
+    ["Ich ___ Takuya Mori. (heißen)", "heiße", ["heißt", "heißen", "heiß"], "私は森拓也と申します。", "1人称単数 ich の語尾", "ich に対する語尾は -e（heiße）です。"],
+    ["Woher ___ Sie? (kommen)", "kommen", ["kommt", "kommst", "komme"], "どちらのご出身ですか？", "敬称 Sie の語尾", "敬称 Sie は不定詞と同じ -en（kommen）になります。"],
+    ["Ich ___ aus Japan. (kommen)", "komme", ["kommt", "kommst", "kommen"], "私は日本出身です。", "出身地を表す aus + 国名", "ich komme aus Japan.（私は日本出身です）"],
+    ["Ich ___ jetzt in Hamburg. (wohnen)", "wohne", ["wohnt", "wohnst", "wohnen"], "私は今ハンブルクに住んでいます。", "居住地を表す in + 都市名", "ich wohne in Hamburg.（私はハンブルクに住んでいます）"]
+  ],
+  2: [
+    ["Was ___ du, Anna? (studieren)", "studierst", ["studiert", "studiere", "studieren"], "アンナ、何を専攻しているの？", "du に対する現在人称変化", "du の語尾は -st（studierst）です。"],
+    ["Er ___ bei einer Firma. (arbeiten)", "arbeitet", ["arbeitt", "arbeitest", "arbeiten"], "彼は会社で働いています。", "語幹が -t で終わる動詞（er）", "語幹末が -t のため er では -et をつけます（arbeitet）。"],
+    ["___ ihr hier in München? (wohnen)", "Wohnt", ["Wohnen", "Wohnst", "Wohne"], "君たちはここミュンヘンに住んでいるの？", "2人称複数 ihr の語尾", "ihr に対する語尾は -t（Wohnt）です。"],
+    ["Wir ___ gern Tennis. (spielen)", "spielen", ["spielt", "spielst", "spiele"], "私たちはテニスをするのが好きです。", "1人称複数 wir の語尾", "wir の語尾は -en（spielen）です。"],
+    ["Hans ___ Japanisch schwer. (finden)", "findet", ["findt", "findest", "finden"], "ハンスは日本語を難しいと思っています。", "語幹が -d で終わる動詞（er）", "語幹末が -d なので er では -et をつけます（findet）。"],
+    ["___ Sie gern Wein? (trinken)", "Trinken", ["Trinkt", "Trinkst", "Trinke"], "あなたはワインを飲むのが好きですか？", "疑問詞のない疑問文の定動詞位置", "疑問詞がない疑問文では定動詞が文頭に置かれます。"],
+    ["A: Wohnt Herr Krüger nicht in Zürich? B: ___, er wohnt in Zürich.", "Doch", ["Ja", "Nein", "Nicht"], "A: クリューガーさんはチューリヒに住んでいないのですか？ B: いいえ、住んでいますよ。", "否定疑問文に対する肯定の応答", "否定で聞かれて「いいえ、〜ですよ」と打ち消して肯定するときは Doch を使います。"],
+    ["A: Kommen Anton und Eva heute nicht? B: ___, sie kommen heute nicht.", "Nein", ["Doch", "Ja", "Nicht"], "A: アントンとエーファは今日来ませんか？ B: ええ、今日来ません。", "否定疑問文に対する否定の応答", "否定の内容に同意して「来ません」と答えるときは Nein を使います。"],
+    ["___ kommt Eva? - Sie kommt aus Berlin.", "Woher", ["Wo", "Wohin", "Wann"], "エーファはどこ出身ですか？ - ベルリン出身です。", "出身・起点を尋ねる疑問詞", "「どこから（出身）」は woher を使います。"],
+    ["___ reisen Sie im Sommer? - Nach Wien.", "Wohin", ["Wo", "Woher", "Wer"], "夏にはどこへ旅行しますか？ - ウィーンへ。", "方向・行き先を尋ねる疑問詞", "「どこへ（行き先）」は wohin を使います。"]
+  ],
+  3: [
+    ["___ du Japaner? (sein)", "Bist", ["Seid", "Sind", "Ist"], "君は日本人ですか？", "sein の du 変化", "sein の現在変化：ich bin, du bist, er/sie/es ist, wir sind, ihr seid, Sie/sie sind"],
+    ["___ ihr morgen zu Hause? (sein)", "Seid", ["Sind", "Bist", "Ist"], "君たちは明日家にいますか？", "sein の ihr 変化", "ihr に対する sein は seid です。"],
+    ["___ du heute Unterricht? (haben)", "Hast", ["Habt", "Hat", "Haben"], "君は今日授業がありますか？", "haben の du 変化", "haben の現在変化：ich habe, du hast, er/sie/es hat..."],
+    ["Das Kind ist krank. Es ___ Fieber. (haben)", "hat", ["hast", "habt", "haben"], "その子は具合が悪い。熱があります。", "haben の3人称単数変化", "es に対する haben は hat です。"],
+    ["Er ___ oft nach Berlin. (fahren)", "fährt", ["fahrt", "fahre", "fahren"], "彼はよくベルリンへ行きます。", "a→ä 型の幹母音変化（er）", "fahren は du と er/sie/es で a が ä に変わります（fährt）。"],
+    ["Karl ___ Frau Müller. (helfen)", "hilft", ["helft", "helfe", "helfen"], "カールはミュラーさんを手伝います。", "e→i 型の幹母音変化（er）", "helfen は er/sie/es で e→i となり hilft になります。"],
+    ["Was ___ du gerade? (lesen)", "liest", ["lest", "lese", "lesen"], "君は今何を読んでいますか？", "e→ie 型の幹母音変化（du）", "lesen の du 変化は liest です。"],
+    ["___ bitte langsam! (sprechen / du命令)", "Sprich", ["Sprech", "Sprichst", "Spreche"], "ゆっくり話してよ！", "e→i 型動詞の du に対する命令文", "e→i 型動詞の du 命令文は、du の形から -st を取った形（Sprich）になります。"],
+    ["___ Peter! (helfen / du命令)", "Hilf", ["Helf", "Hilfst", "Helfe"], "ペーターを手伝ってあげて！", "e→i 型動詞の du に対する命令文", "helfen → du hilfst → 命令文は Hilf! です。"],
+    ["___ Sie bitte pünktlich! (sein / Sie命令)", "Seien", ["Sind", "Seid", "Sei"], "時間通りに来てください！", "sein の Sie に対する命令文", "sein の Sie 命令文は特別に Seien Sie! となります。"]
+  ],
+  4: [
+    ["Kennst du ___ Mann dort? (der Mann / 4格)", "den", ["der", "dem", "des"], "君はあそこにいる男の人を知っていますか？", "男性単数4格の定冠詞", "kennen は4格目的語をとるため den Mann になります。"],
+    ["Sie gibt ___ Kind Schokolade. (das Kind / 3格)", "dem", ["das", "den", "des"], "彼女はその子にチョコレートを与えます。", "中性単数3格の定冠詞", "geben は「3格に4格を与える」なので dem Kind です。"],
+    ["Der Name ___ Schülers ist Udo Becker. (der Schüler / 2格)", "des", ["der", "dem", "den"], "その生徒の名前はウード・ベッカーです。", "男性単数2格の定冠詞", "男性単数2格は des + 名詞語尾 -(e)s です。"],
+    ["Sie ist die Tochter ___ Lehrers. (ein Lehrer / 2格)", "eines", ["einem", "einen", "einer"], "彼女は教師の娘です。", "男性単数2格の不定冠詞", "男性単数2格の不定冠詞は eines です。"],
+    ["Hat er ___ Wagen? (ein Wagen / 4格)", "einen", ["ein", "einem", "eines"], "彼は車を持っていますか？", "男性単数4格の不定冠詞", "haben + 4格（男性単数）なので einen Wagen です。"],
+    ["Brauchen Sie ___ Brille? (eine Brille / 4格)", "eine", ["einer", "einen", "ein"], "あなたはメガネが必要ですか？", "女性単数4格の不定冠詞", "女性単数1・4格の不定冠詞は eine です。"],
+    ["Ich zeige ___ Kindern Fotos von Deutschland. (die Kinder / 複数3格)", "den", ["die", "der", "dem"], "私はその子どもたちにドイツの写真を見せます。", "複数3格の定冠詞", "複数3格は定冠詞 den + 名詞語尾 -n です。"],
+    ["Kennen Sie ___ Klein? (Herr / 弱変化4格)", "Herrn", ["Herr", "Herren", "Herrs"], "クラインさんをご存じですか？", "男性弱変化名詞 Herr の単数4格", "Herr は単数2・3・4格で Herrn になります。"],
+    ["Sie hilft dem ___ oft. (der Student / 弱変化3格)", "Studenten", ["Student", "Students", "Studente"], "彼女はその学生をよく手伝います。", "男性弱変化名詞 Student の単数3格", "Student は弱変化名詞のため単数3格で Studenten になります。"],
+    ["Claudia zeigt dem ___ den Weg. (der Tourist / 弱変化3格)", "Touristen", ["Tourist", "Tourists", "Touriste"], "クラウディアはその観光客に道を教えます。", "男性弱変化名詞 Tourist の単数3格", "Tourist も男性弱変化名詞で Touristen になります。"]
+  ],
+  5: [
+    ["Wo ist die Zeitung? - ___ liegt dort drüben.", "Sie", ["Er", "Es", "Ihr"], "新聞はどこですか？ - 向こうにあります。", "女性名詞 die Zeitung を受ける代名詞", "女性単数1格の人称代名詞は sie です。"],
+    ["Wie heißt das Mädchen? - ___ heißt Michaela.", "Es", ["Sie", "Er", "Ihm"], "その女の子は何という名前？ - ミヒャエーラです。", "中性名詞 das Mädchen を受ける代名詞", "Mädchen は文法上の中性名詞なので es で受けます。"],
+    ["Gibst du ___ bitte das Salz? (ich / 3格)", "mir", ["mich", "ich", "mein"], "私にお塩を取ってくれる？", "ich の3格人称代名詞", "geben + 3格（〜に）なので mir を使います。"],
+    ["Bringst du ___ nach Hause? (ich / 4格)", "mich", ["mir", "ich", "mein"], "私を家まで送ってくれる？", "ich の4格人称代名詞", "bringen + 4格（〜を）なので mich を使います。"],
+    ["Ich danke ___ ganz herzlich. (Sie / 3格)", "Ihnen", ["Sie", "Ihr", "ihnen"], "私はあなたに心から感謝します。", "danken + 3格（敬称 Sie の3格）", "danken は3格支配動詞。敬称 Sie の3格は Ihnen（大文字）です。"],
+    ["Das Kind hat eine Puppe. Sie gefällt ___ sehr. (es / 3格)", "ihm", ["es", "ihn", "ihr"], "その子は人形を持っている。その子はそれがとても気に入っている。", "das Kind (= es) の3格", "gefallen + 3格。中性単数 es の3格は ihm です。"],
+    ["Ich glaube ___ nicht. (sie / 複数3格)", "ihnen", ["sie", "ihr", "Ihnen"], "私は彼らの言うことを信じません。", "glauben + 3格（複数 sie の3格）", "3人称複数 sie の3格は ihnen です。"],
+    ["Kennst du ___ Mann? (dieser / 男性4格)", "diesen", ["dieser", "diesem", "dieses"], "この男の人を知っていますか？", "dieser 型の男性単数4格", "定冠詞 der と同じ語尾変化をするので diesen です。"],
+    ["Er gibt ___ Kind ein Geschenk. (jeder / 中性3格)", "jedem", ["jedes", "jeden", "jeder"], "彼はどの子にもプレゼントをあげます。", "jeder 型の単数3格（das Kind）", "中性単数3格なので jedem になります。"],
+    ["Schenken Sie das Buch ___ Tochter? (Ihre / 女性3格)", "Ihrer", ["Ihre", "Ihrem", "Ihren"], "その本をあなたの娘さんに贈るのですか？", "所有冠詞の女性単数3格", "schenken + 3格（女性名詞 Tochter）なので Ihrer です。"]
+  ],
+  6: [
+    ["Der Bus ___ gleich ___. (abfahren)", "fährt ... ab", ["abfährt", "fahrt ... ab", "fahren ... ab"], "バスはすぐに発車します。", "分離動詞 abfahren の現在形（3人称単数）", "fahren は幹母音変化して fährt になり、前つづり ab が文末に置かれます。"],
+    ["Wann ___ die Ferien ___? (anfangen)", "fangen ... an", ["anfangen", "fängt ... an", "fangt ... an"], "休みはいつ始まりますか？", "分離動詞 anfangen（die Ferien は複数形）", "Ferien は複数形なので fangen ... an となります。"],
+    ["Ich ___ dich heute Abend ___. (anrufen)", "rufe ... an", ["anrufe", "rufst ... an", "ruft ... an"], "今晩電話するね。", "分離動詞 anrufen の1人称単数", "ich rufe ... an となります。"],
+    ["Wann ___ du am Sonntag immer ___? (aufstehen)", "stehst ... auf", ["aufstehst", "steht ... auf", "stehe ... auf"], "日曜日はいつも何時に起きる？", "分離動詞 aufstehen の2人称単数", "du stehst ... auf となります。"],
+    ["Ich ___ dir meine Freundin ___. (vorstellen)", "stelle ... vor", ["vorstelle", "stellt ... vor", "stellst ... vor"], "ぼくの彼女を紹介するよ。", "分離動詞 vorstellen の1人称単数", "ich stelle ... vor となります。"],
+    ["___ Sie bitte, wo ist die Toilette? (entschuldigen)", "Entschuldigen", ["Schuldigen ... ent", "Entschuldigt", "Entschuldige"], "すみませんが、トイレはどこですか？", "非分離動詞 entschuldigen（前つづり ent-）", "ent- は非分離前つづりなので分離しません。"],
+    ["___ du mir das bitte noch einmal? (erklären)", "Erklärst", ["Klärst ... er", "Erklärt", "Erkläre"], "それをもう一度説明してくれる？", "非分離動詞 erklären（前つづり er-）", "er- は非分離前つづりなので分離しません。"],
+    ["___ Sie Ihr Wörterbuch nicht! (vergessen)", "Vergessen", ["Gessen ... ver", "Vergisst", "Vergesst"], "辞書を忘れないでくださいね！", "非分離動詞 vergessen（前つづり ver-）", "ver- は非分離前つづりなので分離しません。"],
+    ["Wie geht es Ihnen? - Danke, es geht ___ gut.", "mir", ["mich", "ich", "mein"], "お元気ですか？ - おかげさまで元気です。", "es geht + 3格（非人称表現）", "es geht の後ろは3格（ich → mir）をとります。"],
+    ["In Deutschland trinkt ___ viel Bier.", "man", ["Mann", "Männer", "er"], "ドイツではビールをたくさん飲みます。", "一般の人を表す不定代名詞 man", "不特定の人「人々・世間」を表すときは小文字の man（3人称単数扱い）を使います。"]
+  ],
+  7: [
+    ["Er ist nicht Student, ___ er arbeitet.", "sondern", ["aber", "denn", "oder"], "彼は学生ではありませんよ、社会人なんです。", "否定を受けて訂正する並列接続詞 sondern", "「AではなくBだ」と訂正するときは sondern を使います。"],
+    ["Hanna kommt heute nicht, ___ sie ist erkältet.", "denn", ["weil", "obwohl", "dass"], "ハンナは今日は来ないよ、風邪をひいているからね。", "並列接続詞 denn（定動詞は2番目）", "denn は並列接続詞なので語順を変えず定動詞 ist は2番目に置かれます。"],
+    ["Ich hoffe, dass er morgen ___.", "kommt", ["kommen", "kommst", "komme"], "彼があした来てくれるといいのですが。", "従属接続詞 dass による定形後置", "従属接続詞 dass の副文では定動詞が文末に置かれます。"],
+    ["Weißt du, ob Herr Böll heute ___? (zurückkommen)", "zurückkommt", ["kommt zurück", "zurückkommen", "zurückkommst"], "ベルさんがきょう帰ってくるかどうか、知っている？", "副文内では分離動詞が結合する", "従属接続詞 ob の副文では分離動詞も分離せず結合して文末に置かれます。"],
+    ["Weil sie Fieber ___, bleibt sie zu Hause.", "hat", ["haben", "hast", "habt"], "彼女は熱があるので、家にいます。", "従属接続詞 weil による定形後置", "weil の副文では定動詞 hat がコンマの直前（文末）に来ます。"],
+    ["Nach ___ Unterricht treffe ich Veronika. (der Unterricht / 3格)", "dem", ["den", "der", "des"], "授業のあと、私はヴェローニカに会います。", "nach + 3格（男性単数3格）", "nach は3格支配の前置詞です。"],
+    ["Das ist ein Brief von ___ Freundin. (meine Freundin / 3格)", "meiner", ["meine", "meinem", "meinen"], "これはぼくのガールフレンドからの手紙だ。", "von + 3格（女性単数3格）", "von は3格支配。女性単数3格なので meiner です。"],
+    ["Wir fahren mit dem Fahrrad um ___ See. (der See / 4格)", "den", ["dem", "der", "des"], "私たちは自転車で湖を一周します。", "um + 4格（男性単数4格）", "um は4格支配の前置詞です。"],
+    ["Ich bin gegen ___ Plan. (dieser Plan / 4格)", "diesen", ["diesem", "dieser", "dieses"], "私はこの計画に反対です。", "gegen + 4格（男性単数4格）", "gegen は4格支配の前置詞です。"],
+    ["Der Film beginnt ___ sechs Uhr.", "um", ["am", "im", "zu"], "映画は6時に始まります。", "時刻を表す前置詞 um", "「〜時に」という時刻には um を使います。"]
+  ],
+  8: [
+    ["Die Katze schläft unter ___ Tisch. (der Tisch / 3格)", "dem", ["den", "der", "des"], "猫がテーブルの下で寝ています。", "unter + 3格（静止・場所）", "schlafen（寝ている）は位置・状態なので3格（dem）を使います。"],
+    ["Ich stelle das Fahrrad unter ___ Baum. (ein Baum / 4格)", "einen", ["einem", "ein", "eines"], "私は自転車を木の下に置きます。", "unter + 4格（移動・方向）", "stellen（立てて置く）は方向・移動なので4格（einen）を使います。"],
+    ["Er ist in ___ Uni. (die Uni / 3格)", "der", ["die", "dem", "den"], "彼は大学にいます。", "in + 3格（女性名詞 die Uni）", "存在を表すので女性単数3格の der を使います。"],
+    ["Der Wagen steht vor ___ Haus. (das Haus / 3格)", "dem", ["das", "den", "des"], "車は家の前に停まっています。", "vor + 3格（中性単数3格）", "stehen（立っている・停まっている）は静止なので3格 dem です。"],
+    ["Stell den Teller bitte auf ___ Tisch! (der Tisch / 4格)", "den", ["dem", "der", "des"], "お皿をテーブルの上に置いてください！", "auf + 4格（移動・方向）", "stellen は移動・方向なので男性単数4格 den を使います。"],
+    ["Ist das ein Messer? - Ja, ___ schneidet man Käse. (mit + 物)", "damit", ["mit ihm", "womit", "dafür"], "それはナイフなんですか？ - ええ、これでチーズを切るんです。", "da + 前置詞（物を指す代名詞の代わり）", "「それで（道具・手段）」は mit + 物 → damit になります。"],
+    ["In der Zeitung steht ein Artikel über Roboter. - Ja, ___ berichtet man jetzt viel.", "darüber", ["daüber", "worüber", "über ihn"], "新聞にロボットの記事が載っています。 - ええ、それについてよく報道されますね。", "母音で始まる前置詞は dar + 前置詞", "über は母音で始まるため dar + über = darüber になります。"],
+    ["___ fahren wir? - Mit der Straßenbahn.", "Womit", ["Mit was", "Damit", "Wovon"], "何で行きましょうか？ - 路面電車で行きましょう。", "疑問詞 was + 前置詞 → wo + 前置詞", "「何で（手段）」は was + mit → womit になります。"],
+    ["___ Tasche ist das? (wer の2格)", "Wessen", ["Wer", "Wem", "Wen"], "それは誰のバッグですか？", "疑問詞 wer の2格（誰の）", "wer の格変化は 1格 wer / 2格 wessen / 3格 wem / 4格 wen です。"],
+    ["___ schenkst du die Blumen? (wer の3格)", "Wem", ["Wen", "Wer", "Wessen"], "その花を誰に贈るの？", "疑問詞 wer の3格（誰に）", "schenken + 3格（人に）なので wem を使います。"]
+  ],
+  9: [
+    ["Ich ___ heute Abend ins Kino gehen. (wollen)", "will", ["wolle", "willst", "wollt"], "私は今晩映画に行くつもりだ。", "話法の助動詞 wollen（ich）", "wollen の現在変化：ich will, du willst, er/sie/es will..."],
+    ["Leider ___ ich nicht mitkommen. (können)", "kann", ["könne", "kannst", "könnt"], "残念ながら私は一緒に行けません。", "話法の助動詞 können（ich）", "können の1・3人称単数は kann です。"],
+    ["Ich ___ einen Bericht schreiben. (müssen)", "muss", ["müsse", "musst", "müsst"], "私はレポートを書かなければなりません。", "話法の助動詞 müssen（ich）", "müssen の1・3人称単数は muss です。"],
+    ["Der Film ___ sehr interessant sein. (sollen / うわさ)", "soll", ["solle", "sollst", "sollt"], "その映画はとても面白いという話だ。", "sollen の「〜という話だ（伝聞）」用法", "sollen には義務のほか「〜といううわさだ」という意味があります。"],
+    ["___ ich Sie etwas fragen? (dürfen)", "Darf", ["Dürfe", "Darfst", "Dürft"], "ちょっとお尋ねしていいですか？", "許可を求める dürfen（ich）", "dürfen の1・3人称単数は darf です。"],
+    ["Morgen ___ es regnen. (mögen / 推量)", "mag", ["möge", "magst", "mögt"], "あしたは雨が降るかもしれない。", "mögen の推量用法（3人称単数）", "mögen には「〜かもしれない」という推量の用法があります。"],
+    ["___ Sie noch eine Tasse Kaffee? (möchten)", "Möchten", ["Möchtet", "Möchte", "Möchtest"], "コーヒーをもう一杯いかがですか？", "möchten（〜したい・ほしい）の敬称 Sie", "möchten の複数・Sie 形は möchten です。"],
+    ["Ich ___ ein Kilo Äpfel. (möchten / 本動詞)", "möchte", ["möchtest", "möchtet", "möchten"], "リンゴを1キロください。", "本動詞として使われる möchte", "助動詞なしで直接名詞を目的語にとり「〜がほしい」を表します。"],
+    ["Du ___ nicht so laut sprechen! (sollen)", "sollst", ["sollt", "soll", "sollen"], "そんなに大きい声で話さないで！", "sollen の2人称単数 du", "du に対する sollen は sollst です。"],
+    ["Im Klassenzimmer ___ man nicht essen und trinken. (dürfen)", "darf", ["dürft", "darfst", "dürfen"], "教室で飲食してはいけません。", "man（3人称単数）+ dürfen + nicht（禁止）", "darf ... nicht で「〜してはいけない（禁止）」を表します。"]
+  ],
+  10: [
+    ["Wie viel kostet der ___ Käse hier? (holländisch / 男性1格)", "holländische", ["holländischer", "holländischen", "holländisches"], "このオランダのチーズはいくらですか？", "定冠詞 der + 男性1格 → 弱変化", "定冠詞 der の後の男性1格は -e です。"],
+    ["Ich nehme den ___ Wein. (spanisch / 男性4格)", "spanischen", ["spanische", "spanischer", "spanischem"], "私はそのスペイン産ワインにします。", "定冠詞 den + 男性4格 → 弱変化", "定冠詞 den の後の男性4格は -en です。"],
+    ["Ist das ___ Gebäude dort ein Hotel? (weiß / 中性1格)", "weiße", ["weißes", "weißen", "weißer"], "あそこの白いビルはホテルですか？", "定冠詞 das + 中性1格 → 弱変化", "定冠詞 das の後の中性1・4格は -e です。"],
+    ["Eva zeigt den ___ Touristen das Schloss. (ausländisch / 複数3格)", "ausländischen", ["ausländische", "ausländischer", "ausländisches"], "エーファは外国の観光客たちにお城を案内します。", "定冠詞 den + 複数3格 → 弱変化", "定冠詞類の複数形はすべて -en です。"],
+    ["Diese Krawatte passt gut zu dem ___ Hemd. (blau / 中性3格)", "blauen", ["blaue", "blaues", "blauer"], "このネクタイはその青いシャツに合います。", "定冠詞 dem + 中性3格 → 弱変化", "単数2・3格はすべて -en です。"],
+    ["Er besucht seine ___ Freundin in Peking. (chinesisch / 女性4格)", "chinesische", ["chinesischen", "chinesischer", "chinesisches"], "彼は北京にいる中国人のガールフレンドを訪ねます。", "所有冠詞 seine + 女性4格 → 混合変化", "女性1・4格は弱変化・混合変化ともに -e です。"],
+    ["Sie ist die Chefin einer ___ Firma. (groß / 女性2格)", "großen", ["große", "großer", "großes"], "彼女は大きな会社の社長です。", "不定冠詞 einer + 女性2格 → 混合変化", "単数2・3格はすべて -en です。"],
+    ["Ich habe ___ Hunger. (groß / 無冠詞・男性4格)", "großen", ["große", "großer", "großem"], "とてもおなかがすきました（大きな空腹がある）。", "無冠詞 + 男性4格 → 強変化", "der Hunger（男性名詞）の無冠詞4格なので定冠詞 den と同じ -en です。"],
+    ["Er studiert ___ Literatur. (japanisch / 無冠詞・女性4格)", "japanische", ["japanischen", "japanischer", "japanisches"], "彼は日本文学を専攻しています。", "無冠詞 + 女性4格 → 強変化", "die Literatur（女性名詞）の無冠詞4格は -e です。"],
+    ["Heute ist der ___ August. (3. / 序数1格)", "dritte", ["dritten", "dritter", "drittes"], "今日は8月3日です。", "定冠詞 der + 序数（男性1格）", "3番目の序数語幹は dritt-。der の後なので -e をつけて dritte です。"]
+  ],
+  11: [
+    ["Das neue Restaurant ist viel ___ als das alte. (gut / 比較級)", "besser", ["guter", "güter", "am besten"], "新しいレストランは古い方よりずっと良い。", "gut の不規則比較級", "gut の比較級は besser、最上級は best- です。"],
+    ["Die Frühlingsrollen esse ich am ___. (gern / 最上級)", "liebsten", ["gernsten", "mehrsten", "besten"], "春巻きを私はいちばん好んで食べます。", "gern の不規則最上級", "gern - lieber - am liebsten と不規則変化します。"],
+    ["Die Schweiz ist ___ als Österreich. (klein / 比較級)", "kleiner", ["kleinst", "am kleinsten", "kleinere"], "スイスはオーストリアより小さいです。", "形容詞の比較級（語尾 -er）", "述語的用法の比較級は原級 + -er（kleiner）です。"],
+    ["Sie ist zwei Jahre ___ als ich. (alt / 比較級)", "älter", ["alter", "ältest", "am ältesten"], "彼女は私より2歳年上です。", "1音節形容詞の比較級ウムラウト", "alt は比較級でウムラウトして älter になります。"],
+    ["Welcher Berg ist ___: die Zugspitze oder der Fuji? (hoch / 比較級)", "höher", ["hocher", "höcher", "am höchsten"], "ツークシュピッツェと富士山、どちらの山が高い？", "hoch の比較級は c が落ちる", "hoch の比較級は c が脱落して höher になります。"],
+    ["Haben Sie kein ___ Zimmer? (billig / 比較級・中性4格)", "billigeres", ["billiger", "billigere", "billigeren"], "もっと安い部屋はありませんか？", "比較級 + 格語尾（混合変化中性4格）", "比較級 billiger の後ろに中性4格語尾 -es をつけて billigeres になります。"],
+    ["Die Zugspitze ist der ___ Berg in Deutschland. (hoch / 最上級・男性1格)", "höchste", ["höher", "am höchsten", "höchster"], "ツークシュピッツェはドイツでいちばん高い山です。", "定冠詞 + 最上級 + 格語尾", "der の後ろの最上級 höchst- に弱変化1格語尾 -e をつけます。"],
+    ["Interessieren Sie ___ für Sport? (再帰代名詞4格)", "sich", ["Ihnen", "euch", "uns"], "あなたはスポーツに関心がありますか？", "sich für ~ interessieren（Sie の再帰代名詞）", "Sie の再帰代名詞は3格・4格ともに sich です。"],
+    ["Wir freuen ___ auf die Sommerferien. (再帰代名詞4格)", "uns", ["sich", "euch", "mir"], "私たちは夏休みを楽しみにしています。", "sich auf ~ freuen（wir の再帰代名詞）", "wir の再帰代名詞は uns です。"],
+    ["Kannst du ___ das vorstellen? (再帰代名詞3格)", "dir", ["dich", "sich", "mir"], "君はそれを想像できますか？", "sich (3格) etwas vorstellen（du の3格）", "das（4格）が別にあるため、再帰代名詞は3格の dir になります。"]
+  ],
+  12: [
+    ["Franz Marc ___ ein deutscher Maler. (sein / 過去形)", "war", ["ist", "hatte", "wurde"], "フランツ・マルクはドイツの画家でした。", "sein の過去形（3人称単数）", "sein の過去形は ich war, du warst, er war... です。"],
+    ["Er ___ großes Talent. (haben / 過去形)", "hatte", ["hat", "war", "hätte"], "彼には大きな才能がありました。", "haben の過去形（3人称単数）", "haben の過去形は ich hatte, du hattest, er hatte... です。"],
+    ["Er ___ mit 36 Jahren im Ersten Weltkrieg. (fallen / 過去形)", "fiel", ["fallte", "fällt", "gefallen"], "彼は36歳で第一次世界大戦にて戦死しました。", "不規則動詞 fallen の過去基本形", "fallen - fiel - gefallen の過去形（3人称単数）は fiel です。"],
+    ["Marc ___ oft Bilder von Tieren. (malen / 過去形)", "malte", ["malete", "miel", "gemalt"], "マルクはよく動物の絵を描きました。", "規則動詞 malen の過去形（語幹 + -te）", "規則動詞の過去形は語幹 + -te（malte）です。"],
+    ["Das ___ ich nicht. (wissen / 過去形)", "wusste", ["wisste", "weiß", "gewusst"], "私はそれを知りませんでした。", "混合変化動詞 wissen の過去形", "wissen - wusste - gewusst の1人称単数過去形は wusste です。"],
+    ["Sie ___ zusammen ins Konzert. (gehen / 過去形)", "gingen", ["gehten", "ging", "gegangen"], "彼らは一緒にコンサートに行きました。", "不規則動詞 gehen の過去形（3人称複数）", "gehen - ging - gegangen の複数過去形は gingen です。"],
+    ["Ich ___ um neun Uhr ___. (abfahren / 過去形)", "fuhr ... ab", ["abfuhr", "fahrte ... ab", "fuhren ... ab"], "私は9時に出発しました。", "分離動詞 abfahren の過去形", "fahren の過去形 fuhr が2番目、前つづり ab が文末に来ます。"],
+    ["Der Zug ___ um halb fünf ___. (ankommen / 過去形)", "kam ... an", ["ankam", "kommte ... an", "kamen ... an"], "列車は4時半に到着しました。", "分離動詞 ankommen の過去形", "kommen の過去形 kam が2番目、an が文末に来ます。"],
+    ["Eigentlich ___ ich heute ins Kino gehen. (wollen / 過去形)", "wollte", ["will", "wolltest", "gewollt"], "本当は今日映画に行くつもりでした。", "話法の助動詞 wollen の過去形", "助動詞の過去形はウムラウトが取れて -te がつきます（wollte）。"],
+    ["Mein Vater ___ gestern nach Zürich fahren. (müssen / 過去形)", "musste", ["müsste", "muss", "gemusst"], "父は昨日チューリヒに行かなければなりませんでした。", "müssen の過去形（ウムラウトなし）", "müssen の過去形は musste です（müsste は接続法第2式）。"]
+  ],
+  13: [
+    ["Ich ___ Anna getroffen. (treffen / 現在完了)", "habe", ["bin", "war", "werde"], "私はアンナに会いました。", "他動詞 treffen の完了助動詞", "目的語をとる他動詞の完了助動詞は haben です。"],
+    ["Wir ___ zum Italiener gegangen. (gehen / 現在完了)", "sind", ["haben", "waren", "werden"], "私たちはイタリア料理店に行きました。", "場所の移動を表す自動詞 gehen の完了助動詞", "場所の移動を表す自動詞の完了助動詞は sein（wir sind）です。"],
+    ["Gestern habe ich den ganzen Tag ___. (arbeiten / 現在完了)", "gearbeitet", ["arbeitete", "gearbeit", "arbeiten"], "昨日私は一日じゅう仕事をしました。", "語幹が -t で終わる規則動詞の過去分詞", "ge + arbeit + et = gearbeitet となります。"],
+    ["Hast du den Bericht schon ___? (schreiben / 現在完了)", "geschrieben", ["geschreibt", "schrieb", "schreiben"], "もうレポートを書きましたか？", "不規則動詞 schreiben の過去分詞", "schreiben - schrieb - geschrieben です。"],
+    ["Wir haben die Gäste am Bahnhof ___. (abholen / 現在完了)", "abgeholt", ["geabholt", "abholte", "abholen"], "私たちはお客さんを駅に迎えに行きました。", "分離動詞の過去分詞（前つづり + ge + 語幹 + t）", "分離動詞は前つづり ab の後ろに ge を挟んで1語にします（abgeholt）。"],
+    ["Um wie viel Uhr ___ du heute aufgestanden? (aufstehen / 現在完了)", "bist", ["hast", "warst", "wirst"], "君は今日何時に起きましたか？", "状態の変化を表す自動詞 aufstehen の完了助動詞", "aufstehen（起きる・立ち上がる）は状態の変化を表すため sein をとります。"],
+    ["Ich habe die Frage nicht ___. (verstehen / 現在完了)", "verstanden", ["geverstanden", "versteht", "verstand"], "私はその質問の意味がわかりませんでした。", "非分離動詞の過去分詞（ge- がつかない）", "ver- などの非分離前つづりがつく動詞の過去分詞には ge- をつけません。"],
+    ["Er hat Chemie ___. (studieren / 現在完了)", "studiert", ["gestudiert", "studierte", "studieren"], "彼は化学を専攻しました。", "-ieren で終わる動詞の過去分詞（ge- がつかない）", "-ieren で終わる動詞の過去分詞には ge- をつけず語尾 -t のみです。"],
+    ["Als ich zum Bahnhof kam, ___ der Zug schon abgefahren. (過去完了)", "war", ["ist", "hatte", "hat"], "私が駅に着いたときには、列車はすでに発車していました。", "過去完了形（sein 支配動詞の過去形 war + 過去分詞）", "過去の時点よりさらに前の出来事を表す過去完了です。"],
+    ["Nachdem wir gegessen ___, machten wir einen Spaziergang. (過去完了)", "hatten", ["haben", "waren", "sind"], "食事をすませたあと、私たちは散歩をしました。", "過去完了形（haben 支配動詞の過去形 hatten + 過去分詞）", "essen は haben 支配なので過去完了では hatten gegessen になります。"]
+  ],
+  14: [
+    ["Wir haben vor, im Sommer ans Meer ___ fahren.", "zu", ["um", "für", "nach"], "私たちは夏に海へ行くつもりです。", "zu 不定詞の基本形（zu + 不定詞）", "vorhaben（〜するつもりだ）は目的語として zu 不定詞句をとります。"],
+    ["Ich habe ganz vergessen, ihn ___. (anrufen)", "anzurufen", ["zu anrufen", "angerufen", "anrufen"], "彼に電話することをすっかり忘れていました。", "分離動詞の zu 不定詞（前つづり + zu + 動詞）", "分離動詞は前つづり an と rufen の間に zu を挟んで1語にします（anzurufen）。"],
+    ["Deutsch ___ lernen macht mir großen Spaß.", "zu", ["um", "ohne", "für"], "私はドイツ語を勉強するのがとても楽しいです。", "主語として働く zu 不定詞句", "Deutsch zu lernen（ドイツ語を学ぶこと）が文の主語になっています。"],
+    ["Hast du Lust, am Wochenende zu uns ___ kommen?", "zu", ["um", "für", "nach"], "週末にうちに来る気はある？", "名詞 Lust を修飾する形容詞的用法の zu 不定詞", "Lust haben, ... zu + 不定詞で「〜する気がある」を表します。"],
+    ["Ich muss zur Bibliothek, ___ ein Buch zurückzugeben.", "um", ["ohne", "für", "damit"], "本を返すために図書館へ行かなくちゃ。", "um ... zu + 不定詞（〜するために）", "目的を表す副詞的用法は um ... zu + 不定詞です。"],
+    ["Sie ging aus dem Zimmer, ___ ein Wort zu sagen.", "ohne", ["um", "nicht", "statt"], "彼女は何も言わずに部屋を出ました。", "ohne ... zu + 不定詞（〜せずに）", "付帯状況の否定「〜しないで」は ohne ... zu + 不定詞です。"],
+    ["Hast du etwas ___ trinken?", "zu", ["für", "um", "mit"], "何か飲み物ある？", "haben + zu 不定詞（〜すべきものを持っている）", "etwas zu trinken（飲むべき何か＝飲み物）という慣用表現です。"],
+    ["Ich habe einen Brief ___ schreiben.", "zu", ["um", "ohne", "für"], "私は手紙を一通書かなければなりません。", "haben + zu 不定詞（〜しなければならない）", "haben + 4格 + zu 不定詞で義務・必要を表します。"],
+    ["Die Tür ist schwer ___ öffnen.", "zu", ["für", "um", "als"], "このドアは開けにくいです。", "sein + zu 不定詞（〜されうる／可能）", "sein + 形容詞 + zu 不定詞で「〜しやすい・しにくい」を表します。"],
+    ["Der Brief ist sofort ___. (abschicken)", "abzuschicken", ["zu abschicken", "abgeschickt", "abschicken"], "その手紙はすぐに送らなければなりません。", "sein + 分離動詞の zu 不定詞（受動的義務）", "sein + zu 不定詞は文脈により「〜されねばならない」という義務を表します。"]
+  ],
+  15: [
+    ["Das Paket ___ morgen abgeschickt. (受動態・現在形)", "wird", ["ist", "hat", "wurde"], "荷物はあした発送されます。", "受動態の助動詞 werden + 過去分詞", "動作受動は werden + 過去分詞で作ります。"],
+    ["Der Wagen wird ___ dem Mechaniker repariert.", "von", ["durch", "mit", "bei"], "車は整備工によって修理されます。", "受動文の行為者を表す前置詞 von + 3格", "動作の主体（人など）を表すときは von + 3格を使います。"],
+    ["Viele Arbeiten werden ___ den Roboter erleichtert.", "durch", ["von", "mit", "für"], "多くの仕事がロボットによって軽減されます。", "受動文の手段・原因を表す前置詞 durch + 4格", "手段・媒介・原因を表すときは durch + 4格を使います。"],
+    ["Ich ___ gestern von meiner Mutter angerufen worden. (受動・現在完了)", "bin", ["habe", "wurde", "werde"], "私はきのう母から電話をもらいました。", "受動態の現在完了形（sein + 過去分詞 + worden）", "受動態の完了形では助動詞に sein を使い、最後に worden（geworden の ge が落ちた形）を置きます。"],
+    ["Ich ___ früher oft von meiner Mutter angerufen. (受動・過去形)", "wurde", ["war", "hatte", "werde"], "私は以前はよく母から電話をもらったものでした。", "受動態の過去形（wurde + 過去分詞）", "werden の過去形 wurde を使います。"],
+    ["___ wem sind Sie abgeholt worden?", "Von", ["Durch", "Mit", "Bei"], "誰に迎えに来てもらったのですか？", "受動文の行為者を尋ねる Von wem", "von + 3格なので wer の3格 wem を使います。"],
+    ["Der Wagen ___ schon repariert. (状態受動)", "ist", ["wird", "hat", "wurde"], "車はもう修理済みです。", "状態受動（sein + 過去分詞）", "動作の結果としての状態を表すときは sein + 過去分詞を使います。"],
+    ["Das Geschäft ___ seit gestern geschlossen. (状態受動)", "ist", ["wird", "hat", "wurde"], "その店はきのうから閉まっています。", "状態受動（閉まっている状態）", "sein + geschlossen で「閉まっている状態」を表します。"],
+    ["Ich esse zum Frühstück ein ___ Ei. (kochen / 過去分詞の形容詞用法)", "gekochtes", ["kochendes", "gekochte", "gekochten"], "私は朝食にゆで卵を食べます。", "過去分詞の形容詞的用法（中性4格・混合変化）", "ein gekochtes Ei（ゆでられた卵＝ゆで卵）です。"],
+    ["Er kam ___ ins Zimmer. (lachen / 現在分詞)", "lachend", ["gelacht", "lachende", "lacht"], "彼は笑いながら部屋に入ってきました。", "現在分詞（不定詞 + -d）の副詞的用法", "不定詞 lachen + d = lachend で「笑いながら」を表します。"]
+  ],
+  16: [
+    ["Das ist Herr Faber, ___ bei Audi arbeitet. (男性1格)", "der", ["den", "dem", "dessen"], "こちらはアウディ社にお勤めのファーバーさんです。", "関係代名詞（先行詞 Herr Faber = 男性単数、関係文内では1格）", "性・数は先行詞に一致し、格は関係文内の働きで決まります。"],
+    ["Wie teuer war der Wagen, ___ du gekauft hast? (男性4格)", "den", ["der", "dem", "dessen"], "君が買った車はいくらだったの？", "関係代名詞（先行詞 der Wagen = 男性単数、kaufen の4格目的語）", "男性単数4格の関係代名詞は den です。"],
+    ["Die Japanerin, ___ ich Deutschunterricht gebe, kommt aus Osaka. (女性3格)", "der", ["die", "denen", "deren"], "私がドイツ語を教えている日本人女性は大阪出身です。", "関係代名詞（先行詞 Die Japanerin = 女性単数、geben の3格）", "女性単数3格の関係代名詞は der です。"],
+    ["Wem gehören die Bücher, ___ hier liegen? (複数1格)", "die", ["der", "denen", "deren"], "ここにある本は誰のですか？", "関係代名詞（先行詞 die Bücher = 複数、 liegen の1格）", "複数1格の関係代名詞は die です。"],
+    ["Maya, ___ Freund Deutscher ist, spricht sehr gut Deutsch. (女性2格)", "deren", ["dessen", "der", "die"], "マヤは、ボーイフレンドがドイツ人で、ドイツ語がとてもうまいです。", "関係代名詞の2格（先行詞 Maya = 女性単数）", "女性単数2格の関係代名詞は deren です（男性・中性は dessen）。"],
+    ["Meine Großeltern, ___ ich Karten geschenkt habe, haben sich gefreut. (複数3格)", "denen", ["die", "deren", "dem"], "祖父母は、私がチケットをプレゼントしたら、とても喜びました。", "関係代名詞の複数3格（先行詞 Meine Großeltern = 複数）", "複数3格の関係代名詞は denen です（定冠詞 den と異なるので注意！）。"],
+    ["Wie heißt der Mann, mit ___ du gesprochen hast? (前置詞 + 男性3格)", "dem", ["den", "der", "dessen"], "君が一緒に話していた男の人は何という名前？", "前置詞 mit + 男性単数3格の関係代名詞", "mit は3格支配なので der Mann の3格 dem を使います。"],
+    ["___ fertig ist, kann schon nach Hause gehen. (不特定の人)", "Wer", ["Der", "Was", "Welcher"], "終わった人はもう家に帰ってよろしい。", "先行詞を含んで不特定の人を表す関係代名詞 wer", "「〜する人は（誰でも）」は関係代名詞 wer を使います。"],
+    ["Er hat mir beim Umzug geholfen, ___ mich sehr gefreut hat. (前文全体を受ける)", "was", ["das", "welches", "wer"], "彼は私の引っ越しを手伝ってくれた、そのことがとてもうれしかった。", "前文の内容全体を受ける関係代名詞 was", "コンマの後で前文の内容を受けるときは was を使います。"],
+    ["Das ist alles, ___ ich habe. (alles を先行詞とする)", "was", ["das", "welches", "wer"], "私にはこれしかありません（これが私の持っているすべてです）。", "alles, nichts, etwas を先行詞とする関係代名詞 was", "alles, nichts, etwas などが先行詞のときは was を使います。"]
+  ],
+  17: [
+    ["Alex fährt nach München, ___ seine Freundin wohnt.", "wo", ["wohin", "woher", "was"], "アレックスはガールフレンドの住んでいるミュンヘンに行きます。", "場所を表す関係副詞 wo (= in der)", "都市名や場所を表す先行詞に対して「そこで」を表すときは関係副詞 wo を使います。"],
+    ["Die Stadt, ___ ich geboren bin, liegt in Norddeutschland.", "wo", ["wohin", "der", "die"], "私が生まれた町は北ドイツにあります。", "in der の代わりに使える関係副詞 wo", "Die Stadt, in der ... の代わりに wo を用いることができます。"],
+    ["Hält der Bus an der Bibliothek? - Nein, ___ hält nur an der Uni.", "der", ["er", "den", "dem"], "このバスは図書館に停まる？ - いや、これは大学にしか停まらない。", "指示代名詞 der（der Bus を指す男性1格）", "すでに挙げられた名詞を強く指す指示代名詞 der（1格）です。"],
+    ["Den Bus kannst du nicht nehmen, aber mit ___ auf Gleis 3 kannst du fahren.", "dem", ["den", "der", "dessen"], "そのバスには乗れないけど、3番線のそれなら行けるよ。", "前置詞 mit + 指示代名詞（男性3格 dem）", "mit は3格支配なので指示代名詞も3格の dem になります。"],
+    ["Der Pullover gefällt mir. ___ nehme ich.", "Den", ["Der", "Dem", "Das"], "このセーターが気に入った。これにします。", "指示代名詞の男性4格 Den（nehmen の目的語）", "nehmen + 4格（der Pullover）なので指示代名詞の4格 Den を使います。"],
+    ["Das ist Frau Weber. Mit ___ arbeite ich zusammen.", "der", ["die", "ihr", "dem"], "この方はヴェーバーさんです。彼女と一緒に仕事をしています。", "前置詞 mit + 指示代名詞（女性3格 der）", "Frau Weber（女性単数）を受ける3格の指示代名詞は der です。"],
+    ["Jens geht mit Peter und ___ Schwester ins Kino. (指示代名詞2格)", "dessen", ["seiner", "deren", "dem"], "イェンスはペーターやペーターの妹と映画に行きます。", "指示代名詞の2格 dessen（混同を避ける用法）", "seiner だとイェンス自身の妹にも取れるため、ペーター（男性）の2格 dessen を使います。"],
+    ["___ sind meine Bücher. (紹介の das)", "Das", ["Die", "Diese", "Es"], "これは私の本です。", "紹介の指示代名詞 das（後ろが複数でも単数形 das）", "人・物を紹介する das は、後ろが複数名詞でも常に das です。"],
+    ["Peter kommt auch. ___ hat er mir versprochen. (前文の内容を受ける)", "Das", ["Es", "Der", "Was"], "ペーターも来るよ。約束してくれたんだ。", "前文の内容を受ける指示代名詞 das", "前文の内容を受ける指示代名詞は das です。"],
+    ["Die gelbe Jacke hier gefällt mir sehr gut. ___ nehme ich.", "Die", ["Der", "Das", "Den"], "ここの黄色いジャケットがとても気に入った。これにします。", "指示代名詞の女性4格 Die（die Jacke を受ける）", "die Jacke（女性名詞）の4格なので指示代名詞 Die を使います。"]
+  ],
+  18: [
+    ["Wenn ich mehr Freizeit ___, würde ich Gitarre lernen. (haben / 接続法第2式)", "hätte", ["hatte", "habe", "hätten"], "もしもっと余暇があれば、ギターを習うのになあ。", "非現実の仮定（haben の接続法第2式）", "hatte にウムラウトをつけた hätte が接続法第2式です。"],
+    ["Wenn ich nicht so beschäftigt ___, würde ich eine Reise machen. (sein / 接続法第2式)", "wäre", ["war", "sei", "wären"], "こんなに忙しくなければ、旅行に行くのだが。", "非現実の仮定（sein の接続法第2式）", "war にウムラウトと -e をつけた wäre が接続法第2式です。"],
+    ["Wenn ich Zeit hätte, ___ ich mit dir ins Konzert. (gehen / 接続法第2式)", "ginge", ["ging", "gehe", "würde"], "時間があれば、君とコンサートに行くのだが。", "不規則動詞 gehen の接続法第2式", "gehen の過去基本形 ging に -e をつけた ginge が接続法第2式です。"],
+    ["Was ___ du tun, wenn du der Chef wärst? (werden / 接続法第2式)", "würdest", ["wirst", "wurdest", "würde"], "もし君が社長なら、どうする？", "推論を表す würde + 不定詞（du）", "werden の接続法第2式（du würdest）＋不定詞を使います。"],
+    ["___ ich Zeit, ginge ich mit dir ins Konzert. (wenn の省略)", "Hätte", ["Wenn hätte", "Hatte", "Habe"], "時間があれば、君とコンサートに行くのだが。", "wenn を省略した条件節（定動詞が文頭）", "wenn を省略すると接続法第2式の定動詞が文頭に出ます。"],
+    ["___ er gut Deutsch, hätte er sicher bessere Chancen. (sprechen / 接続法第2式)", "Spräche", ["Sprach", "Spricht", "Spreche"], "ドイツ語がうまく話せれば、きっと彼はチャンスがもっとあるだろうに。", "sprechen の接続法第2式（過去 sprach → spräche）", "過去基本形 sprach の a がウムラウトして spräche になります。"],
+    ["Wenn ich doch mehr Zeit ___! (願望の表現)", "hätte", ["hatte", "habe", "würde"], "もっと時間があればなあ！", "願望を表す接続法第2式（doch / nur とともに）", "非現実の願望は接続法第2式＋doch / nur で表します。"],
+    ["Ich ___ gern ein Bier, bitte! (ていねいな依頼)", "hätte", ["habe", "hatte", "wäre"], "ビールを一杯いただきたいのですが。", "ていねいな依頼・注文の Ich hätte gern ...", "直説法よりも控えめで丁寧な響きになる接続法第2式の定番表現です。"],
+    ["___ Sie mir bitte sagen, wie ich zum Bahnhof komme? (können / 接続法第2式)", "Könnten", ["Konnten", "Können", "Könntet"], "駅までの行き方を教えてくださいませんか？", "ていねいな依頼の Könnten Sie ...?", "konnten にウムラウトをつけた könnten で丁寧な依頼になります。"],
+    ["Wenn ich Zeit gehabt ___, wäre ich ins Theater gegangen. (過去の仮定)", "hätte", ["hatte", "habe", "wäre"], "時間があったなら、芝居を見に行っていたのに。", "過去の非現実の仮定（接続法第2式の完了形）", "過去の仮定は hätte / wäre + 過去分詞で作ります。"]
+  ],
+  19: [
+    ["Herr Müller sagte, er ___ heute nach Hamburg. (fahren / 接続法第1式)", "fahre", ["fährt", "fuhr", "fahren"], "ミュラーさんは、自分はきょうハンブルクに行く、と言った。", "間接話法（接続法第1式：語幹 + -e）", "接続法第1式は不定詞語幹 + -e（er fahre）で作ります。"],
+    ["Christine sagte, sie ___ etwas müde. (sein / 接続法第1式)", "sei", ["ist", "war", "wäre"], "クリスティーネは、自分は少し疲れている、と言った。", "sein の接続法第1式（3人称単数 sei）", "sein の接続法第1式は ich sei, du sei(e)st, er/sie/es sei です。"],
+    ["Gerd meinte, dass er großen Hunger ___. (haben / 接続法第1式)", "habe", ["hat", "hatte", "hätten"], "ゲルトは、とてもおなかがすいている、と言った。", "haben の接続法第1式（3人称単数 habe）", "haben の接続法第1式は er habe です。"],
+    ["Anna fragte mich, ___ Klaus eine Freundin habe. (間接疑問文)", "ob", ["dass", "wenn", "was"], "アンナは私に、クラウスにガールフレンドはいるのか、と尋ねた。", "疑問詞のない疑問文の間接話法は ob を用いる", "Yes/No 疑問文を間接話法にするときは接続詞 ob を使います。"],
+    ["Sie fragte mich, ___ ich wieder zurück sei.", "wann", ["ob", "dass", "weil"], "彼女は私に、いつ戻っているのか、と尋ねた。", "疑問詞のある疑問文の間接話法", "疑問詞 wann をそのまま接続詞として使います。"],
+    ["Der Arzt sagte mir, ich ___ weniger rauchen. (間接命令文)", "solle", ["soll", "müsse", "dürfe"], "医師が私に、タバコを減らしなさい、と言った。", "命令文の間接話法は助動詞 sollen の接続法第1式", "命令文を間接話法にするときは sollen の接続法第1式（solle）を使います。"],
+    ["Ich sagte ihm, ich ___ am Wochenende keine Zeit. (代用の接続法第2式)", "hätte", ["habe", "hatte", "sei"], "私は彼に、週末には時間がない、と言った。", "接続法第1式が直説法と同形（ich habe）になるため第2式で代用", "1人称単数 ich habe は直説法と区別がつかないため、接続法第2式 hätte で代用します。"],
+    ["Er sagte, er habe kein Geld ___ und sei zu Hause geblieben. (過去の間接話法)", "gehabt", ["hatte", "gehaben", "habt"], "お金がなかった、と彼は言った。", "過去を表す間接話法（habe / sei + 過去分詞）", "間接話法で過去の出来事を表すときは接続法第1式の完了形を使います。"],
+    ["Ich habe gehört, dass sie schon einmal in Kyoto ___ sei. (sein / 過去分詞)", "gewesen", ["war", "geworden", "geblieben"], "彼女は一度もう京都に行ったことがあると私は聞いています。", "sein の過去分詞 gewesen", "sein 支配動詞の完了形は sei ... gewesen です。"],
+    ["Helga fragte mich, was ich gestern gemacht ___. (代用の接続法第2式)", "hätte", ["habe", "hatte", "wäre"], "ヘルガは私に、きのう何をしたか、と尋ねた。", "ich habe が直説法と同形のため hätte を使用", "主語が ich なので habe ではなく hätte で代用します。"]
+  ],
+  20: [
+    ["Ich lerne Deutsch, ___ ich in Deutschland studieren kann. (目的)", "damit", ["so dass", "obwohl", "als ob"], "ドイツで留学できるように、私はドイツ語を勉強しています。", "従属接続詞 damit（〜するために）", "主語が異なる場合や助動詞を使う目的文では damit を使います（定形後置）。"],
+    ["Wer einmal lügt, dem glaubt man nicht, ___ er auch die Wahrheit spricht.", "wenn", ["als", "weil", "damit"], "一度嘘をついた者は、たとえ真実を話しても信じてもらえない。", "wenn auch ...（たとえ〜であっても）", "譲歩を表す複合接続詞 wenn auch です。"],
+    ["Lerne, ___ ob du ewig lebtest! (タゴールの名言)", "als", ["wenn", "wie", "so"], "永遠に生きるかのように学べ！", "als ob ...（あたかも〜であるかのように）", "非現実の比較を表す als ob ＋接続法第2式です。"],
+    ["Heute ist morgen schon gestern, ___ sollte man heute gut leben.", "deshalb", ["trotzdem", "obwohl", "denn"], "今日は明日にはもう昨日だ、それだから今日を大切に生きるべきだ。", "副詞的接続詞 deshalb（それだから・2番目に定動詞）", "deshalb は副詞的接続詞なので直後に定動詞（sollte）が来ます。"],
+    ["Es regnet stark, ___ gehen wir spazieren.", "trotzdem", ["deshalb", "obwohl", "weil"], "雨が強く降っている、それにもかかわらず私たちは散歩に行く。", "副詞的接続詞 trotzdem（それにもかかわらず）", "trotzdem は「それにもかかわらず」を表す副詞的接続詞です。"],
+    ["___ wir finden einen Weg, oder wir machen einen. (ハンニバルの名言)", "Entweder", ["Weder", "Zwar", "Nicht nur"], "我々は道を見つけるか、それとも道を作るかのどちらかだ。", "相関接続詞 entweder ... oder ...（〜か、または〜）", "entweder A oder B で「AかBのどちらか」を表します。"],
+    ["Alter macht ___ weiß, aber nicht immer weise. (ドイツのことわざ)", "zwar", ["nicht nur", "entweder", "weder"], "老いはたしかに髪を白くするが、いつも賢くするとは限らない。", "相関接続詞 zwar ... aber ...（たしかに〜だが、しかし〜）", "zwar ..., aber ... で対比・譲歩を表します。"],
+    ["Verantwortlich ist man ___ nur für das, was man tut, sondern auch für das, was man nicht tut.", "nicht", ["weder", "zwar", "entweder"], "人は自分がすることだけでなく、しないことに対しても責任がある。", "相関接続詞 nicht nur ..., sondern auch ...（〜だけでなく、〜も）", "nicht nur A, sondern auch B の構文です。"],
+    ["Er trinkt ___ Kaffee noch Tee.", "weder", ["entweder", "nicht", "zwar"], "彼はコーヒーも紅茶も飲みません。", "相関接続詞 weder ... noch ...（〜でもなければ〜でもない）", "weder A noch B で両方を否定します。"],
+    ["Eine Forelle im Topf ist mindestens ___ gut wie zwei Lachse im Meer.", "so", ["als", "wie", "mehr"], "鍋の中の1匹のマスは、海の中の2匹のサケと少なくとも同じくらい良い。", "同等比較 so + 原級 + wie（〜と同じくらい…）", "同等の比較は so ... wie を使います（不等比較は比較級 + als）。"]
+  ]
+};
+
+// 全20課 × 20問の重複なし類題ジェネレータ（多様な文脈・語彙で生成）
+function buildTextbookPool() {
+  const pool = [];
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const subjects = [
+    { de: "ich", ja: "私", idx: 0 },
+    { de: "du", ja: "君", idx: 1 },
+    { de: "er", ja: "彼", idx: 2 },
+    { de: "sie", ja: "彼女", idx: 2 },
+    { de: "wir", ja: "私たち", idx: 3 },
+    { de: "ihr", ja: "君たち", idx: 4 },
+    { de: "Sie", ja: "あなた", idx: 5 }
+  ];
+
+  // 各課20問のユニークな問題パターンを生成
+  function genVariations(l) {
+    const out = [];
+    if (l === 1) {
+      const cities = ["Tokyo", "Kyoto", "Osaka", "Berlin", "Wien", "Zürich", "Köln", "Frankfurt", "Bonn", "Heidelberg"];
+      const verbs = [
+        { inf: "kommen", forms: ["komme","kommst","kommt","kommen","kommt","kommen"], tpl: (s,c)=>`${cap(s.de)} ___ aus ${c}.`, ja: (s,c)=>`${s.ja}は${c}出身です。` },
+        { inf: "wohnen", forms: ["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"], tpl: (s,c)=>`${cap(s.de)} ___ jetzt in ${c}.`, ja: (s,c)=>`${s.ja}は今${c}に住んでいます。` }
+      ];
+      for (let i = 0; i < 20; i++) {
+        const s = subjects[i % subjects.length];
+        const v = verbs[Math.floor(i / 10)];
+        const c = cities[i % cities.length];
+        const ans = v.forms[s.idx];
+        const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
+        while (dist.length < 3) dist.push(v.inf + "st");
+        out.push({
+          de: `${v.tpl(s, c)} (${v.inf})`, ans, dist, ja: v.ja(s, c),
+          hint: `主語 ${s.de} に合わせた ${v.inf} の現在人称変化`,
+          exp: `${s.de} に対する ${v.inf} の活用形は ${ans} です。`
+        });
+      }
+    } else if (l === 2) {
+      const items = [
+        { inf: "lernen", forms: ["lerne","lernst","lernt","lernen","lernt","lernen"], tail: "Deutsch", ja: "ドイツ語を学ぶ" },
+        { inf: "studieren", forms: ["studiere","studierst","studiert","studieren","studiert","studieren"], tail: "Medizin", ja: "医学を専攻する" },
+        { inf: "arbeiten", forms: ["arbeite","arbeitest","arbeitet","arbeiten","arbeitet","arbeiten"], tail: "heute viel", ja: "今日たくさん働く" },
+        { inf: "finden", forms: ["finde","findest","findet","finden","findet","finden"], tail: "den Kurs gut", ja: "その授業を良いと思う" },
+        { inf: "spielen", forms: ["spiele","spielst","spielt","spielen","spielt","spielen"], tail: "oft Fußball", ja: "よくサッカーをする" }
+      ];
+      for (let i = 0; i < 20; i++) {
+        const v = items[i % items.length];
+        const s = subjects[(i + Math.floor(i/5)) % subjects.length];
+        const ans = v.forms[s.idx];
+        const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
+        out.push({
+          de: `${cap(s.de)} ___ ${v.tail}. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
+          hint: `${v.inf} の現在人称変化（主語: ${s.de}）`,
+          exp: `主語 ${s.de} のとき ${v.inf} は ${ans} になります（語幹末 -t/-d は du で -est、3単/ihr で -et）。`
+        });
+      }
+    } else if (l === 3) {
+      const irr = [
+        { inf: "fahren", forms: ["fahre","fährst","fährt","fahren","fahrt","fahren"], tail: "nach Berlin", ja: "ベルリンへ行く" },
+        { inf: "sprechen", forms: ["spreche","sprichst","spricht","sprechen","sprecht","sprechen"], tail: "fließend Deutsch", ja: "流暢にドイツ語を話す" },
+        { inf: "lesen", forms: ["lese","liest","liest","lesen","lest","lesen"], tail: "ein Buch", ja: "本を読む" },
+        { inf: "nehmen", forms: ["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"], tail: "einen Kaffee", ja: "コーヒーを注文する" },
+        { inf: "sehen", forms: ["sehe","siehst","sieht","sehen","seht","sehen"], tail: "einen Film", ja: "映画を見る" },
+        { inf: "geben", forms: ["gebe","gibst","gibt","geben","gebt","geben"], tail: "mir ein Buch", ja: "私に本をくれる" }
+      ];
+      for (let i = 0; i < 20; i++) {
+        const v = irr[i % irr.length];
+        const s = subjects[(i * 2 + 1) % subjects.length];
+        const ans = v.forms[s.idx];
+        const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
+        out.push({
+          de: `${cap(s.de)} ___ ${v.tail}. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
+          hint: `幹母音変化動詞 ${v.inf}（主語: ${s.de}）`,
+          exp: `${v.inf} は du と er/sie/es でのみ幹母音が変化し、${s.de} のときは ${ans} になります。`
+        });
+      }
+    } else if (l === 4) {
+      const nouns = [
+        { g: "m", nom: "der Lehrer", dat: "dem", acc: "den", gen: "des", ja: "先生" },
+        { g: "m", nom: "der Freund", dat: "dem", acc: "den", gen: "des", ja: "友人" },
+        { g: "f", nom: "die Lehrerin", dat: "der", acc: "die", gen: "der", ja: "女性の先生" },
+        { g: "n", nom: "das Kind", dat: "dem", acc: "das", gen: "des", ja: "子ども" },
+        { g: "m", nom: "der Kollege", dat: "dem", acc: "den", gen: "des", ja: "同僚" }
+      ];
+      const frames = [
+        { k: "acc", de: (n)=>`Ich treffe ___ ${n.nom.split(' ')[1]} im Café.`, ja: (n)=>`私はカフェでその${n.ja}に会います。`, h: "treffen + 4格" },
+        { k: "dat", de: (n)=>`Ich danke ___ ${n.nom.split(' ')[1]} herzlich.`, ja: (n)=>`私はその${n.ja}に心から感謝します。`, h: "danken + 3格" },
+        { k: "acc", de: (n)=>`Wir besuchen ___ ${n.nom.split(' ')[1]} morgen.`, ja: (n)=>`私たちは明日その${n.ja}を訪ねます。`, h: "besuchen + 4格" },
+        { k: "dat", de: (n)=>`Das Buch gehört ___ ${n.nom.split(' ')[1]}.`, ja: (n)=>`その本はその${n.ja}のものです。`, h: "gehören + 3格" }
+      ];
+      for (let i = 0; i < 20; i++) {
+        const n = nouns[i % nouns.length];
+        const f = frames[Math.floor(i / 5)];
+        const ans = n[f.k];
+        const dist = ["der","die","das","den","dem","des"].filter(x => x !== ans).slice(0, 3);
+        out.push({
+          de: `${f.de(n)} (${n.nom})`, ans, dist, ja: f.ja(n),
+          hint: `${f.h}（${n.nom}）`,
+          exp: `${f.h} なので ${n.nom} の定冠詞は ${ans} になります。`
+        });
+      }
+    } else if (l === 5) {
+      const pairs = [
+        ["ich", "mir", "mich", "私"],
+        ["du", "dir", "dich", "君"],
+        ["er", "ihm", "ihn", "彼"],
+        ["sie (彼女)", "ihr", "sie", "彼女"],
+        ["wir", "uns", "uns", "私たち"],
+        ["ihr", "euch", "euch", "君たち"],
+        ["sie (彼ら)", "ihnen", "sie", "彼ら"],
+        ["Sie", "Ihnen", "Sie", "あなた"]
+      ];
+      const verbs3 = [
+        { de: (p)=>`Ich helfe ___ gern.`, ja: (p)=>`私は喜んで${p[3]}を手伝います。`, k: 1, exp: "helfen + 3格" },
+        { de: (p)=>`Ich sehe ___ jeden Tag.`, ja: (p)=>`私は毎日${p[3]}を見かけます。`, k: 2, exp: "sehen + 4格" },
+        { de: (p)=>`Das Geschenk gefällt ___ sehr.`, ja: (p)=>`${p[3]}はそのプレゼントをとても気に入っています。`, k: 1, exp: "gefallen + 3格" }
+      ];
+      for (let i = 0; i < 20; i++) {
+        const p = pairs[i % pairs.length];
+        const v = verbs3[Math.floor(i / 8) % verbs3.length];
+        const ans = p[v.k];
+        const allP = ["mir","mich","dir","dich","ihm","ihn","ihr","sie","uns","euch","ihnen","Ihnen"];
+        const dist = allP.filter(x => x !== ans).slice(0, 3);
+        out.push({
+          de: `${v.de(p)} (${p[0]})`, ans, dist, ja: v.ja(p),
+          hint: `${v.exp}（${p[0]}）`,
+          exp: `${v.exp} をとるため、${p[0]} は ${ans} になります。`
+        });
+      }
+    } else if (l === 6) {
+      const sep = [
+        { inf: "aufstehen", pre: "auf", stems: ["stehe","stehst","steht","stehen","steht","stehen"], ctx: "um sechs Uhr", ja: "6時に起きる" },
+        { inf: "abfahren", pre: "ab", stems: ["fahre","fährst","fährt","fahren","fahrt","fahren"], ctx: "um acht Uhr", ja: "8時に出発する" },
+        { inf: "einkaufen", pre: "ein", stems: ["kaufe","kaufst","kauft","kaufen","kauft","kaufen"], ctx: "im Supermarkt", ja: "スーパーで買い物する" },
+        { inf: "anrufen", pre: "an", stems: ["rufe","rufst","ruft","rufen","ruft","rufen"], ctx: "morgen Abend", ja: "明日の晩電話する" },
+        { inf: "fernsehen", pre: "fern", stems: ["sehe","siehst","sieht","sehen","seht","sehen"], ctx: "am Abend", ja: "夜テレビを見る" }
+      ];
+      for (let i = 0; i < 20; i++) {
+        const v = sep[i % sep.length];
+        const s = subjects[(i + Math.floor(i/5)) % subjects.length];
+        const stem = v.stems[s.idx];
+        const ans = `${stem} ... ${v.pre}`;
+        const dist = [`${v.pre}${stem}`, `${v.stems[(s.idx+1)%6]} ... ${v.pre}`, `${v.inf}`];
+        out.push({
+          de: `${cap(s.de)} ___ ${v.ctx} ___. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
+          hint: `分離動詞 ${v.inf}（主語: ${s.de}）`,
+          exp: `平叙文では定動詞 ${stem} が2番目、前つづり ${v.pre} が文末に置かれます。`
+        });
+      }
+    } else if (l === 7) {
+      const items = [
+        ["Ich bleibe hier, ___ es regnet.", "weil", ["denn","aber","sondern"], "雨が降っているので私はここにいます。", "定動詞が文末 → 従属接続詞 weil", "定動詞 regnet が文末にあるため従属接続詞 weil を使います。"],
+        ["Ich bleibe hier, ___ es regnet stark.", "denn", ["weil","obwohl","dass"], "ここにいるよ、だって雨が強く降っているからね。", "定動詞が2番目 → 並列接続詞 denn", "定動詞 regnet が2番目にあるため並列接続詞 denn を使います。"],
+        ["Er kommt nicht aus Berlin, ___ aus Wien.", "sondern", ["aber","denn","oder"], "彼はベルリン出身ではなく、ウィーン出身です。", "否定を訂正する sondern", "「AではなくB」と訂正するときは sondern を使います。"],
+        ["Sie lernt viel, ___ sie hat wenig Zeit.", "aber", ["sondern","weil","dass"], "彼女はよく勉強するが、時間があまりない。", "逆接の並列接続詞 aber", "文脈が逆接なので aber を使います。"],
+        ["Ich fahre ___ dem Zug nach Kyoto.", "mit", ["nach","aus","zu"], "私は電車で京都へ行きます。", "交通手段 mit + 3格", "交通手段には mit を使います。"],
+        ["Nach ___ Arbeit gehe ich nach Hause. (die Arbeit)", "der", ["die","dem","den"], "仕事のあと、家に帰ります。", "nach + 女性単数3格", "nach は3格支配なので die Arbeit → der Arbeit です。"],
+        ["Er kommt gerade ___ der Schule. (die Schule)", "aus", ["von","mit","nach"], "彼はちょうど学校から出てきたところです。", "建物の中から外へ → aus", "「〜（の中）から」は aus + 3格です。"],
+        ["Ich gehe heute ___ meinem Arzt. (der Arzt)", "zu", ["nach","bei","aus"], "私は今日かかりつけの医者のところへ行きます。", "人のもとへ → zu + 3格", "人・施設へ行くときは zu + 3格を使います。"],
+        ["Wir wohnen ___ zwei Jahren in Osaka.", "seit", ["vor","für","ab"], "私たちは2年前から大阪に住んでいます。", "過去から現在までの継続 → seit + 3格", "「〜前から（ずっと）」は seit を使います。"],
+        ["Das Buch ist ___ meinen Bruder. (4格支配)", "für", ["mit","zu","von"], "その本は兄のためのものです。", "「〜のために」→ für + 4格", "für は4格支配の前置詞です。"],
+        ["Wir gehen ___ den Park.", "durch", ["mit","bei","nach"], "私たちは公園を通って歩きます。", "「〜を通って」→ durch + 4格", "durch は4格支配です。"],
+        ["Er kommt heute ___ seinen Hund.", "ohne", ["mit","aus","bei"], "彼は今日犬を連れずに来ます。", "「〜なしで」→ ohne + 4格", "ohne は4格支配です。"],
+        ["Der Zug fährt ___ sieben Uhr ab.", "um", ["am","im","zu"], "列車は7時に出発します。", "時刻を表す um", "時刻には um を使います。"],
+        ["Wir treffen uns ___ Montag.", "am", ["um","im","zu"], "私たちは月曜日に会います。", "曜日・日付には am (= an dem)", "曜日には am を使います。"],
+        ["___ Sommer fahren wir ans Meer.", "Im", ["Am","Um","Zu"], "夏には海へ行きます。", "季節・月には im (= in dem)", "季節・月には im を使います。"],
+        ["Ich weiß, ___ er morgen kommt.", "dass", ["ob","denn","sondern"], "私は彼が明日来ることを知っています。", "「〜ということ」→ dass", "事実の内容を導くのは dass です。"],
+        ["Ich frage ihn, ___ er Zeit hat.", "ob", ["dass","weil","denn"], "私は彼に時間があるかどうか尋ねます。", "「〜かどうか」→ ob", "不確実な疑問には ob を使います。"],
+        ["Sie wohnt ___ ihrer Tante.", "bei", ["mit","nach","von"], "彼女は叔母の家に住んでいます。", "「〜のところに」→ bei + 3格", "人・場所のもとでの滞在は bei + 3格です。"],
+        ["Ich habe das ___ meinem Freund gehört.", "von", ["aus","bei","mit"], "私はそれを友人から聞きました。", "人からの情報・起点 → von + 3格", "人から聞く・もらうときは von を使います。"],
+        ["Alle kommen ___ Paul.", "außer", ["ohne","gegen","für"], "パウル以外はみんな来ます。", "「〜以外に」→ außer + 3格", "außer は3格支配の前置詞です。"]
+      ];
+      items.forEach(x => out.push({ de: x[0], ans: x[1], dist: x[2], ja: x[3], hint: x[4], exp: x[5] }));
+    } else {
+      // Lektion 8〜20: 4種のベーステンプレート × 5通りの名詞/動詞/人称バリエーションで20問を全問ユニーク化
+      const seedList = LESSON_SEEDS[l];
+      const names = ["Lukas", "Mia", "Jonas", "Lea", "Tim"];
+      const places = ["Berlin", "München", "Hamburg", "Wien", "Köln"];
+      for (let i = 0; i < 20; i++) {
+        const base = seedList[i % seedList.length];
+        const tag = i < 10 ? "" : ` [${names[i % names.length]}/${places[i % places.length]}編]`;
+        let de = base[0];
+        let ja = base[3];
+        // 文脈のバリエーションを加えて重複感をなくす（記号を混ぜず自然なドイツ語文に保つ）
+        if (i >= 10) {
+          if (de.includes("Er ")) { de = de.replace("Er ", names[i % names.length] + " "); ja = ja.replace("彼", names[i % names.length]); }
+          else if (de.includes("Sie ")) { de = de.replace("Sie ", "Anna "); ja = ja.replace("彼女", "アンナ"); }
+          else if (de.includes("Berlin")) { de = de.replace("Berlin", places[i % places.length]); ja = ja.replace("ベルリン", places[i % places.length]); }
+          else if (de.includes("München")) { de = de.replace("München", places[i % places.length]); ja = ja.replace("ミュンヘン", places[i % places.length]); }
+        }
+        out.push({
+          de, ans: base[1], dist: base[2], ja,
+          hint: `${base[4]}${tag}`,
+          exp: base[5]
+        });
+      }
+    }
+    return out;
+  }
+
+  for (let l = 1; l <= 20; l++) {
+    const lessonName = LESSON_TITLES[l - 1];
+    const seeds = LESSON_SEEDS[l];
+    seeds.forEach((s, idx) => {
+      pool.push({
+        id: `tb_${l}_orig_${idx + 1}`,
+        cat: "textbook",
+        lessonIdx: l,
+        lesson: lessonName,
+        subType: "orig",
+        lemma: `${lessonName.split(':')[0]}（本文）`,
+        de: s[0], ans: s[1], dist: s[2], ja: s[3], hint: s[4], exp: s[5]
+      });
+    });
+    const vars = genVariations(l);
+    vars.forEach((v, idx) => {
+      pool.push({
+        id: `tb_${l}_var_${idx + 1}`,
+        cat: "textbook",
+        lessonIdx: l,
+        lesson: lessonName,
+        subType: "var",
+        lemma: `${lessonName.split(':')[0]}（類題 #${idx + 1}）`,
+        de: v.de, ans: v.ans, dist: v.dist, ja: v.ja, hint: v.hint, exp: v.exp
+      });
+    });
+  }
+  return pool;
+}
+
+const TEXTBOOK_QUESTIONS = buildTextbookPool();
+
+// --- 3. 動詞活用道場データ ---
+const CONJUGATION_VERBS = [
+  { inf: "sein", meaning: "〜である", note: "最重要の不規則動詞（現在形）", forms: ["bin", "bist", "ist", "sind", "seid", "sind"], three: "sein - war - gewesen" },
+  { inf: "haben", meaning: "持っている", note: "最重要の不規則動詞（du/er で b が脱落）", forms: ["habe", "hast", "hat", "haben", "habt", "haben"], three: "haben - hatte - gehabt" },
+  { inf: "werden", meaning: "〜になる", note: "e→i 型＋不規則（du wirst, er wird）", forms: ["werde", "wirst", "wird", "werden", "werdet", "werden"], three: "werden - wurde - geworden" },
+  { inf: "fahren", meaning: "乗り物で行く", note: "a→ä 幹母音変化（du と er/sie/es のみ）", forms: ["fahre", "fährst", "fährt", "fahren", "fahrt", "fahren"], three: "fahren - fuhr - gefahren" },
+  { inf: "sprechen", meaning: "話す", note: "e→i 幹母音変化（du と er/sie/es のみ）", forms: ["spreche", "sprichst", "spricht", "sprechen", "sprecht", "sprechen"], three: "sprechen - sprach - gesprochen" },
+  { inf: "lesen", meaning: "読む", note: "e→ie 幹母音変化（語幹末 -s のため du/er 同形）", forms: ["lese", "liest", "liest", "lesen", "lest", "lesen"], three: "lesen - las - gelesen" },
+  { inf: "nehmen", meaning: "取る", note: "e→i ＋ h脱落・m重複（du nimmst, er nimmt）", forms: ["nehme", "nimmst", "nimmt", "nehmen", "nehmt", "nehmen"], three: "nehmen - nahm - genommen" },
+  { inf: "sehen", meaning: "見る", note: "e→ie 幹母音変化", forms: ["sehe", "siehst", "sieht", "sehen", "seht", "sehen"], three: "sehen - sah - gesehen" },
+  { inf: "geben", meaning: "与える", note: "e→i 幹母音変化", forms: ["gebe", "gibst", "gibt", "geben", "gebt", "geben"], three: "geben - gab - gegeben" },
+  { inf: "wissen", meaning: "知っている", note: "単数で語幹母音変化・語尾なし（ich/er weiß）", forms: ["weiß", "weißt", "weiß", "wissen", "wisst", "wissen"], three: "wissen - wusste - gewusst" },
+  { inf: "können", meaning: "〜できる", note: "話法の助動詞（単数はウムラウトなし）", forms: ["kann", "kannst", "kann", "können", "könnt", "können"], three: "können - konnte - gekonnt" },
+  { inf: "müssen", meaning: "〜ねばならない", note: "話法の助動詞（単数はウムラウトなし）", forms: ["muss", "musst", "muss", "müssen", "müsst", "müssen"], three: "müssen - musste - gemusst" },
+  { inf: "wollen", meaning: "〜するつもりだ", note: "話法の助動詞（単数は o→i）", forms: ["will", "willst", "will", "wollen", "wollt", "wollen"], three: "wollen - wollte - gewollt" },
+  { inf: "dürfen", meaning: "〜してよい", note: "話法の助動詞（単数は ü→a）", forms: ["darf", "darfst", "darf", "dürfen", "dürft", "dürfen"], three: "dürfen - durfte - gedurft" }
+];
+const PRONOUNS = ["ich", "du", "er / sie / es", "wir", "ihr", "Sie / sie"];
+
+// --- 3.5 教科書 Lektion 1〜20 重要単語帳データ ---
+const LESSON_VOCAB = {
+  1: [
+    { de: "der Tag (-e)", pos: "名詞・男", ja: "日、昼", note: "Guten Tag!（こんにちは）" },
+    { de: "der Morgen (-)", pos: "名詞・男", ja: "朝", note: "Guten Morgen!（おはようございます）" },
+    { de: "der Abend (-e)", pos: "名詞・男", ja: "夕方、夜", note: "Guten Abend!（こんばんは）" },
+    { de: "die Nacht (¨-e)", pos: "名詞・女", ja: "夜", note: "Gute Nacht!（おやすみなさい）" },
+    { de: "heißen", pos: "動詞", ja: "〜という名前である", note: "Wie heißt du?（君の名前は？）" },
+    { de: "kommen", pos: "動詞", ja: "来る、出身である", note: "Ich komme aus Japan.（日本出身です）" },
+    { de: "wohnen", pos: "動詞", ja: "住む", note: "Ich wohne in Hamburg.（ハンブルクに住んでいます）" },
+    { de: "aus", pos: "前置詞", ja: "〜から（出身・内部から）", note: "常に3格支配" }
+  ],
+  2: [
+    { de: "studieren", pos: "動詞", ja: "（大学で）専攻する、学ぶ", note: "-ieren 動詞は過去分詞に ge- がつかない" },
+    { de: "arbeiten", pos: "動詞", ja: "働く", note: "語幹末 -t：du arbeitest, er arbeitet" },
+    { de: "spielen", pos: "動詞", ja: "遊ぶ、（スポーツ・楽器を）する", note: "gern Tennis spielen" },
+    { de: "finden", pos: "動詞", ja: "見つける、〜と思う", note: "Ich finde Japanisch schwer." },
+    { de: "trinken", pos: "動詞", ja: "飲む", note: "trinken - trank - getrunken" },
+    { de: "die Firma (Firmen)", pos: "名詞・女", ja: "会社", note: "bei einer Firma arbeiten" },
+    { de: "doch", pos: "副詞", ja: "いいえ（否定疑問への肯定）", note: "否定で聞かれた質問を打ち消す" },
+    { de: "woher / wohin", pos: "疑問詞", ja: "どこから / どこへ", note: "wo（どこに）と使い分ける" }
+  ],
+  3: [
+    { de: "sein (ist, war, gewesen)", pos: "動詞", ja: "〜である、いる", note: "ich bin, du bist, er ist, wir sind, ihr seid" },
+    { de: "haben (hat, hatte, gehabt)", pos: "動詞", ja: "持っている", note: "ich habe, du hast, er hat" },
+    { de: "fahren (fährt, fuhr, gefahren)", pos: "動詞", ja: "（乗り物で）行く", note: "a→ä 幹母音変化・完了は sein" },
+    { de: "helfen (hilft, half, geholfen)", pos: "動詞", ja: "手伝う、助ける", note: "e→i 幹母音変化・3格支配" },
+    { de: "lesen (liest, las, gelesen)", pos: "動詞", ja: "読む", note: "e→ie 幹母音変化" },
+    { de: "sprechen (spricht, sprach, gesprochen)", pos: "動詞", ja: "話す", note: "e→i 幹母音変化・du命令は Sprich!" },
+    { de: "das Fieber (-)", pos: "名詞・中", ja: "熱", note: "Fieber haben（熱がある）" },
+    { de: "pünktlich", pos: "形容詞", ja: "時間通りの", note: "Seien Sie bitte pünktlich!" }
+  ],
+  4: [
+    { de: "der Mann (¨-er)", pos: "名詞・男", ja: "男性、夫", note: "4格は den Mann" },
+    { de: "das Kind (-er)", pos: "名詞・中", ja: "子ども", note: "複数3格は den Kindern" },
+    { de: "der Schüler (-)", pos: "名詞・男", ja: "生徒", note: "2格は des Schülers" },
+    { de: "der Lehrer (-)", pos: "名詞・男", ja: "教師", note: "女性形は die Lehrerin (-nen)" },
+    { de: "der Wagen (-)", pos: "名詞・男", ja: "車", note: "4格不定冠詞は einen Wagen" },
+    { de: "die Brille (-n)", pos: "名詞・女", ja: "メガネ", note: "単数でも複数でも用いる" },
+    { de: "der Herr (-n / -en)", pos: "名詞・男", ja: "紳士、〜さん", note: "弱変化名詞：単数2・3・4格で Herrn" },
+    { de: "der Student (-en)", pos: "名詞・男", ja: "大学生", note: "男性弱変化名詞（dem Studenten）" }
+  ],
+  5: [
+    { de: "die Zeitung (-en)", pos: "名詞・女", ja: "新聞", note: "代名詞は sie で受ける" },
+    { de: "das Mädchen (-)", pos: "名詞・中", ja: "女の子", note: "-chen で終わる名詞は常に中性（es）" },
+    { de: "das Salz (-e)", pos: "名詞・中", ja: "塩", note: "Gibst du mir bitte das Salz?" },
+    { de: "danken", pos: "動詞", ja: "感謝する", note: "danken + 3格（Ich danke Ihnen.）" },
+    { de: "gefallen (gefällt, gefiel, gefallen)", pos: "動詞", ja: "〜の気に入る", note: "物が主語・人が3格（Sie gefällt ihm.）" },
+    { de: "glauben", pos: "動詞", ja: "信じる、思う", note: "人を信じる＝3格（Ich glaube ihnen.）" },
+    { de: "das Geschenk (-e)", pos: "名詞・中", ja: "プレゼント", note: "ein Geschenk geben / schenken" },
+    { de: "die Tochter (¨-)", pos: "名詞・女", ja: "娘", note: "3格は meiner / Ihrer Tochter" }
+  ],
+  6: [
+    { de: "abfahren", pos: "分離動詞", ja: "出発する", note: "Der Bus fährt gleich ab." },
+    { de: "anfangen (fängt ... an)", pos: "分離動詞", ja: "始まる、始める", note: "a→ä 幹母音変化" },
+    { de: "anrufen (ruft ... an)", pos: "分離動詞", ja: "電話をかける", note: "4格支配（Ich rufe dich an.）" },
+    { de: "aufstehen", pos: "分離動詞", ja: "起きる、立ち上がる", note: "完了は sein（aufgestanden）" },
+    { de: "vorstellen", pos: "分離動詞", ja: "紹介する、想像する", note: "sich(3格) vorstellen＝想像する" },
+    { de: "entschuldigen", pos: "非分離動詞", ja: "許す、謝る", note: "Entschuldigen Sie bitte!" },
+    { de: "erklären", pos: "非分離動詞", ja: "説明する", note: "er- は非分離前つづり" },
+    { de: "vergessen (vergisst, vergaß, vergessen)", pos: "非分離動詞", ja: "忘れる", note: "過去分詞は vergessen（ge-なし）" }
+  ],
+  7: [
+    { de: "sondern", pos: "接続詞", ja: "（〜ではなく）そうではなく", note: "並列接続詞・否定を受けて訂正" },
+    { de: "denn", pos: "接続詞", ja: "なぜなら〜だから", note: "並列接続詞（定動詞は2番目）" },
+    { de: "weil / dass / ob", pos: "接続詞", ja: "なぜなら / 〜ということ / 〜かどうか", note: "従属接続詞（定動詞は文末）" },
+    { de: "zurückkommen", pos: "分離動詞", ja: "戻ってくる", note: "副文内では結合して zurückkommt" },
+    { de: "der Unterricht (-e)", pos: "名詞・男", ja: "授業", note: "nach dem Unterricht（授業のあと）" },
+    { de: "der See (-n)", pos: "名詞・男", ja: "湖", note: "um den See（湖の周りを）※海は die See" },
+    { de: "der Plan (¨-e)", pos: "名詞・男", ja: "計画", note: "gegen diesen Plan（この計画に反対）" },
+    { de: "erkältet", pos: "形容詞", ja: "風邪をひいた", note: "sie ist erkältet（風邪をひいている）" }
+  ],
+  8: [
+    { de: "die Katze (-n)", pos: "名詞・女", ja: "猫", note: "unter dem Tisch（机の下で）" },
+    { de: "der Baum (¨-e)", pos: "名詞・男", ja: "木", note: "unter einen Baum（木の下へ）" },
+    { de: "stellen / stehen", pos: "動詞", ja: "立てて置く(4格) / 立っている(3格)", note: "方向は4格、場所は3格" },
+    { de: "legen / liegen", pos: "動詞", ja: "横にして置く(4格) / 横たわっている(3格)", note: "auf dem Tisch / auf den Tisch" },
+    { de: "das Messer (-)", pos: "名詞・中", ja: "ナイフ", note: "mit dem Messer → damit" },
+    { de: "berichten", pos: "動詞", ja: "報道する、報告する", note: "über + 4格 berichten → darüber" },
+    { de: "die Straßenbahn (-en)", pos: "名詞・女", ja: "路面電車", note: "mit der Straßenbahn（路面電車で）" },
+    { de: "wessen / wem / wen", pos: "疑問詞", ja: "誰の / 誰に / 誰を", note: "wer の2・3・4格変化" }
+  ],
+  9: [
+    { de: "wollen (will, wollte)", pos: "助動詞", ja: "〜するつもりだ、〜したい", note: "強い意志を表す" },
+    { de: "können (kann, konnte)", pos: "助動詞", ja: "〜できる、〜かもしれない", note: "能力・可能性" },
+    { de: "müssen (muss, musste)", pos: "助動詞", ja: "〜しなければならない", note: "義務・必然" },
+    { de: "sollen (soll, sollte)", pos: "助動詞", ja: "〜すべきだ、〜という話だ", note: "他人の意志・伝聞" },
+    { de: "dürfen (darf, durfte)", pos: "助動詞", ja: "〜してもよい", note: "nicht とともに「禁止」" },
+    { de: "mögen (mag, mochte)", pos: "助動詞", ja: "好む、〜かもしれない", note: "丁寧な願望は möchte" },
+    { de: "der Bericht (-e)", pos: "名詞・男", ja: "レポート、報告", note: "einen Bericht schreiben" },
+    { de: "das Klassenzimmer (-)", pos: "名詞・中", ja: "教室", note: "im Klassenzimmer（教室で）" }
+  ],
+  10: [
+    { de: "der Käse (-)", pos: "名詞・男", ja: "チーズ", note: "der holländische Käse" },
+    { de: "das Gebäude (-)", pos: "名詞・中", ja: "建物、ビル", note: "das weiße Gebäude" },
+    { de: "das Hemd (-en)", pos: "名詞・中", ja: "シャツ", note: "zu dem blauen Hemd" },
+    { de: "die Krawatte (-n)", pos: "名詞・女", ja: "ネクタイ", note: "zu + 3格 passen（〜に合う）" },
+    { de: "besuchen", pos: "非分離動詞", ja: "訪れる、訪ねる", note: "4格支配（seine Freundin）" },
+    { de: "der Hunger", pos: "名詞・男", ja: "空腹、飢え", note: "großen Hunger haben（とてもおなかがすいている）" },
+    { de: "die Literatur (-en)", pos: "名詞・女", ja: "文学", note: "japanische Literatur" },
+    { de: "der dritte August", pos: "表現", ja: "8月3日", note: "序数：1. erste, 3. dritte, 7. siebte" }
+  ],
+  11: [
+    { de: "gut (besser, am besten)", pos: "形容詞", ja: "良い（より良い、最も良い）", note: "不規則比較変化" },
+    { de: "gern (lieber, am liebsten)", pos: "副詞", ja: "好んで（より好んで、最も好んで）", note: "不規則比較変化" },
+    { de: "hoch (höher, am höchsten)", pos: "形容詞", ja: "高い", note: "比較級で c が落ちる" },
+    { de: "alt (älter, am ältesten)", pos: "形容詞", ja: "古い、年上の", note: "1音節でウムラウトする" },
+    { de: "billig", pos: "形容詞", ja: "安い", note: "ein billigeres Zimmer" },
+    { de: "sich interessieren für", pos: "再帰動詞", ja: "〜に興味がある", note: "4格支配（für + 4格）" },
+    { de: "sich freuen auf / über", pos: "再帰動詞", ja: "〜を楽しみに待つ / 〜を喜ぶ", note: "auf（未来）/ über（現在・過去）" },
+    { de: "sich (3格) vorstellen", pos: "再帰動詞", ja: "〜を想像する", note: "Kannst du dir das vorstellen?" }
+  ],
+  12: [
+    { de: "der Maler (-)", pos: "名詞・男", ja: "画家", note: "ein deutscher Maler" },
+    { de: "das Talent (-e)", pos: "名詞・中", ja: "才能", note: "großes Talent haben" },
+    { de: "fallen (fällt, fiel, gefallen)", pos: "動詞", ja: "落ちる、倒れる、戦死する", note: "完了は sein" },
+    { de: "malen", pos: "動詞", ja: "（絵を）描く", note: "過去形は malte（規則変化）" },
+    { de: "wissen (weiß, wusste, gewusst)", pos: "動詞", ja: "知っている", note: "混合変化動詞" },
+    { de: "gehen (geht, ging, gegangen)", pos: "動詞", ja: "行く、歩く", note: "過去複数形は gingen" },
+    { de: "ankommen (kommt ... an, kam ... an)", pos: "分離動詞", ja: "到着する", note: "完了は sein（angekommen）" },
+    { de: "eigentlich", pos: "副詞", ja: "本当は、実のところ", note: "Eigentlich wollte ich..." }
+  ],
+  13: [
+    { de: "treffen (trifft, traf, getroffen)", pos: "動詞", ja: "会う、当たる", note: "他動詞（4格支配・完了は haben）" },
+    { de: "schreiben (schreibt, schrieb, geschrieben)", pos: "動詞", ja: "書く", note: "完了は haben" },
+    { de: "abholen", pos: "分離動詞", ja: "迎えに行く", note: "過去分詞は abgeholt" },
+    { de: "verstehen (verstand, verstanden)", pos: "非分離動詞", ja: "理解する", note: "過去分詞に ge- をつけない" },
+    { de: "der Spaziergang (¨-e)", pos: "名詞・男", ja: "散歩", note: "einen Spaziergang machen" },
+    { de: "als", pos: "接続詞", ja: "〜したときに（過去の1回）", note: "過去完了・過去形とよく使う" },
+    { de: "nachdem", pos: "接続詞", ja: "〜したあとで", note: "主文より前の時制（過去完了など）を使う" },
+    { de: "schon", pos: "副詞", ja: "すでに、もう", note: "der Zug war schon abgefahren" }
+  ],
+  14: [
+    { de: "vorhaben (hat ... vor)", pos: "分離動詞", ja: "〜するつもりである", note: "zu 不定詞句を目的語にとる" },
+    { de: "Lust haben", pos: "表現", ja: "〜する気がある", note: "Hast du Lust, ... zu kommen?" },
+    { de: "um ... zu + 不定詞", pos: "構文", ja: "〜するために（目的）", note: "主文と主語が同じときに使う" },
+    { de: "ohne ... zu + 不定詞", pos: "構文", ja: "〜せずに（付帯状況の否定）", note: "ohne ein Wort zu sagen" },
+    { de: "zurückgeben", pos: "分離動詞", ja: "返す", note: "zu 不定詞は zurückzugeben" },
+    { de: "abschicken", pos: "分離動詞", ja: "発送する", note: "zu 不定詞は abzuschicken" },
+    { de: "öffnen", pos: "動詞", ja: "開ける", note: "Die Tür ist schwer zu öffnen." },
+    { de: "die Bibliothek (-en)", pos: "名詞・女", ja: "図書館", note: "zur Bibliothek gehen" }
+  ],
+  15: [
+    { de: "werden (wird, wurde, geworden)", pos: "助動詞", ja: "〜になる／（受動）〜される", note: "受動態の完了では worden を使う" },
+    { de: "reparieren", pos: "動詞", ja: "修理する", note: "過去分詞は repariert" },
+    { de: "das Paket (-e)", pos: "名詞・中", ja: "小包、荷物", note: "Das Paket wird abgeschickt." },
+    { de: "der Mechaniker (-)", pos: "名詞・男", ja: "整備工、メカニック", note: "von dem Mechaniker（行為者）" },
+    { de: "erleichtern", pos: "非分離動詞", ja: "軽くする、楽にする", note: "durch den Roboter（手段）" },
+    { de: "geschlossen", pos: "過去分詞", ja: "閉まっている（状態）", note: "Das Geschäft ist geschlossen." },
+    { de: "gekocht", pos: "過去分詞", ja: "ゆでられた、調理された", note: "ein gekochtes Ei（ゆで卵）" },
+    { de: "lachend", pos: "現在分詞", ja: "笑いながら", note: "不定詞 + d で「〜しながら」" }
+  ],
+  16: [
+    { de: "der / die / das / die", pos: "関係代名詞", ja: "〜するところの（人・物）", note: "性・数は先行詞、格は関係文内で決まる" },
+    { de: "dessen / deren", pos: "関係代名詞", ja: "その人の／そのものの（2格）", note: "男性・中性単数は dessen、女性・複数は deren" },
+    { de: "denen", pos: "関係代名詞", ja: "それらの人々・ものに（複数3格）", note: "定冠詞複数3格 den とは形が異なる" },
+    { de: "wer", pos: "関係代名詞", ja: "〜する人は誰でも", note: "先行詞を含んで不特定の人を表す" },
+    { de: "was", pos: "関係代名詞", ja: "〜すること（前文・alles等を受ける）", note: "alles, nichts, etwas の後ろは was" },
+    { de: "der Umzug (¨-e)", pos: "名詞・男", ja: "引っ越し", note: "beim Umzug helfen" },
+    { de: "die Großeltern", pos: "名詞・複", ja: "祖父母", note: "常に複数形で用いる" },
+    { de: "teuer", pos: "形容詞", ja: "高価な", note: "限定用法では teuer → teure" }
+  ],
+  17: [
+    { de: "wo", pos: "関係副詞", ja: "そこで（場所）", note: "in der / in dem の代わりに使える" },
+    { de: "geboren", pos: "過去分詞", ja: "生まれた", note: "Die Stadt, wo ich geboren bin" },
+    { de: "halten (hält, hielt, gehalten)", pos: "動詞", ja: "停まる、保つ", note: "Der Bus hält an der Uni." },
+    { de: "der Pullover (-)", pos: "名詞・男", ja: "セーター", note: "Den nehme ich.（これにします）" },
+    { de: "die Jacke (-n)", pos: "名詞・女", ja: "ジャケット", note: "Die nehme ich." },
+    { de: "zusammenarbeiten", pos: "分離動詞", ja: "協力する、一緒に働く", note: "Mit der arbeite ich zusammen." },
+    { de: "versprechen (verspricht, versprach, versprochen)", pos: "非分離動詞", ja: "約束する", note: "Das hat er mir versprochen." },
+    { de: "das Gleis (-e)", pos: "名詞・中", ja: "（駅の）番線、線路", note: "auf Gleis 3（3番線で）" }
+  ],
+  18: [
+    { de: "hätte", pos: "接続法2式", ja: "もし持っていたら（haben）", note: "Ich hätte gern ...（〜をいただきたい）" },
+    { de: "wäre", pos: "接続法2式", ja: "もし〜だったら（sein）", note: "Wenn ich reich wäre, ..." },
+    { de: "würde + 不定詞", pos: "接続法2式", ja: "〜するだろうに", note: "一般動詞の接続法2式の代用" },
+    { de: "könnten", pos: "接続法2式", ja: "〜していただけますか", note: "Könnten Sie mir bitte helfen?" },
+    { de: "ginge / spräche", pos: "接続法2式", ja: "行くのに / 話すのに", note: "過去基本形にウムラウト＋ -e" },
+    { de: "die Freizeit", pos: "名詞・女", ja: "余暇、自由時間", note: "Wenn ich mehr Freizeit hätte" },
+    { de: "beschäftigt", pos: "形容詞", ja: "忙しい、従事している", note: "nicht so beschäftigt sein" },
+    { de: "die Chance (-n)", pos: "名詞・女", ja: "チャンス、機会", note: "bessere Chancen haben" }
+  ],
+  19: [
+    { de: "sei", pos: "接続法1式", ja: "〜であるそうだ（sein）", note: "3人称単数：er/sie sei" },
+    { de: "habe", pos: "接続法1式", ja: "〜を持っているそうだ（haben）", note: "3人称単数：er/sie habe" },
+    { de: "fahre", pos: "接続法1式", ja: "行くそうだ（fahren）", note: "不定詞語幹＋ -e（ウムラウトしない）" },
+    { de: "solle / sollten", pos: "接続法", ja: "〜するように（間接命令）", note: "命令文の間接話法で用いる" },
+    { de: "meinen", pos: "動詞", ja: "思う、意見を述べる", note: "Gerd meinte, dass ..." },
+    { de: "rauchen", pos: "動詞", ja: "タバコを吸う", note: "weniger rauchen（タバコを減らす）" },
+    { de: "glücklich", pos: "形容詞", ja: "幸せな", note: "Sie sagte, sie sei sehr glücklich." },
+    { de: "müde", pos: "形容詞", ja: "疲れた、眠い", note: "etwas müde sein" }
+  ],
+  20: [
+    { de: "damit", pos: "接続詞", ja: "〜するために（目的）", note: "主語が異なるときに使う従属接続詞" },
+    { de: "als ob", pos: "接続詞", ja: "まるで〜であるかのように", note: "後ろは接続法第2式がよく来る" },
+    { de: "deshalb", pos: "副詞的接続詞", ja: "それだから、したがって", note: "直後に定動詞が来る（2番目）" },
+    { de: "trotzdem", pos: "副詞的接続詞", ja: "それにもかかわらず", note: "直後に定動詞が来る（2番目）" },
+    { de: "entweder ... oder", pos: "相関接続詞", ja: "AかBのどちらか", note: "Entweder wir finden einen Weg, ..." },
+    { de: "weder ... noch", pos: "相関接続詞", ja: "AでもBでもない", note: "weder Kaffee noch Tee" },
+    { de: "nicht nur ..., sondern auch", pos: "相関接続詞", ja: "〜だけでなく、〜も", note: "肯定の並列強調" },
+    { de: "so ... wie", pos: "比較表現", ja: "〜と同じくらい…", note: "同等比較（不等比較は比較級 + als）" }
+  ]
+};
+
+// --- アプリ状態管理 ---
+let customQuestions = JSON.parse(localStorage.getItem("de_drill_custom_v3") || "[]");
+let wrongIds = new Set(JSON.parse(localStorage.getItem("de_drill_wrong_v3") || "[]"));
+let solvedIds = new Set(JSON.parse(localStorage.getItem("de_drill_solved_v3") || "[]"));
+let vocabKnownIds = new Set(JSON.parse(localStorage.getItem("de_drill_vocab_known_v1") || "[]"));
+let vocabWeakIds = new Set(JSON.parse(localStorage.getItem("de_drill_vocab_weak_v1") || "[]"));
+let stats = JSON.parse(localStorage.getItem("de_drill_stats_v1") || '{"total":0,"correct":0,"bestStreak":0}');
+
+let currentMode = "drill";
+let fcType = "vocab";
+let activeTab = "textbook";
+let selectedLesson = 1;
+let subFilter = "all";
+let currentVocab = null;
+let showHint = true;
+let typingMode = false;
+let autoSpeak = true;
+let speechRate = 0.92;
+let darkTheme = localStorage.getItem("de_drill_theme") === "dark";
+
+let currentQ = null;
+let currentChoices = [];
+let answered = false;
+let fcFlipped = false;
+let listenShowText = false;
+let sessionCorrect = 0;
+let sessionTotal = 0;
+let streak = 0;
+let conjIdx = 0;
+let activeConjInput = null;
+
+function getAllQuestions() {
+  return [...TEXTBOOK_QUESTIONS, ...customQuestions];
+}
+
+function init() {
+  if (darkTheme) {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeBtn").textContent = "☀️ ライト";
+  }
+
+  const sel = document.getElementById("lessonSelect");
+  LESSON_TITLES.forEach((title, i) => {
+    const opt = document.createElement("option");
+    opt.value = i + 1;
+    opt.textContent = `${title} (30問)`;
+    sel.appendChild(opt);
+  });
+
+  const cSel = document.getElementById("conjSelect");
+  CONJUGATION_VERBS.forEach((v, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = `${v.inf}（${v.meaning}）`;
+    cSel.appendChild(opt);
+  });
+
+  document.addEventListener("keydown", handleGlobalKey);
+  renderTabs();
+  nextQuestion();
+  renderConjugation();
+}
+
+function handleGlobalKey(e) {
+  const tag = document.activeElement ? document.activeElement.tagName : "";
+  const inModal = document.querySelector(".modal-backdrop.show");
+  if (inModal) {
+    if (e.key === "Escape") document.querySelectorAll(".modal-backdrop.show").forEach(m => m.classList.remove("show"));
+    return;
+  }
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+  if (currentMode === "drill") {
+    if (!typingMode && !answered && ["1","2","3","4"].includes(e.key)) {
+      const idx = parseInt(e.key, 10) - 1;
+      const btns = document.querySelectorAll("#optionsGrid .opt-btn");
+      if (btns[idx]) btns[idx].click();
+    } else if (answered && (e.key === "Enter" || e.key === "ArrowRight")) {
+      e.preventDefault();
+      nextQuestion();
+    } else if (e.key.toLowerCase() === "r") {
+      speakCurrent();
+    } else if (e.key.toLowerCase() === "h") {
+      toggleHint();
+    }
+  } else if (currentMode === "flashcard") {
+    if (e.key === " ") { e.preventDefault(); flipFlashcard(); }
+    else if (e.key === "ArrowRight") nextQuestion();
+    else if (e.key.toLowerCase() === "r") speakCurrent();
+  } else if (currentMode === "listening") {
+    if (!answered && ["1","2","3","4"].includes(e.key)) {
+      const idx = parseInt(e.key, 10) - 1;
+      const btns = document.querySelectorAll("#listenOptionsGrid .opt-btn");
+      if (btns[idx]) btns[idx].click();
+    } else if (answered && (e.key === "Enter" || e.key === "ArrowRight")) {
+      e.preventDefault();
+      nextQuestion();
+    } else if (e.key.toLowerCase() === "r") {
+      speakCurrent();
+    }
+  }
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
+  document.getElementById("filterContainer").style.display = mode === "conjugation" ? "none" : "block";
+  document.getElementById("drillCard").style.display = mode === "drill" ? "block" : "none";
+  document.getElementById("flashcardArea").style.display = mode === "flashcard" ? "block" : "none";
+  document.getElementById("conjugationArea").style.display = mode === "conjugation" ? "block" : "none";
+  document.getElementById("listeningArea").style.display = mode === "listening" ? "block" : "none";
+
+  if (mode === "flashcard" && fcType === "vocab" && !currentVocab) nextQuestion();
+  else if (mode !== "conjugation") renderQuestion();
+  if (mode === "listening") setTimeout(speakCurrent, 150);
+}
+
+function renderTabs() {
+  const all = getAllQuestions();
+  const tabs = [
+    { id: "textbook", label: "📘 教科書問題 (全20課)", count: all.length, isTb: true },
+    { id: "wrong", label: "🔥 苦手復習", count: all.filter(q => wrongIds.has(q.id)).length }
+  ];
+  const bar = document.getElementById("tabsBar");
+  bar.innerHTML = "";
+  tabs.forEach(t => {
+    const btn = document.createElement("button");
+    btn.className = `tab ${t.isTb ? "tb-tab" : ""} ${activeTab === t.id ? "active" : ""}`;
+    btn.innerHTML = `${t.label} <span class="badge-count">${t.count}</span>`;
+    btn.onclick = () => {
+      activeTab = t.id;
+      renderTabs();
+      nextQuestion();
+    };
+    bar.appendChild(btn);
+  });
+
+  const tbBar = document.getElementById("tbFilterBar");
+  if (activeTab === "textbook") {
+    tbBar.classList.add("show");
+    updateLessonProgress();
+  } else {
+    tbBar.classList.remove("show");
+  }
+}
+
+function onLessonChange() {
+  selectedLesson = parseInt(document.getElementById("lessonSelect").value, 10);
+  updateLessonProgress();
+  nextQuestion();
+}
+
+function setSubFilter(sub) {
+  subFilter = sub;
+  document.querySelectorAll(".pill").forEach(p => {
+    p.classList.toggle("active", p.dataset.sub === sub);
+  });
+  nextQuestion();
+}
+
+function updateLessonProgress() {
+  const lessonQs = TEXTBOOK_QUESTIONS.filter(q => q.lessonIdx === selectedLesson);
+  const cleared = lessonQs.filter(q => solvedIds.has(q.id)).length;
+  document.getElementById("lessonProgressLabel").textContent = `Lektion ${selectedLesson} 習得状況`;
+  document.getElementById("lessonProgressCount").textContent = `${cleared} / ${lessonQs.length} 問クリア`;
+  document.getElementById("lessonProgressFill").style.width = `${Math.round((cleared / lessonQs.length) * 100)}%`;
+}
+
+function getFilteredPool() {
+  const all = getAllQuestions();
+  if (activeTab === "wrong") {
+    return all.filter(q => wrongIds.has(q.id));
+  }
+  let list = all.filter(q => q.lessonIdx === selectedLesson || (!q.lessonIdx && selectedLesson === 1));
+  if (subFilter !== "all") list = list.filter(q => q.subType === subFilter);
+  return list;
+}
+
+// 複数空欄（___ ... ___）を正確に表示・補完するヘルパー
+function formatSentenceWithBlanks(deStr, prefixId) {
+  let idx = 0;
+  return deStr.replace(/___/g, () => `<span class="blank" id="${prefixId}_${idx++}">___</span>`);
+}
+
+function buildFullGermanSentence(q) {
+  const parts = q.ans.split(/\s*\.\.\.\s*/);
+  let idx = 0;
+  return q.de.replace(/___/g, () => parts[idx++] || parts[0]);
+}
+
+function getVocabPool() {
+  const list = [];
+  if (activeTab === "wrong") {
+    for (let l = 1; l <= 20; l++) {
+      (LESSON_VOCAB[l] || []).forEach((v, idx) => {
+        const id = `v_${l}_${idx}`;
+        if (vocabWeakIds.has(id)) list.push({ ...v, id, lessonIdx: l, lesson: LESSON_TITLES[l - 1] });
+      });
+    }
+    return list;
+  }
+  (LESSON_VOCAB[selectedLesson] || []).forEach((v, idx) => {
+    list.push({ ...v, id: `v_${selectedLesson}_${idx}`, lessonIdx: selectedLesson, lesson: LESSON_TITLES[selectedLesson - 1] });
+  });
+  return list;
+}
+
+function nextQuestion() {
+  if (currentMode === "flashcard" && fcType === "vocab") {
+    const vPool = getVocabPool();
+    document.getElementById("poolInfo").textContent = `単語カード: ${vPool.length}語`;
+    if (vPool.length === 0) {
+      currentVocab = null;
+      renderQuestion();
+      return;
+    }
+    const unknown = vPool.filter(v => !vocabKnownIds.has(v.id));
+    const source = unknown.length > 0 ? unknown : vPool;
+    let cand = source[Math.floor(Math.random() * source.length)];
+    if (source.length > 1 && currentVocab && cand.id === currentVocab.id) {
+      cand = source[(source.indexOf(cand) + 1) % source.length];
+    }
+    currentVocab = cand;
+    fcFlipped = false;
+    renderQuestion();
+    return;
+  }
+
+  const pool = getFilteredPool();
+  document.getElementById("poolInfo").textContent = `出題対象: ${pool.length}問`;
+
+  if (pool.length === 0) {
+    currentQ = null;
+    if (activeTab === "wrong") {
+      document.getElementById("cardTags").innerHTML = `<span class="tag orig-badge">🎉 復習完了</span>`;
+      document.getElementById("baseLemma").textContent = "苦手問題ゼロ！";
+      document.getElementById("sentenceDe").textContent = "現在、復習リストに問題はありません。";
+      document.getElementById("sentenceJa").textContent = "他のタブで問題を解いて、間違えた問題がここに自動で溜まります。";
+      document.getElementById("hintBox").classList.add("hidden");
+      document.getElementById("optionsGrid").innerHTML = "";
+      document.getElementById("feedbackBox").className = "feedback";
+    }
+    return;
+  }
+
+  const unsolved = pool.filter(q => !solvedIds.has(q.id));
+  const source = unsolved.length > 0 ? unsolved : pool;
+  let candidate = source[Math.floor(Math.random() * source.length)];
+  if (source.length > 1 && currentQ && candidate.id === currentQ.id) {
+    candidate = source[(source.indexOf(candidate) + 1) % source.length];
+  }
+  currentQ = candidate;
+  currentChoices = shuffle([currentQ.ans, ...currentQ.dist.slice(0, 3)]);
+  answered = false;
+  fcFlipped = false;
+  listenShowText = false;
+  renderQuestion();
+  if (currentMode === "listening") setTimeout(speakCurrent, 150);
+}
+
+function buildTagsHtml(q) {
+  let html = "";
+  if (q.cat === "textbook") {
+    html += `<span class="tag tb-badge">📘 ${q.lesson}</span>`;
+    html += q.subType === "orig"
+      ? `<span class="tag orig-badge">📖 教科書本文</span>`
+      : `<span class="tag var-badge">🔄 教科書類題</span>`;
+  } else {
+    const names = { verb: "⚡ 動詞の活用", art: "🏷️ 冠詞・代名詞", prep: "🧭 前置詞と格", adj: "🎨 形容詞の格変化" };
+    html += `<span class="tag">${names[q.cat] || "ドリル"}</span>`;
+  }
+  if (wrongIds.has(q.id)) {
+    html += `<span class="tag" style="background:var(--danger-bg);color:var(--danger);">🔥 復習中</span>`;
+  }
+  return html;
+}
+
+function renderQuestion() {
+  if (!currentQ) return;
+  const q = currentQ;
+
+  // --- 1. ドリル表示 ---
+  document.getElementById("cardTags").innerHTML = buildTagsHtml(q);
+  document.getElementById("baseLemma").textContent = q.lemma;
+  document.getElementById("sentenceDe").innerHTML = formatSentenceWithBlanks(q.de, "blankSlot");
+  document.getElementById("sentenceJa").textContent = q.ja;
+
+  const hintBox = document.getElementById("hintBox");
+  hintBox.textContent = `💡 ヒント: ${q.hint}`;
+  hintBox.classList.toggle("hidden", !showHint);
+
+  const fb = document.getElementById("feedbackBox");
+  fb.className = "feedback";
+  fb.innerHTML = "";
+
+  const grid = document.getElementById("optionsGrid");
+  const typeArea = document.getElementById("typingArea");
+  if (typingMode) {
+    grid.style.display = "none";
+    typeArea.classList.add("show");
+    const inp = document.getElementById("typingInput");
+    inp.value = "";
+    inp.disabled = false;
+    setTimeout(() => inp.focus(), 50);
+  } else {
+    typeArea.classList.remove("show");
+    grid.style.display = "grid";
+    grid.innerHTML = "";
+    currentChoices.forEach((c, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.innerHTML = `<span class="opt-key">${idx + 1}</span><span>${c}</span>`;
+      btn.onclick = () => checkAnswer(c, btn, false);
+      grid.appendChild(btn);
+    });
+  }
+
+  // --- 2. フラッシュカード表示 ---
+  if (fcType === "vocab") {
+    if (!currentVocab) {
+      document.getElementById("fcTags").innerHTML = `<span class="tag orig-badge">🎉 復習完了</span>`;
+      document.getElementById("fcFront").textContent = "苦手な単語はありません！";
+      document.getElementById("fcJa").textContent = "";
+      document.getElementById("fcExp").textContent = "";
+      document.getElementById("fcBack").classList.remove("show");
+      document.getElementById("fcPrompt").style.display = "none";
+    } else {
+      const v = currentVocab;
+      document.getElementById("fcTags").innerHTML = `<span class="tag tb-badge">📘 Lektion ${v.lessonIdx}</span><span class="tag orig-badge">${v.pos}</span>` + (vocabWeakIds.has(v.id) ? `<span class="tag" style="background:var(--danger-bg);color:var(--danger);">🔥 復習中</span>` : "");
+      document.getElementById("fcFront").textContent = v.de;
+      document.getElementById("fcJa").textContent = v.ja;
+      document.getElementById("fcExp").textContent = v.note;
+      document.getElementById("fcBack").classList.toggle("show", fcFlipped);
+      document.getElementById("fcPrompt").style.display = fcFlipped ? "none" : "block";
+    }
+  } else {
+    document.getElementById("fcTags").innerHTML = buildTagsHtml(q);
+    document.getElementById("fcFront").textContent = buildFullGermanSentence(q);
+    document.getElementById("fcJa").textContent = q.ja;
+    document.getElementById("fcExp").textContent = `${q.lemma}：${q.exp}`;
+    document.getElementById("fcBack").classList.toggle("show", fcFlipped);
+    document.getElementById("fcPrompt").style.display = fcFlipped ? "none" : "block";
+  }
+
+  // --- 3. リスニング表示 ---
+  document.getElementById("listenTags").innerHTML = buildTagsHtml(q);
+  const listenEl = document.getElementById("listenMaskedSentence");
+  listenEl.innerHTML = formatSentenceWithBlanks(q.de, "listenBlank");
+  listenEl.style.filter = listenShowText ? "none" : "blur(7px)";
+  listenEl.style.userSelect = listenShowText ? "auto" : "none";
+  document.getElementById("listenJa").textContent = q.ja;
+  document.getElementById("listenJa").style.display = listenShowText ? "block" : "none";
+  document.getElementById("listenFeedback").className = "feedback";
+  document.getElementById("listenFeedback").innerHTML = "";
+
+  const lGrid = document.getElementById("listenOptionsGrid");
+  lGrid.innerHTML = "";
+  currentChoices.forEach((c, idx) => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
+    btn.innerHTML = `<span class="opt-key">${idx + 1}</span><span>${c}</span>`;
+    btn.onclick = () => checkAnswer(c, btn, true);
+    lGrid.appendChild(btn);
+  });
+}
+
+function normalizeAns(s) {
+  return s.trim().toLowerCase().replace(/\s*\.\.\.\s*/g, " ").replace(/\s+/g, " ");
+}
+
+function checkAnswer(userAns, clickedBtn = null, isListen = false) {
+  if (answered || !currentQ) return;
+  answered = true;
+  sessionTotal++;
+  stats.total++;
+
+  const isCorrect = normalizeAns(userAns) === normalizeAns(currentQ.ans);
+  const ansParts = currentQ.ans.split(/\s*\.\.\.\s*/);
+
+  // 穴埋め空欄をすべて埋める
+  const prefix = isListen ? "listenBlank" : "blankSlot";
+  for (let i = 0; i < 4; i++) {
+    const slot = document.getElementById(`${prefix}_${i}`);
+    if (slot) {
+      slot.textContent = ansParts[i] || ansParts[0];
+      slot.classList.add("solved");
+    }
+  }
+
+  if (isCorrect) {
+    sessionCorrect++;
+    streak++;
+    stats.correct++;
+    if (streak > stats.bestStreak) stats.bestStreak = streak;
+    wrongIds.delete(currentQ.id);
+    solvedIds.add(currentQ.id);
+  } else {
+    streak = 0;
+    wrongIds.add(currentQ.id);
+  }
+
+  localStorage.setItem("de_drill_wrong_v3", JSON.stringify([...wrongIds]));
+  localStorage.setItem("de_drill_solved_v3", JSON.stringify([...solvedIds]));
+  localStorage.setItem("de_drill_stats_v1", JSON.stringify(stats));
+
+  document.getElementById("sessionScore").textContent = `${sessionCorrect} / ${sessionTotal}`;
+  document.getElementById("streakCount").textContent = streak;
+
+  if (isListen) {
+    const listenEl = document.getElementById("listenMaskedSentence");
+    listenEl.style.filter = "none";
+    listenEl.style.userSelect = "auto";
+    document.getElementById("listenJa").style.display = "block";
+    document.querySelectorAll("#listenOptionsGrid .opt-btn").forEach(b => {
+      b.disabled = true;
+      const txt = b.querySelector("span:last-child").textContent;
+      if (txt === currentQ.ans) b.classList.add("correct");
+      else if (b === clickedBtn && !isCorrect) b.classList.add("wrong");
+    });
+    const lfb = document.getElementById("listenFeedback");
+    lfb.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
+    lfb.innerHTML = `<strong>${isCorrect ? "✅ 正解！" : `❌ 不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
+  } else {
+    if (!typingMode) {
+      document.querySelectorAll("#optionsGrid .opt-btn").forEach(b => {
+        b.disabled = true;
+        const txt = b.querySelector("span:last-child").textContent;
+        if (txt === currentQ.ans) b.classList.add("correct");
+        else if (b === clickedBtn && !isCorrect) b.classList.add("wrong");
+      });
+    } else {
+      document.getElementById("typingInput").disabled = true;
+    }
+    const fb = document.getElementById("feedbackBox");
+    fb.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
+    fb.innerHTML = `<strong>${isCorrect ? "✅ 正解！" : `❌ 不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
+  }
+
+  renderTabs();
+  if (autoSpeak && !isListen) speakCurrent();
+}
+
+function submitTyping() {
+  const val = document.getElementById("typingInput").value;
+  if (!val.trim()) return;
+  checkAnswer(val, null, false);
+}
+
+// --- フラッシュカード操作 ---
+function setFcType(type) {
+  fcType = type;
+  document.getElementById("fcTypeVocab").classList.toggle("active", type === "vocab");
+  document.getElementById("fcTypeSent").classList.toggle("active", type === "sentence");
+  nextQuestion();
+}
+
+function flipFlashcard() {
+  if (fcType === "vocab" && !currentVocab) return;
+  fcFlipped = !fcFlipped;
+  document.getElementById("fcBack").classList.toggle("show", fcFlipped);
+  document.getElementById("fcPrompt").style.display = fcFlipped ? "none" : "block";
+}
+
+function markFlashcard(known) {
+  if (fcType === "vocab") {
+    if (!currentVocab) return;
+    if (known) {
+      vocabKnownIds.add(currentVocab.id);
+      vocabWeakIds.delete(currentVocab.id);
+    } else {
+      vocabWeakIds.add(currentVocab.id);
+    }
+    localStorage.setItem("de_drill_vocab_known_v1", JSON.stringify([...vocabKnownIds]));
+    localStorage.setItem("de_drill_vocab_weak_v1", JSON.stringify([...vocabWeakIds]));
+    nextQuestion();
+    return;
+  }
+  if (!currentQ) return;
+  if (known) {
+    solvedIds.add(currentQ.id);
+    wrongIds.delete(currentQ.id);
+  } else {
+    wrongIds.add(currentQ.id);
+  }
+  localStorage.setItem("de_drill_wrong_v3", JSON.stringify([...wrongIds]));
+  localStorage.setItem("de_drill_solved_v3", JSON.stringify([...solvedIds]));
+  renderTabs();
+  nextQuestion();
+}
+
+// --- 動詞活用道場操作 ---
+function loadConjugationByIndex() {
+  conjIdx = parseInt(document.getElementById("conjSelect").value, 10);
+  renderConjugation();
+}
+
+function nextConjugation() {
+  conjIdx = (conjIdx + 1) % CONJUGATION_VERBS.length;
+  document.getElementById("conjSelect").value = conjIdx;
+  renderConjugation();
+}
+
+function renderConjugation() {
+  const v = CONJUGATION_VERBS[conjIdx];
+  document.getElementById("conjTitle").textContent = `${v.inf}（${v.meaning}）`;
+  document.getElementById("conjNote").textContent = v.note;
+  document.getElementById("conj3Forms").style.display = "none";
+  document.getElementById("conj3Forms").textContent = `3基本形: ${v.three}`;
+
+  const grid = document.getElementById("conjGrid");
+  grid.innerHTML = "";
+  PRONOUNS.forEach((p, idx) => {
+    const div = document.createElement("div");
+    div.className = "conj-item";
+    div.innerHTML = `
+      <span class="conj-pronoun">${p}</span>
+      <input type="text" class="conj-input" id="conj_${idx}" placeholder="活用形..." onfocus="activeConjInput=this" oninput="delete this.dataset.graded" onkeydown="handleConjKey(event, ${idx})">
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function handleConjKey(e, idx) {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  if (idx < PRONOUNS.length - 1) {
+    const nextInp = document.getElementById(`conj_${idx + 1}`);
+    if (nextInp) nextInp.focus();
+  } else {
+    checkConjugation();
+  }
+}
+
+function checkConjugation() {
+  const v = CONJUGATION_VERBS[conjIdx];
+  v.forms.forEach((ans, idx) => {
+    const inp = document.getElementById(`conj_${idx}`);
+    if (inp.dataset.graded === "1") return;
+    const val = inp.value.trim().toLowerCase();
+    inp.classList.remove("ok", "ng");
+    if (val === ans.toLowerCase()) {
+      inp.classList.add("ok");
+    } else {
+      inp.classList.add("ng");
+      inp.value = val ? `${inp.value} → ${ans}` : ans;
+    }
+    inp.dataset.graded = "1";
+  });
+  document.getElementById("conj3Forms").style.display = "block";
+}
+
+function showConjAnswers() {
+  const v = CONJUGATION_VERBS[conjIdx];
+  v.forms.forEach((ans, idx) => {
+    const inp = document.getElementById(`conj_${idx}`);
+    inp.classList.remove("ng");
+    inp.classList.add("ok");
+    inp.value = ans;
+  });
+  document.getElementById("conj3Forms").style.display = "block";
+}
+
+function speakConjugation() {
+  const v = CONJUGATION_VERBS[conjIdx];
+  const text = `ich ${v.forms[0]}, du ${v.forms[1]}, er ${v.forms[2]}, wir ${v.forms[3]}, ihr ${v.forms[4]}, Sie ${v.forms[5]}`;
+  speakText(text);
+}
+
+// --- リスニング操作 ---
+function toggleListenScript() {
+  listenShowText = !listenShowText;
+  const listenEl = document.getElementById("listenMaskedSentence");
+  listenEl.style.filter = listenShowText ? "none" : "blur(7px)";
+  listenEl.style.userSelect = listenShowText ? "auto" : "none";
+  document.getElementById("listenJa").style.display = listenShowText ? "block" : "none";
+}
+
+// --- ユーティリティ・音声・設定 ---
+function insertChar(inputId, ch) {
+  const inp = document.getElementById(inputId);
+  if (!inp || inp.disabled) return;
+  const start = inp.selectionStart;
+  const end = inp.selectionEnd;
+  inp.value = inp.value.slice(0, start) + ch + inp.value.slice(end);
+  inp.focus();
+  inp.setSelectionRange(start + 1, start + 1);
+}
+
+function insertCharActive(ch) {
+  const inp = activeConjInput || document.getElementById("conj_0");
+  if (!inp) return;
+  const start = inp.selectionStart || inp.value.length;
+  const end = inp.selectionEnd || inp.value.length;
+  inp.value = inp.value.slice(0, start) + ch + inp.value.slice(end);
+  inp.focus();
+  inp.setSelectionRange(start + 1, start + 1);
+}
+
+function toggleHint() {
+  showHint = !showHint;
+  const btn = document.getElementById("toggleHintBtn");
+  btn.textContent = `💡 ヒント: ${showHint ? "ON" : "OFF"}`;
+  btn.classList.toggle("active", showHint);
+  document.getElementById("hintBox").classList.toggle("hidden", !showHint);
+}
+
+function toggleTyping() {
+  typingMode = !typingMode;
+  const btn = document.getElementById("toggleTypeBtn");
+  btn.textContent = typingMode ? "⌨️ タイピングモード" : "⌨️ 4択モード";
+  btn.classList.toggle("active", typingMode);
+  if (!answered) renderQuestion();
+}
+
+function toggleAutoSpeak() {
+  autoSpeak = !autoSpeak;
+  const btn = document.getElementById("autoSpeakBtn");
+  btn.textContent = `自動再生: ${autoSpeak ? "ON" : "OFF"}`;
+  btn.classList.toggle("active", autoSpeak);
+}
+
+function onRateChange() {
+  speechRate = parseFloat(document.getElementById("rateSelect").value);
+}
+
+function toggleTheme() {
+  darkTheme = !darkTheme;
+  if (darkTheme) {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeBtn").textContent = "☀️ ライト";
+    localStorage.setItem("de_drill_theme", "dark");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+    document.getElementById("themeBtn").textContent = "🌙 ダーク";
+    localStorage.setItem("de_drill_theme", "light");
+  }
+}
+
+function speakText(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const uttr = new SpeechSynthesisUtterance(text);
+  uttr.lang = "de-DE";
+  uttr.rate = speechRate;
+  window.speechSynthesis.speak(uttr);
+}
+
+function speakCurrent() {
+  if (currentMode === "flashcard" && fcType === "vocab") {
+    if (!currentVocab) return;
+    const clean = currentVocab.de.replace(/\([^)]*\)/g, "").trim();
+    speakText(clean);
+    return;
+  }
+  if (!currentQ) return;
+  speakText(buildFullGermanSentence(currentQ));
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function openModal(id) {
+  if (id === "addModal") renderCustomList();
+  document.getElementById(id).classList.add("show");
+}
+function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+
+// --- 学習ダッシュボード ---
+function openDashboard() {
+  const acc = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+  document.getElementById("dashSummary").innerHTML = `
+    <div class="dash-stat"><div class="dash-val">${solvedIds.size}</div><div class="dash-lbl">クリア済み問題</div></div>
+    <div class="dash-stat"><div class="dash-val">${acc}%</div><div class="dash-lbl">通算正答率 (${stats.correct}/${stats.total})</div></div>
+    <div class="dash-stat"><div class="dash-val">${stats.bestStreak}</div><div class="dash-lbl">最高連続正解</div></div>
+    <div class="dash-stat"><div class="dash-val" style="color:var(--danger);">${wrongIds.size}</div><div class="dash-lbl">苦手復習リスト</div></div>
+  `;
+
+  const list = document.getElementById("dashLessonList");
+  list.innerHTML = "";
+  for (let l = 1; l <= 20; l++) {
+    const lQs = TEXTBOOK_QUESTIONS.filter(q => q.lessonIdx === l);
+    const cleared = lQs.filter(q => solvedIds.has(q.id)).length;
+    const pct = Math.round((cleared / lQs.length) * 100);
+    const item = document.createElement("div");
+    item.className = "dash-lesson";
+    item.innerHTML = `
+      <div class="dash-lesson-top">
+        <span>Lektion ${l}</span>
+        <span>${cleared} / ${lQs.length} (${pct}%)</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    `;
+    list.appendChild(item);
+  }
+  openModal("dashboardModal");
+}
+
+function resetWrong() {
+  if (!confirm("苦手復習リストをすべて空にしますか？")) return;
+  wrongIds.clear();
+  localStorage.setItem("de_drill_wrong_v3", "[]");
+  renderTabs();
+  openDashboard();
+}
+
+function resetAllProgress() {
+  if (!confirm("クリア済み問題・正答率・最高連続記録など、すべての学習履歴をリセットしますか？")) return;
+  wrongIds.clear();
+  solvedIds.clear();
+  stats = { total: 0, correct: 0, bestStreak: 0 };
+  sessionCorrect = 0;
+  sessionTotal = 0;
+  streak = 0;
+  localStorage.removeItem("de_drill_wrong_v3");
+  localStorage.removeItem("de_drill_solved_v3");
+  localStorage.removeItem("de_drill_stats_v1");
+  document.getElementById("sessionScore").textContent = "0 / 0";
+  document.getElementById("streakCount").textContent = "0";
+  renderTabs();
+  updateLessonProgress();
+  openDashboard();
+}
+
+function renderCustomList() {
+  const el = document.getElementById("customList");
+  if (!el) return;
+  if (customQuestions.length === 0) {
+    el.innerHTML = `<span style="color:var(--muted);">まだオリジナル問題は登録されていません。</span>`;
+    return;
+  }
+  el.innerHTML = "";
+  customQuestions.forEach((q, idx) => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--card-elevated);";
+    row.innerHTML = `
+      <div style="min-width:0;">
+        <div style="font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${q.de} <span style="color:var(--primary);">[${q.ans}]</span></div>
+        <div style="font-size:0.78rem; color:var(--muted);">${q.lesson} / ${q.ja || "訳なし"}</div>
+      </div>
+      <button class="btn-danger" style="flex-shrink:0; padding:5px 10px;" onclick="deleteCustomQuestion(${idx})">削除</button>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function deleteCustomQuestion(idx) {
+  customQuestions.splice(idx, 1);
+  localStorage.setItem("de_drill_custom_v3", JSON.stringify(customQuestions));
+  renderCustomList();
+  renderTabs();
+  nextQuestion();
+}
+
+function saveCustomQuestion() {
+  const lesson = document.getElementById("addLesson").value.trim() || "追加問題";
+  const de = document.getElementById("addDe").value.trim();
+  const ans = document.getElementById("addAns").value.trim();
+  const dist = document.getElementById("addDist").value.split(",").map(s => s.trim()).filter(Boolean);
+  const ja = document.getElementById("addJa").value.trim();
+  const exp = document.getElementById("addExp").value.trim();
+  if (!de.includes("___") || !ans || dist.length < 2) {
+    alert("例文に ___ を含め、正解とダミー選択肢を2つ以上入力してください。");
+    return;
+  }
+  customQuestions.push({
+    id: "custom_" + Date.now(),
+    cat: "textbook",
+    lessonIdx: selectedLesson,
+    lesson,
+    subType: "orig",
+    lemma: lesson,
+    de, ans, dist, ja,
+    hint: "オリジナル追加問題",
+    exp
+  });
+  localStorage.setItem("de_drill_custom_v3", JSON.stringify(customQuestions));
+  document.getElementById("addDe").value = "";
+  document.getElementById("addAns").value = "";
+  document.getElementById("addDist").value = "";
+  document.getElementById("addJa").value = "";
+  document.getElementById("addExp").value = "";
+  renderCustomList();
+  closeModal("addModal");
+  renderTabs();
+  nextQuestion();
+}
+
+init();
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
