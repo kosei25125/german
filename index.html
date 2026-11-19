@@ -125,7 +125,22 @@
     cursor: pointer;
   }
   .header-select option { color: #0f172a; background: #fff; }
-  .header-controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .header-controls { display: flex; flex-wrap: nowrap; gap: 6px; align-items: center; flex-shrink: 0; }
+  .btn-icon {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.22);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.15s;
+  }
+  .btn-icon:hover { background: rgba(255,255,255,0.22); }
   .btn-sm {
     background: rgba(255,255,255,0.1);
     color: #fff;
@@ -589,6 +604,11 @@
   .dash-lesson-top { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px; }
 
   @media (max-width: 640px) {
+    header { flex-wrap: nowrap; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; gap: 8px; }
+    .header-left { flex-wrap: nowrap; gap: 8px; min-width: 0; flex: 1; }
+    .brand { font-size: 0.94rem; gap: 6px; white-space: nowrap; flex-shrink: 0; }
+    .flag { width: 20px; height: 13px; }
+    .header-select { font-size: 0.78rem; padding: 5px 8px; min-width: 0; max-width: 155px; text-overflow: ellipsis; }
     .mode-bar { grid-template-columns: repeat(2, 1fr); }
     .tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
     .tab { white-space: nowrap; flex-shrink: 0; }
@@ -613,8 +633,12 @@
     </select>
   </div>
   <div class="header-controls">
-    <button class="btn-sm" onclick="openModal('menuModal')">メニュー</button>
-    <button class="btn-sm" onclick="openModal('settingsModal')">設定</button>
+    <button class="btn-icon" aria-label="設定・メニュー" onclick="openModal('settingsModal')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3.5"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
   </div>
 </header>
 
@@ -775,26 +799,11 @@
   </div>
 </div>
 
-<!-- メニューモーダル -->
-<div class="modal-backdrop" id="menuModal" onclick="if(event.target===this) closeModal('menuModal')">
-  <div class="modal" style="max-width:440px;">
-    <div class="modal-head">
-      <h2>メニュー</h2>
-      <button class="close-btn" onclick="closeModal('menuModal')">×</button>
-    </div>
-    <div style="display:flex; flex-direction:column; gap:10px;">
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('menuModal'); openDashboard();">学習記録ダッシュボードを見る</button>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('menuModal'); openModal('grammarModal');">クイック文法表を開く</button>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('menuModal'); openModal('addModal');">オリジナル問題を追加・管理</button>
-    </div>
-  </div>
-</div>
-
-<!-- 設定モーダル -->
+<!-- 設定・メニューモーダル -->
 <div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this) closeModal('settingsModal')">
   <div class="modal" style="max-width:440px;">
     <div class="modal-head">
-      <h2>設定</h2>
+      <h2>設定・メニュー</h2>
       <button class="close-btn" onclick="closeModal('settingsModal')">×</button>
     </div>
     <div style="display:flex; flex-direction:column; gap:10px;">
@@ -802,6 +811,10 @@
       <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleTypeBtn" onclick="toggleTyping()"><span>解答方式</span><strong>4択モード</strong></button>
       <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="autoSpeakBtn" onclick="toggleAutoSpeak()"><span>解答時の自動音声再生</span><strong>ON</strong></button>
       <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="themeBtn" onclick="toggleTheme()"><span>画面テーマ</span><strong>ライト</strong></button>
+      <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openDashboard();">学習記録ダッシュボードを見る</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('grammarModal');">クイック文法表を開く</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('addModal');">オリジナル問題を追加・管理</button>
     </div>
   </div>
 </div>
