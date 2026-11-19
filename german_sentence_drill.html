@@ -272,7 +272,7 @@
   }
   .pill.active { background: var(--tb); color: #fff; border-color: var(--tb); }
   .progress-wrap { width: 100%; }
-  .progress-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--tb-text); font-weight: 700; margin-bottom: 4px; }
+  .progress-meta { display: flex; justify-content: flex-end; font-size: 0.8rem; color: var(--tb-text); font-weight: 700; margin-bottom: 4px; }
   .progress-bar { width: 100%; height: 8px; background: rgba(20, 184, 166, 0.2); border-radius: 99px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--tb); width: 0%; transition: width 0.35s ease; }
 
@@ -355,7 +355,8 @@
     border-radius: 8px;
     font-size: 0.88rem;
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 0;
+    white-space: nowrap;
   }
   .sentence-de {
     font-size: 1.42rem;
@@ -674,7 +675,6 @@
       </div>
       <div class="progress-wrap">
         <div class="progress-meta">
-          <span id="lessonProgressLabel">Lektion 1</span>
           <span id="lessonProgressCount">0 / 50 問</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="lessonProgressFill"></div></div>
@@ -684,10 +684,10 @@
 
   <!-- 1. 練習問題エリア -->
   <div class="card" id="drillCard">
-    <div class="card-top" style="justify-content:flex-end;">
+    <div class="card-top">
+      <div class="base-lemma" id="baseLemma">原形 / 手がかり</div>
       <button class="audio-btn" onclick="speakCurrent()">音声再生 (R)</button>
     </div>
-    <div class="base-lemma" id="baseLemma">原形 / 手がかり</div>
     <div class="sentence-de" id="sentenceDe">読み込み中...</div>
     <div class="sentence-ja" id="sentenceJa"></div>
     <div class="hint-box" id="hintBox"></div>
@@ -2381,7 +2381,6 @@ function setSubFilter(sub) {
 function updateLessonProgress() {
   const lessonQs = TEXTBOOK_QUESTIONS.filter(q => q.lessonIdx === selectedLesson);
   const cleared = lessonQs.filter(q => solvedIds.has(q.id)).length;
-  document.getElementById("lessonProgressLabel").textContent = `Lektion ${selectedLesson}`;
   document.getElementById("lessonProgressCount").textContent = `${cleared} / ${lessonQs.length} 問`;
   document.getElementById("lessonProgressFill").style.width = `${Math.round((cleared / lessonQs.length) * 100)}%`;
 }
