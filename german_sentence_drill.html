@@ -113,6 +113,18 @@
   .flag span:nth-child(2) { background: #dd0000; flex: 1; }
   .flag span:nth-child(3) { background: #ffce00; flex: 1; }
 
+  .header-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .header-select {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .header-select option { color: #0f172a; background: #fff; }
   .header-controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .btn-sm {
     background: rgba(255,255,255,0.1);
@@ -590,9 +602,15 @@
 <body>
 
 <header>
-  <div class="brand">
-    <div class="flag"><span></span><span></span><span></span></div>
-    <span>Deutsch Lab</span>
+  <div class="header-left">
+    <div class="brand">
+      <div class="flag"><span></span><span></span><span></span></div>
+      <span>Deutsch Lab</span>
+    </div>
+    <select class="header-select" id="bookSelect" onchange="setBook(this.value)">
+      <option value="ideal">ideal</option>
+      <option value="kiso">基礎固めのドイツ語</option>
+    </select>
   </div>
   <div class="header-controls">
     <button class="btn-sm" onclick="openModal('menuModal')">メニュー</button>
@@ -611,10 +629,6 @@
 
   <!-- 教科書・フィルタ（ドリル／カード／リスニング共通） -->
   <div id="filterContainer">
-    <div class="mode-bar" style="grid-template-columns: repeat(2, 1fr); margin-bottom:12px;">
-      <button class="mode-btn active" data-book="ideal" onclick="setBook('ideal')">ideal</button>
-      <button class="mode-btn" data-book="kiso" onclick="setBook('kiso')">基礎固めのドイツ語</button>
-    </div>
 
     <div class="tabs" id="tabsBar"></div>
 
@@ -1784,7 +1798,8 @@ function setMode(mode) {
 
 function setBook(book) {
   activeBook = book;
-  document.querySelectorAll("[data-book]").forEach(b => b.classList.toggle("active", b.dataset.book === book));
+  const sel = document.getElementById("bookSelect");
+  if (sel) sel.value = book;
   renderTabs();
   nextQuestion();
 }
