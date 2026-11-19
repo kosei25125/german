@@ -123,6 +123,8 @@
     font-size: 0.84rem;
     font-weight: 700;
     cursor: pointer;
+    text-align: center;
+    text-align-last: center;
   }
   .header-select option { color: #0f172a; background: #fff; }
   .header-controls { display: flex; flex-wrap: nowrap; gap: 6px; align-items: center; flex-shrink: 0; }
@@ -471,7 +473,9 @@
   .btn-secondary:disabled { opacity: 0.45; cursor: default; }
   .btn-danger { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-border); }
   #drillCard .next-row button, #listeningArea .next-row button { min-width: 148px; }
-  #conjugationArea .next-row button { min-width: 112px; }
+  #conjugationArea .next-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  #conjugationArea .next-row button { width: 100%; min-width: 0; padding: 10px 6px; }
+  #conjugationArea .audio-btn { padding: 9px 16px; font-size: 0.9rem; white-space: nowrap; flex-shrink: 0; }
 
   /* Flashcard Mode */
   .flashcard {
@@ -614,6 +618,7 @@
     .opt-key { display: none; }
     .shortcut-hint { display: none; }
     #drillCard .next-row > button, #listeningArea .next-row > button { flex: 1; min-width: 0; }
+    #conjugationArea .next-row button { font-size: 0.82rem; padding: 10px 4px; }
   }
 </style>
 </head>
@@ -769,10 +774,8 @@
 
     <div class="next-row">
       <button class="btn-secondary" onclick="showConjAnswers()">答えを見る</button>
-      <div style="display:flex; gap:8px;">
-        <button class="btn-primary" onclick="checkConjugation()">採点する</button>
-        <button class="btn-secondary" onclick="nextConjugation()">次の動詞 →</button>
-      </div>
+      <button class="btn-primary" onclick="checkConjugation()">採点する</button>
+      <button class="btn-secondary" onclick="nextConjugation()">次の動詞</button>
     </div>
   </div>
 
@@ -793,7 +796,7 @@
     <div class="feedback" id="listenFeedback"></div>
     <div class="next-row">
       <button class="btn-secondary" onclick="toggleListenScript()">原文・訳を見る</button>
-      <button class="btn-primary" onclick="nextQuestion()">次の問題 →</button>
+      <button class="btn-primary" onclick="nextQuestion()">次の問題</button>
     </div>
   </div>
 </div>
