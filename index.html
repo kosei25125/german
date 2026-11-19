@@ -674,23 +674,17 @@
       </div>
       <div class="progress-wrap">
         <div class="progress-meta">
-          <span id="lessonProgressLabel">Lektion 1 習得状況</span>
+          <span id="lessonProgressLabel">Lektion 1</span>
           <span id="lessonProgressCount">0 / 50 問</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="lessonProgressFill"></div></div>
       </div>
     </div>
-
-    <div class="stats-bar">
-      <span id="poolInfo">出題対象: 0問</span>
-      <span>正答: <strong id="sessionScore">0 / 0</strong></span>
-    </div>
   </div>
 
-  <!-- 1. 穴埋めドリルエリア -->
+  <!-- 1. 練習問題エリア -->
   <div class="card" id="drillCard">
-    <div class="card-top">
-      <div class="tag-group" id="cardTags"></div>
+    <div class="card-top" style="justify-content:flex-end;">
       <button class="audio-btn" onclick="speakCurrent()">音声再生 (R)</button>
     </div>
     <div class="base-lemma" id="baseLemma">原形 / 手がかり</div>
@@ -726,15 +720,13 @@
   </div>
 
   <!-- 2. フラッシュカードエリア -->
+  <div class="type-pills" id="fcTypeBar" style="display:none; margin-bottom:10px;">
+    <button class="pill active" id="fcTypeVocab" onclick="setFcType('vocab')">教科書単語</button>
+    <button class="pill" id="fcTypeSent" onclick="setFcType('sentence')">例文カード</button>
+  </div>
   <div class="card" id="flashcardArea" style="display:none;">
     <div class="card-top">
-      <div style="display:flex; gap:6px; flex-wrap:nowrap; align-items:center; overflow-x:auto; min-width:0; scrollbar-width:none;">
-        <div class="type-pills" style="flex-wrap:nowrap; flex-shrink:0;">
-          <button class="pill active" id="fcTypeVocab" onclick="setFcType('vocab')">教科書単語</button>
-          <button class="pill" id="fcTypeSent" onclick="setFcType('sentence')">例文カード</button>
-        </div>
-        <div class="tag-group" id="fcTags" style="overflow:visible; flex-shrink:0;"></div>
-      </div>
+      <div class="tag-group" id="fcTags"></div>
       <button class="audio-btn" onclick="speakCurrent()">音声再生 (R)</button>
     </div>
     <div class="flashcard" onclick="flipFlashcard()">
@@ -787,7 +779,6 @@
   <div class="card" id="listeningArea" style="display:none;">
     <div class="card-top">
       <div class="tag-group" id="listenTags"></div>
-      <span class="tag" id="listenModeBadge">聴解チャレンジ</span>
     </div>
     <div class="listen-box">
       <button class="listen-play-big" onclick="speakCurrent()">ドイツ語を聞く</button>
@@ -1464,7 +1455,7 @@ function buildTextbookPool() {
         lessonIdx: l,
         lesson: lessonName,
         subType: "var",
-        lemma: `${lessonName.split(':')[0]}（類題 #${idx + 1}）`,
+        lemma: `${lessonName.split(':')[0]}（類題）`,
         de: v.de, ans: v.ans, dist: v.dist, ja: v.ja, hint: v.hint, exp: v.exp
       });
     });
@@ -2326,6 +2317,7 @@ function setMode(mode) {
   document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
   document.getElementById("filterContainer").style.display = mode === "conjugation" ? "none" : "block";
   document.getElementById("drillCard").style.display = mode === "drill" ? "block" : "none";
+  document.getElementById("fcTypeBar").style.display = mode === "flashcard" ? "flex" : "none";
   document.getElementById("flashcardArea").style.display = mode === "flashcard" ? "block" : "none";
   document.getElementById("conjugationArea").style.display = mode === "conjugation" ? "block" : "none";
   document.getElementById("listeningArea").style.display = mode === "listening" ? "block" : "none";
@@ -2389,7 +2381,7 @@ function setSubFilter(sub) {
 function updateLessonProgress() {
   const lessonQs = TEXTBOOK_QUESTIONS.filter(q => q.lessonIdx === selectedLesson);
   const cleared = lessonQs.filter(q => solvedIds.has(q.id)).length;
-  document.getElementById("lessonProgressLabel").textContent = `Lektion ${selectedLesson} 習得状況`;
+  document.getElementById("lessonProgressLabel").textContent = `Lektion ${selectedLesson}`;
   document.getElementById("lessonProgressCount").textContent = `${cleared} / ${lessonQs.length} 問`;
   document.getElementById("lessonProgressFill").style.width = `${Math.round((cleared / lessonQs.length) * 100)}%`;
 }
@@ -2438,7 +2430,8 @@ function getVocabPool() {
 function nextQuestion() {
   if (currentMode === "flashcard" && fcType === "vocab") {
     const vPool = getVocabPool();
-    document.getElementById("poolInfo").textContent = `単語カード: ${vPool.length}語`;
+    const poolEl = document.getElementById("poolInfo");
+    if (poolEl) poolEl.textContent = `単語カード: ${vPool.length}語`;
     if (vPool.length === 0) {
       currentVocab = null;
       renderQuestion();
@@ -2457,12 +2450,12 @@ function nextQuestion() {
   }
 
   const pool = getFilteredPool();
-  document.getElementById("poolInfo").textContent = `出題対象: ${pool.length}問`;
+  const poolEl = document.getElementById("poolInfo");
+  if (poolEl) poolEl.textContent = `出題対象: ${pool.length}問`;
 
   if (pool.length === 0) {
     currentQ = null;
     if (activeBook === "kiso") {
-      document.getElementById("cardTags").innerHTML = `<span class="tag orig-badge">基礎固めのドイツ語</span>`;
       document.getElementById("baseLemma").textContent = "教材準備中";
       document.getElementById("sentenceDe").textContent = "「基礎固めのドイツ語」の教材データを待っています。";
       document.getElementById("sentenceJa").textContent = "教材が追加されると、ここに課ごとの問題と単語カードが表示されます。";
@@ -2475,7 +2468,6 @@ function nextQuestion() {
       document.getElementById("listenOptionsGrid").innerHTML = "";
       document.getElementById("listenFeedback").className = "feedback";
     } else if (activeTab === "wrong") {
-      document.getElementById("cardTags").innerHTML = `<span class="tag orig-badge">復習完了</span>`;
       document.getElementById("baseLemma").textContent = "苦手問題ゼロ";
       document.getElementById("sentenceDe").textContent = "現在、復習リストに問題はありません。";
       document.getElementById("sentenceJa").textContent = "他のタブで問題を解いて、間違えた問題がここに自動で溜まります。";
@@ -2545,8 +2537,7 @@ function renderQuestion() {
   if (!currentQ) return;
   const q = currentQ;
 
-  // --- 1. ドリル表示 ---
-  document.getElementById("cardTags").innerHTML = buildTagsHtml(q);
+  // --- 1. 練習問題表示 ---
   document.getElementById("baseLemma").textContent = q.lemma;
   document.getElementById("sentenceDe").innerHTML = formatSentenceWithBlanks(q.de, "blankSlot");
   document.getElementById("sentenceJa").textContent = q.ja;
@@ -2669,7 +2660,8 @@ function checkAnswer(userAns, clickedBtn = null, isListen = false) {
   localStorage.setItem("de_drill_solved_v3", JSON.stringify([...solvedIds]));
   localStorage.setItem("de_drill_stats_v1", JSON.stringify(stats));
 
-  document.getElementById("sessionScore").textContent = `${sessionCorrect} / ${sessionTotal}`;
+  const scoreEl = document.getElementById("sessionScore");
+  if (scoreEl) scoreEl.textContent = `${sessionCorrect} / ${sessionTotal}`;
 
   if (isListen) {
     const listenEl = document.getElementById("listenMaskedSentence");
@@ -2978,7 +2970,8 @@ function resetAllProgress() {
   localStorage.removeItem("de_drill_wrong_v3");
   localStorage.removeItem("de_drill_solved_v3");
   localStorage.removeItem("de_drill_stats_v1");
-  document.getElementById("sessionScore").textContent = "0 / 0";
+  const scoreEl = document.getElementById("sessionScore");
+  if (scoreEl) scoreEl.textContent = "0 / 0";
   renderTabs();
   updateLessonProgress();
   openDashboard();
