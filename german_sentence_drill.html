@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="ドイツ語ドリル">
+<meta name="apple-mobile-web-app-title" content="Deutsch Lab">
 <meta name="theme-color" content="#0f172a">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>ドイツ語 総合学習スタジオ（教科書 全20課・600問）</title>
+<title>Deutsch Lab</title>
 <style>
   :root {
     --bg: #f1f5f9;
@@ -592,15 +592,10 @@
 <header>
   <div class="brand">
     <div class="flag"><span></span><span></span><span></span></div>
-    <span>ドイツ語 総合学習スタジオ</span>
+    <span>Deutsch Lab</span>
   </div>
   <div class="header-controls">
-    <button class="btn-sm active" id="toggleHintBtn" onclick="toggleHint()">💡 ヒント: ON</button>
-    <button class="btn-sm" id="toggleTypeBtn" onclick="toggleTyping()">⌨️ 4択モード</button>
-    <button class="btn-sm" onclick="openDashboard()">📊 学習記録</button>
-    <button class="btn-sm" onclick="openModal('grammarModal')">📖 文法表</button>
-    <button class="btn-sm" onclick="openModal('addModal')">＋ 問題追加</button>
-    <button class="btn-sm" id="themeBtn" onclick="toggleTheme()">🌙 ダーク</button>
+    <button class="btn-sm" onclick="openModal('settingsModal')">⚙️ 設定</button>
   </div>
 </header>
 
@@ -621,7 +616,7 @@
       <div class="tb-filter-row">
         <select class="tb-select" id="lessonSelect" onchange="onLessonChange()"></select>
         <div class="type-pills">
-          <button class="pill active" data-sub="all" onclick="setSubFilter('all')">すべて (30)</button>
+          <button class="pill active" data-sub="all" onclick="setSubFilter('all')">すべて (50)</button>
           <button class="pill" data-sub="orig" onclick="setSubFilter('orig')">📖 教科書本文</button>
           <button class="pill" data-sub="var" onclick="setSubFilter('var')">🔄 類題</button>
         </div>
@@ -629,7 +624,7 @@
       <div class="progress-wrap">
         <div class="progress-meta">
           <span id="lessonProgressLabel">Lektion 1 習得状況</span>
-          <span id="lessonProgressCount">0 / 30 問クリア</span>
+          <span id="lessonProgressCount">0 / 50 問クリア</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="lessonProgressFill"></div></div>
       </div>
@@ -637,15 +632,6 @@
 
     <div class="stats-bar">
       <span id="poolInfo">出題対象: 0問</span>
-      <div class="audio-controls">
-        <span>🔊速度:</span>
-        <select class="mini-select" id="rateSelect" onchange="onRateChange()">
-          <option value="0.75">0.75x ゆっくり</option>
-          <option value="0.92" selected>0.92x 標準</option>
-          <option value="1.1">1.10x 自然</option>
-        </select>
-        <button class="mini-toggle active" id="autoSpeakBtn" onclick="toggleAutoSpeak()">自動再生: ON</button>
-      </div>
       <span>正答: <strong id="sessionScore">0 / 0</strong>（連続: <strong id="streakCount">0</strong>）</span>
     </div>
   </div>
@@ -709,7 +695,6 @@
     </div>
     <div class="fc-actions">
       <button class="btn-danger" onclick="markFlashcard(false)">🔥 もう一度</button>
-      <button class="btn-secondary" onclick="flipFlashcard()">🔄 めくる (Space)</button>
       <button class="btn-primary" onclick="markFlashcard(true)">✅ 覚えた！次へ →</button>
     </div>
   </div>
@@ -766,6 +751,26 @@
     <div class="next-row">
       <button class="btn-secondary" onclick="toggleListenScript()">👀 原文・訳を見る</button>
       <button class="btn-primary" onclick="nextQuestion()">次の問題へ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- 設定モーダル -->
+<div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this) closeModal('settingsModal')">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-head">
+      <h2>⚙️ 設定・メニュー</h2>
+      <button class="close-btn" onclick="closeModal('settingsModal')">×</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleHintBtn" onclick="toggleHint()"><span>💡 ヒント表示</span><strong>ON</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleTypeBtn" onclick="toggleTyping()"><span>⌨️ 解答方式</span><strong>4択モード</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="autoSpeakBtn" onclick="toggleAutoSpeak()"><span>🔊 解答時の自動音声再生</span><strong>ON</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="themeBtn" onclick="toggleTheme()"><span>🌙 画面テーマ</span><strong>ライト</strong></button>
+      <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openDashboard();">📊 学習記録ダッシュボードを見る</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('grammarModal');">📖 クイック文法表を開く</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('addModal');">＋ オリジナル問題を追加・管理</button>
     </div>
   </div>
 </div>
@@ -1192,15 +1197,17 @@ function buildTextbookPool() {
   function genVariations(l) {
     const out = [];
     if (l === 1) {
-      const cities = ["Tokyo", "Kyoto", "Osaka", "Berlin", "Wien", "Zürich", "Köln", "Frankfurt", "Bonn", "Heidelberg"];
+      const cities = ["Tokyo", "Kyoto", "Osaka", "Berlin", "Wien", "Zürich", "Köln", "Frankfurt", "Bonn", "Heidelberg", "Sapporo", "Nagoya", "Fukuoka", "Salzburg", "Basel", "Bremen", "Dresden", "Leipzig", "Stuttgart", "Mainz"];
       const verbs = [
         { inf: "kommen", forms: ["komme","kommst","kommt","kommen","kommt","kommen"], tpl: (s,c)=>`${cap(s.de)} ___ aus ${c}.`, ja: (s,c)=>`${s.ja}は${c}出身です。` },
-        { inf: "wohnen", forms: ["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"], tpl: (s,c)=>`${cap(s.de)} ___ jetzt in ${c}.`, ja: (s,c)=>`${s.ja}は今${c}に住んでいます。` }
+        { inf: "wohnen", forms: ["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"], tpl: (s,c)=>`${cap(s.de)} ___ jetzt in ${c}.`, ja: (s,c)=>`${s.ja}は今${c}に住んでいます。` },
+        { inf: "heißen", forms: ["heiße","heißt","heißt","heißen","heißt","heißen"], tpl: (s,c)=>`${cap(s.de)} ___ ${c}.`, ja: (s,c)=>`${s.ja}は${c}という名前です。` }
       ];
-      for (let i = 0; i < 20; i++) {
+      const personNames = ["Ken", "Anna", "Lukas", "Mia", "Taro", "Hana", "Paul", "Lea", "Jonas", "Nina"];
+      for (let i = 0; i < 40; i++) {
         const s = subjects[i % subjects.length];
-        const v = verbs[Math.floor(i / 10)];
-        const c = cities[i % cities.length];
+        const v = verbs[Math.floor(i / 14) % verbs.length];
+        const c = v.inf === "heißen" ? personNames[i % personNames.length] : cities[i % cities.length];
         const ans = v.forms[s.idx];
         const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
         while (dist.length < 3) dist.push(v.inf + "st");
@@ -1216,11 +1223,12 @@ function buildTextbookPool() {
         { inf: "studieren", forms: ["studiere","studierst","studiert","studieren","studiert","studieren"], tail: "Medizin", ja: "医学を専攻する" },
         { inf: "arbeiten", forms: ["arbeite","arbeitest","arbeitet","arbeiten","arbeitet","arbeiten"], tail: "heute viel", ja: "今日たくさん働く" },
         { inf: "finden", forms: ["finde","findest","findet","finden","findet","finden"], tail: "den Kurs gut", ja: "その授業を良いと思う" },
-        { inf: "spielen", forms: ["spiele","spielst","spielt","spielen","spielt","spielen"], tail: "oft Fußball", ja: "よくサッカーをする" }
+        { inf: "spielen", forms: ["spiele","spielst","spielt","spielen","spielt","spielen"], tail: "oft Fußball", ja: "よくサッカーをする" },
+        { inf: "trinken", forms: ["trinke","trinkst","trinkt","trinken","trinkt","trinken"], tail: "gern Kaffee", ja: "よくコーヒーを飲む" }
       ];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 40; i++) {
         const v = items[i % items.length];
-        const s = subjects[(i + Math.floor(i/5)) % subjects.length];
+        const s = subjects[(i + Math.floor(i/6)) % subjects.length];
         const ans = v.forms[s.idx];
         const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
         out.push({
@@ -1236,11 +1244,12 @@ function buildTextbookPool() {
         { inf: "lesen", forms: ["lese","liest","liest","lesen","lest","lesen"], tail: "ein Buch", ja: "本を読む" },
         { inf: "nehmen", forms: ["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"], tail: "einen Kaffee", ja: "コーヒーを注文する" },
         { inf: "sehen", forms: ["sehe","siehst","sieht","sehen","seht","sehen"], tail: "einen Film", ja: "映画を見る" },
-        { inf: "geben", forms: ["gebe","gibst","gibt","geben","gebt","geben"], tail: "mir ein Buch", ja: "私に本をくれる" }
+        { inf: "geben", forms: ["gebe","gibst","gibt","geben","gebt","geben"], tail: "mir ein Buch", ja: "私に本をくれる" },
+        { inf: "helfen", forms: ["helfe","hilfst","hilft","helfen","helft","helfen"], tail: "dem Freund", ja: "友人を手伝う" }
       ];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 40; i++) {
         const v = irr[i % irr.length];
-        const s = subjects[(i * 2 + 1) % subjects.length];
+        const s = subjects[(i + Math.floor(i/7)) % subjects.length];
         const ans = v.forms[s.idx];
         const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
         out.push({
@@ -1255,17 +1264,21 @@ function buildTextbookPool() {
         { g: "m", nom: "der Freund", dat: "dem", acc: "den", gen: "des", ja: "友人" },
         { g: "f", nom: "die Lehrerin", dat: "der", acc: "die", gen: "der", ja: "女性の先生" },
         { g: "n", nom: "das Kind", dat: "dem", acc: "das", gen: "des", ja: "子ども" },
-        { g: "m", nom: "der Kollege", dat: "dem", acc: "den", gen: "des", ja: "同僚" }
+        { g: "m", nom: "der Kollege", dat: "dem", acc: "den", gen: "des", ja: "同僚" },
+        { g: "f", nom: "die Freundin", dat: "der", acc: "die", gen: "der", ja: "女友達" },
+        { g: "n", nom: "das Mädchen", dat: "dem", acc: "das", gen: "des", ja: "女の子" },
+        { g: "m", nom: "der Arzt", dat: "dem", acc: "den", gen: "des", ja: "医者" }
       ];
       const frames = [
         { k: "acc", de: (n)=>`Ich treffe ___ ${n.nom.split(' ')[1]} im Café.`, ja: (n)=>`私はカフェでその${n.ja}に会います。`, h: "treffen + 4格" },
         { k: "dat", de: (n)=>`Ich danke ___ ${n.nom.split(' ')[1]} herzlich.`, ja: (n)=>`私はその${n.ja}に心から感謝します。`, h: "danken + 3格" },
         { k: "acc", de: (n)=>`Wir besuchen ___ ${n.nom.split(' ')[1]} morgen.`, ja: (n)=>`私たちは明日その${n.ja}を訪ねます。`, h: "besuchen + 4格" },
-        { k: "dat", de: (n)=>`Das Buch gehört ___ ${n.nom.split(' ')[1]}.`, ja: (n)=>`その本はその${n.ja}のものです。`, h: "gehören + 3格" }
+        { k: "dat", de: (n)=>`Das Buch gehört ___ ${n.nom.split(' ')[1]}.`, ja: (n)=>`その本はその${n.ja}のものです。`, h: "gehören + 3格" },
+        { k: "dat", de: (n)=>`Sie hilft ___ ${n.nom.split(' ')[1]} oft.`, ja: (n)=>`彼女はその${n.ja}をよく手伝います。`, h: "helfen + 3格" }
       ];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 40; i++) {
         const n = nouns[i % nouns.length];
-        const f = frames[Math.floor(i / 5)];
+        const f = frames[Math.floor(i / 8)];
         const ans = n[f.k];
         const dist = ["der","die","das","den","dem","des"].filter(x => x !== ans).slice(0, 3);
         out.push({
@@ -1288,9 +1301,11 @@ function buildTextbookPool() {
       const verbs3 = [
         { de: (p)=>`Ich helfe ___ gern.`, ja: (p)=>`私は喜んで${p[3]}を手伝います。`, k: 1, exp: "helfen + 3格" },
         { de: (p)=>`Ich sehe ___ jeden Tag.`, ja: (p)=>`私は毎日${p[3]}を見かけます。`, k: 2, exp: "sehen + 4格" },
-        { de: (p)=>`Das Geschenk gefällt ___ sehr.`, ja: (p)=>`${p[3]}はそのプレゼントをとても気に入っています。`, k: 1, exp: "gefallen + 3格" }
+        { de: (p)=>`Das Geschenk gefällt ___ sehr.`, ja: (p)=>`${p[3]}はそのプレゼントをとても気に入っています。`, k: 1, exp: "gefallen + 3格" },
+        { de: (p)=>`Wir danken ___ herzlich.`, ja: (p)=>`私たちは${p[3]}に心から感謝します。`, k: 1, exp: "danken + 3格" },
+        { de: (p)=>`Er besucht ___ am Wochenende.`, ja: (p)=>`彼は週末に${p[3]}を訪ねます。`, k: 2, exp: "besuchen + 4格" }
       ];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 40; i++) {
         const p = pairs[i % pairs.length];
         const v = verbs3[Math.floor(i / 8) % verbs3.length];
         const ans = p[v.k];
@@ -1308,11 +1323,12 @@ function buildTextbookPool() {
         { inf: "abfahren", pre: "ab", stems: ["fahre","fährst","fährt","fahren","fahrt","fahren"], ctx: "um acht Uhr", ja: "8時に出発する" },
         { inf: "einkaufen", pre: "ein", stems: ["kaufe","kaufst","kauft","kaufen","kauft","kaufen"], ctx: "im Supermarkt", ja: "スーパーで買い物する" },
         { inf: "anrufen", pre: "an", stems: ["rufe","rufst","ruft","rufen","ruft","rufen"], ctx: "morgen Abend", ja: "明日の晩電話する" },
-        { inf: "fernsehen", pre: "fern", stems: ["sehe","siehst","sieht","sehen","seht","sehen"], ctx: "am Abend", ja: "夜テレビを見る" }
+        { inf: "fernsehen", pre: "fern", stems: ["sehe","siehst","sieht","sehen","seht","sehen"], ctx: "am Abend", ja: "夜テレビを見る" },
+        { inf: "anfangen", pre: "an", stems: ["fange","fängst","fängt","fangen","fangt","fangen"], ctx: "um neun Uhr", ja: "9時に始める" }
       ];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 40; i++) {
         const v = sep[i % sep.length];
-        const s = subjects[(i + Math.floor(i/5)) % subjects.length];
+        const s = subjects[(i + Math.floor(i/6)) % subjects.length];
         const stem = v.stems[s.idx];
         const ans = `${stem} ... ${v.pre}`;
         const dist = [`${v.pre}${stem}`, `${v.stems[(s.idx+1)%6]} ... ${v.pre}`, `${v.inf}`];
@@ -1345,27 +1361,30 @@ function buildTextbookPool() {
         ["Ich habe das ___ meinem Freund gehört.", "von", ["aus","bei","mit"], "私はそれを友人から聞きました。", "人からの情報・起点 → von + 3格", "人から聞く・もらうときは von を使います。"],
         ["Alle kommen ___ Paul.", "außer", ["ohne","gegen","für"], "パウル以外はみんな来ます。", "「〜以外に」→ außer + 3格", "außer は3格支配の前置詞です。"]
       ];
-      items.forEach(x => out.push({ de: x[0], ans: x[1], dist: x[2], ja: x[3], hint: x[4], exp: x[5] }));
+      for (let i = 0; i < 40; i++) {
+        const x = items[i % items.length];
+        out.push({ de: x[0], ans: x[1], dist: x[2], ja: x[3], hint: x[4], exp: x[5] });
+      }
     } else {
-      // Lektion 8〜20: 4種のベーステンプレート × 5通りの名詞/動詞/人称バリエーションで20問を全問ユニーク化
       const seedList = LESSON_SEEDS[l];
-      const names = ["Lukas", "Mia", "Jonas", "Lea", "Tim"];
-      const places = ["Berlin", "München", "Hamburg", "Wien", "Köln"];
-      for (let i = 0; i < 20; i++) {
+      const names = ["Lukas", "Mia", "Jonas", "Lea", "Tim", "Anna", "Paul", "Laura"];
+      const places = ["Berlin", "München", "Hamburg", "Wien", "Köln", "Frankfurt"];
+      for (let i = 0; i < 40; i++) {
         const base = seedList[i % seedList.length];
-        const tag = i < 10 ? "" : ` [${names[i % names.length]}/${places[i % places.length]}編]`;
+        const round = Math.floor(i / 10);
         let de = base[0];
         let ja = base[3];
-        // 文脈のバリエーションを加えて重複感をなくす（記号を混ぜず自然なドイツ語文に保つ）
-        if (i >= 10) {
-          if (de.includes("Er ")) { de = de.replace("Er ", names[i % names.length] + " "); ja = ja.replace("彼", names[i % names.length]); }
-          else if (de.includes("Sie ")) { de = de.replace("Sie ", "Anna "); ja = ja.replace("彼女", "アンナ"); }
-          else if (de.includes("Berlin")) { de = de.replace("Berlin", places[i % places.length]); ja = ja.replace("ベルリン", places[i % places.length]); }
-          else if (de.includes("München")) { de = de.replace("München", places[i % places.length]); ja = ja.replace("ミュンヘン", places[i % places.length]); }
+        if (round >= 1) {
+          const nm = names[(i + round) % names.length];
+          const pl = places[(i + round) % places.length];
+          if (de.includes("Er ")) { de = de.replace("Er ", nm + " "); ja = ja.replace("彼", nm); }
+          else if (de.includes("Sie ")) { de = de.replace("Sie ", nm + " "); ja = ja.replace("彼女", nm); }
+          else if (de.includes("Berlin")) { de = de.replace("Berlin", pl); ja = ja.replace("ベルリン", pl); }
+          else if (de.includes("München")) { de = de.replace("München", pl); ja = ja.replace("ミュンヘン", pl); }
         }
         out.push({
           de, ans: base[1], dist: base[2], ja,
-          hint: `${base[4]}${tag}`,
+          hint: base[4],
           exp: base[5]
         });
       }
@@ -1666,14 +1685,14 @@ function getAllQuestions() {
 function init() {
   if (darkTheme) {
     document.documentElement.setAttribute("data-theme", "dark");
-    document.getElementById("themeBtn").textContent = "☀️ ライト";
+    document.getElementById("themeBtn").querySelector("strong").textContent = "ダーク";
   }
 
   const sel = document.getElementById("lessonSelect");
   LESSON_TITLES.forEach((title, i) => {
     const opt = document.createElement("option");
     opt.value = i + 1;
-    opt.textContent = `${title} (30問)`;
+    opt.textContent = `${title} (50問)`;
     sel.appendChild(opt);
   });
 
@@ -2229,39 +2248,33 @@ function insertCharActive(ch) {
 function toggleHint() {
   showHint = !showHint;
   const btn = document.getElementById("toggleHintBtn");
-  btn.textContent = `💡 ヒント: ${showHint ? "ON" : "OFF"}`;
-  btn.classList.toggle("active", showHint);
+  btn.querySelector("strong").textContent = showHint ? "ON" : "OFF";
   document.getElementById("hintBox").classList.toggle("hidden", !showHint);
 }
 
 function toggleTyping() {
   typingMode = !typingMode;
   const btn = document.getElementById("toggleTypeBtn");
-  btn.textContent = typingMode ? "⌨️ タイピングモード" : "⌨️ 4択モード";
-  btn.classList.toggle("active", typingMode);
+  btn.querySelector("strong").textContent = typingMode ? "タイピング" : "4択モード";
   if (!answered) renderQuestion();
 }
 
 function toggleAutoSpeak() {
   autoSpeak = !autoSpeak;
   const btn = document.getElementById("autoSpeakBtn");
-  btn.textContent = `自動再生: ${autoSpeak ? "ON" : "OFF"}`;
-  btn.classList.toggle("active", autoSpeak);
-}
-
-function onRateChange() {
-  speechRate = parseFloat(document.getElementById("rateSelect").value);
+  btn.querySelector("strong").textContent = autoSpeak ? "ON" : "OFF";
 }
 
 function toggleTheme() {
   darkTheme = !darkTheme;
+  const btn = document.getElementById("themeBtn");
   if (darkTheme) {
     document.documentElement.setAttribute("data-theme", "dark");
-    document.getElementById("themeBtn").textContent = "☀️ ライト";
+    btn.querySelector("strong").textContent = "ダーク";
     localStorage.setItem("de_drill_theme", "dark");
   } else {
     document.documentElement.removeAttribute("data-theme");
-    document.getElementById("themeBtn").textContent = "🌙 ダーク";
+    btn.querySelector("strong").textContent = "ライト";
     localStorage.setItem("de_drill_theme", "light");
   }
 }

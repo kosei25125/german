@@ -1,6 +1,6 @@
 {
-  "name": "ドイツ語 総合学習スタジオ",
-  "short_name": "ドイツ語ドリル",
+  "name": "Deutsch Lab",
+  "short_name": "Deutsch Lab",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
