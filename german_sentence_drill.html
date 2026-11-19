@@ -323,13 +323,17 @@
     to { opacity: 1; transform: translateY(0); }
   }
   .card-top {
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 8px;
     margin-bottom: 14px;
   }
-  .tag-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag-group {
+    display: flex; gap: 6px; flex-wrap: nowrap; align-items: center;
+    overflow-x: auto; min-width: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .tag-group::-webkit-scrollbar { display: none; }
   .tag {
     font-size: 0.76rem; font-weight: 700; padding: 3px 10px; border-radius: 6px;
-    background: var(--bg-subtle); color: var(--text-secondary);
+    background: var(--bg-subtle); color: var(--text-secondary); white-space: nowrap; flex-shrink: 0;
   }
   .tag.tb-badge { background: var(--tb-bg); color: var(--tb-text); border: 1px solid var(--tb-border); }
   .tag.orig-badge { background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border); }
@@ -338,7 +342,7 @@
   .audio-btn {
     background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border);
     padding: 6px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
-    transition: 0.15s;
+    transition: 0.15s; white-space: nowrap; flex-shrink: 0;
   }
   .audio-btn:hover { filter: brightness(0.95); }
 
@@ -606,10 +610,10 @@
 
   @media (max-width: 640px) {
     header { flex-wrap: nowrap; padding: calc(10px + env(safe-area-inset-top)) 12px 10px; gap: 8px; }
-    .header-left { flex-wrap: nowrap; gap: 8px; min-width: 0; flex: 1; }
+    .header-left { flex-wrap: nowrap; gap: 8px; min-width: 0; }
     .brand { font-size: 0.94rem; gap: 6px; white-space: nowrap; flex-shrink: 0; }
     .flag { width: 20px; height: 13px; }
-    .header-select { font-size: 0.78rem; padding: 5px 8px; min-width: 0; max-width: 155px; text-overflow: ellipsis; }
+    .header-select { font-size: 0.78rem; padding: 5px 8px; min-width: 0; max-width: 145px; text-overflow: ellipsis; }
     .mode-bar { grid-template-columns: repeat(2, 1fr); }
     .tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
     .tab { white-space: nowrap; flex-shrink: 0; }
@@ -630,11 +634,11 @@
       <div class="flag"><span></span><span></span><span></span></div>
       <span>Deutsch Lab</span>
     </div>
-    <select class="header-select" id="bookSelect" onchange="setBook(this.value)">
-      <option value="ideal">ideal</option>
-      <option value="kiso">基礎固めのドイツ語</option>
-    </select>
   </div>
+  <select class="header-select" id="bookSelect" onchange="setBook(this.value)">
+    <option value="ideal">ideal</option>
+    <option value="kiso">基礎固めのドイツ語</option>
+  </select>
   <div class="header-controls">
     <button class="btn-icon" aria-label="設定・メニュー" onclick="openModal('settingsModal')">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -648,7 +652,7 @@
 <div class="container">
   <!-- モード切替 -->
   <div class="mode-bar">
-    <button class="mode-btn active" data-mode="drill" onclick="setMode('drill')">穴埋めドリル</button>
+    <button class="mode-btn active" data-mode="drill" onclick="setMode('drill')">練習問題</button>
     <button class="mode-btn" data-mode="flashcard" onclick="setMode('flashcard')">単語・例文カード</button>
     <button class="mode-btn" data-mode="conjugation" onclick="setMode('conjugation')">動詞活用道場</button>
     <button class="mode-btn" data-mode="listening" onclick="setMode('listening')">リスニング</button>
@@ -671,7 +675,7 @@
       <div class="progress-wrap">
         <div class="progress-meta">
           <span id="lessonProgressLabel">Lektion 1 習得状況</span>
-          <span id="lessonProgressCount">0 / 50 問クリア</span>
+          <span id="lessonProgressCount">0 / 50 問</span>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="lessonProgressFill"></div></div>
       </div>
@@ -715,21 +719,21 @@
     <div class="feedback" id="feedbackBox"></div>
 
     <div class="next-row">
-      <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← 前の問題</button>
+      <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>前の問題</button>
       <span class="shortcut-hint">ショートカット: [1-4] 選択 / [Enter] 次へ / [H] ヒント / [R] 音声</span>
-      <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">次の問題 →</button>
+      <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">次の問題</button>
     </div>
   </div>
 
   <!-- 2. フラッシュカードエリア -->
   <div class="card" id="flashcardArea" style="display:none;">
     <div class="card-top">
-      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-        <div class="type-pills">
+      <div style="display:flex; gap:6px; flex-wrap:nowrap; align-items:center; overflow-x:auto; min-width:0; scrollbar-width:none;">
+        <div class="type-pills" style="flex-wrap:nowrap; flex-shrink:0;">
           <button class="pill active" id="fcTypeVocab" onclick="setFcType('vocab')">教科書単語</button>
           <button class="pill" id="fcTypeSent" onclick="setFcType('sentence')">例文カード</button>
         </div>
-        <div class="tag-group" id="fcTags"></div>
+        <div class="tag-group" id="fcTags" style="overflow:visible; flex-shrink:0;"></div>
       </div>
       <button class="audio-btn" onclick="speakCurrent()">音声再生 (R)</button>
     </div>
@@ -814,9 +818,9 @@
       <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="autoSpeakBtn" onclick="toggleAutoSpeak()"><span>解答時の自動音声再生</span><strong>ON</strong></button>
       <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="themeBtn" onclick="toggleTheme()"><span>画面テーマ</span><strong>ライト</strong></button>
       <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openDashboard();">学習記録ダッシュボードを見る</button>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('grammarModal');">クイック文法表を開く</button>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('addModal');">オリジナル問題を追加・管理</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openDashboard();">学習記録を見る</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('grammarModal');">文法表を開く</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('addModal');">問題を追加・管理</button>
     </div>
   </div>
 </div>
@@ -2386,7 +2390,7 @@ function updateLessonProgress() {
   const lessonQs = TEXTBOOK_QUESTIONS.filter(q => q.lessonIdx === selectedLesson);
   const cleared = lessonQs.filter(q => solvedIds.has(q.id)).length;
   document.getElementById("lessonProgressLabel").textContent = `Lektion ${selectedLesson} 習得状況`;
-  document.getElementById("lessonProgressCount").textContent = `${cleared} / ${lessonQs.length} 問クリア`;
+  document.getElementById("lessonProgressCount").textContent = `${cleared} / ${lessonQs.length} 問`;
   document.getElementById("lessonProgressFill").style.width = `${Math.round((cleared / lessonQs.length) * 100)}%`;
 }
 
@@ -2522,16 +2526,17 @@ function updatePrevBtn() {
 function buildTagsHtml(q) {
   let html = "";
   if (q.cat === "textbook") {
-    html += `<span class="tag tb-badge">📘 ${q.lesson}</span>`;
+    const shortLesson = q.lessonIdx ? `Lektion ${q.lessonIdx}` : q.lesson;
+    html += `<span class="tag tb-badge">${shortLesson}</span>`;
     html += q.subType === "orig"
-      ? `<span class="tag orig-badge">📖 教科書本文</span>`
-      : `<span class="tag var-badge">🔄 教科書類題</span>`;
+      ? `<span class="tag orig-badge">教科書本文</span>`
+      : `<span class="tag var-badge">教科書類題</span>`;
   } else {
-    const names = { verb: "⚡ 動詞の活用", art: "🏷️ 冠詞・代名詞", prep: "🧭 前置詞と格", adj: "🎨 形容詞の格変化" };
-    html += `<span class="tag">${names[q.cat] || "ドリル"}</span>`;
+    const names = { verb: "動詞の活用", art: "冠詞・代名詞", prep: "前置詞と格", adj: "形容詞の格変化" };
+    html += `<span class="tag">${names[q.cat] || "練習問題"}</span>`;
   }
   if (wrongIds.has(q.id)) {
-    html += `<span class="tag" style="background:var(--danger-bg);color:var(--danger);">🔥 復習中</span>`;
+    html += `<span class="tag" style="background:var(--danger-bg);color:var(--danger);">復習中</span>`;
   }
   return html;
 }
@@ -2587,7 +2592,7 @@ function renderQuestion() {
       document.getElementById("fcPrompt").style.display = "none";
     } else {
       const v = currentVocab;
-      document.getElementById("fcTags").innerHTML = `<span class="tag tb-badge">📘 Lektion ${v.lessonIdx}</span><span class="tag orig-badge">${v.pos}</span>` + (vocabWeakIds.has(v.id) ? `<span class="tag" style="background:var(--danger-bg);color:var(--danger);">🔥 復習中</span>` : "");
+      document.getElementById("fcTags").innerHTML = `<span class="tag tb-badge">Lektion ${v.lessonIdx}</span><span class="tag orig-badge">${v.pos}</span>` + (vocabWeakIds.has(v.id) ? `<span class="tag" style="background:var(--danger-bg);color:var(--danger);">復習中</span>` : "");
       document.getElementById("fcFront").textContent = v.de;
       document.getElementById("fcJa").textContent = v.ja;
       document.getElementById("fcExp").textContent = v.note;
