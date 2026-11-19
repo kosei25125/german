@@ -2581,9 +2581,11 @@ function renderQuestion() {
     } else {
       const v = currentVocab;
       document.getElementById("fcTags").innerHTML = `<span class="tag tb-badge">Lektion ${v.lessonIdx}</span><span class="tag orig-badge">${v.pos}</span>` + (vocabWeakIds.has(v.id) ? `<span class="tag" style="background:var(--danger-bg);color:var(--danger);">復習中</span>` : "");
-      document.getElementById("fcFront").textContent = v.de;
+      const parens = (v.de.match(/\([^)]*\)/g) || []).join(" ");
+      const cleanDe = v.de.replace(/\s*\([^)]*\)/g, "").replace(/\s+/g, " ").trim();
+      document.getElementById("fcFront").textContent = cleanDe;
       document.getElementById("fcJa").textContent = v.ja;
-      document.getElementById("fcExp").textContent = v.note;
+      document.getElementById("fcExp").textContent = parens ? (v.note ? `${parens} ／ ${v.note}` : parens) : v.note;
       document.getElementById("fcBack").classList.toggle("show", fcFlipped);
       document.getElementById("fcPrompt").style.display = fcFlipped ? "none" : "block";
     }
