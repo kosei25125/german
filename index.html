@@ -595,30 +595,36 @@
     <span>Deutsch Lab</span>
   </div>
   <div class="header-controls">
-    <button class="btn-sm" onclick="openModal('settingsModal')">⚙️ 設定</button>
+    <button class="btn-sm" onclick="openModal('menuModal')">メニュー</button>
+    <button class="btn-sm" onclick="openModal('settingsModal')">設定</button>
   </div>
 </header>
 
 <div class="container">
   <!-- モード切替 -->
   <div class="mode-bar">
-    <button class="mode-btn active" data-mode="drill" onclick="setMode('drill')">📝 穴埋めドリル</button>
-    <button class="mode-btn" data-mode="flashcard" onclick="setMode('flashcard')">🃏 単語・例文カード</button>
-    <button class="mode-btn" data-mode="conjugation" onclick="setMode('conjugation')">⚡ 動詞活用道場</button>
-    <button class="mode-btn" data-mode="listening" onclick="setMode('listening')">🎧 リスニング</button>
+    <button class="mode-btn active" data-mode="drill" onclick="setMode('drill')">穴埋めドリル</button>
+    <button class="mode-btn" data-mode="flashcard" onclick="setMode('flashcard')">単語・例文カード</button>
+    <button class="mode-btn" data-mode="conjugation" onclick="setMode('conjugation')">動詞活用道場</button>
+    <button class="mode-btn" data-mode="listening" onclick="setMode('listening')">リスニング</button>
   </div>
 
-  <!-- ジャンル・課フィルタ（ドリル／カード／リスニング共通） -->
+  <!-- 教科書・フィルタ（ドリル／カード／リスニング共通） -->
   <div id="filterContainer">
+    <div class="mode-bar" style="grid-template-columns: repeat(2, 1fr); margin-bottom:12px;">
+      <button class="mode-btn active" data-book="ideal" onclick="setBook('ideal')">ideal</button>
+      <button class="mode-btn" data-book="kiso" onclick="setBook('kiso')">基礎固めのドイツ語</button>
+    </div>
+
     <div class="tabs" id="tabsBar"></div>
 
     <div class="tb-filter-bar" id="tbFilterBar">
       <div class="tb-filter-row">
         <select class="tb-select" id="lessonSelect" onchange="onLessonChange()"></select>
         <div class="type-pills">
-          <button class="pill active" data-sub="all" onclick="setSubFilter('all')">すべて (50)</button>
-          <button class="pill" data-sub="orig" onclick="setSubFilter('orig')">📖 教科書本文</button>
-          <button class="pill" data-sub="var" onclick="setSubFilter('var')">🔄 類題</button>
+          <button class="pill active" data-sub="all" onclick="setSubFilter('all')">すべて</button>
+          <button class="pill" data-sub="orig" onclick="setSubFilter('orig')">教科書本文</button>
+          <button class="pill" data-sub="var" onclick="setSubFilter('var')">類題</button>
         </div>
       </div>
       <div class="progress-wrap">
@@ -632,7 +638,7 @@
 
     <div class="stats-bar">
       <span id="poolInfo">出題対象: 0問</span>
-      <span>正答: <strong id="sessionScore">0 / 0</strong>（連続: <strong id="streakCount">0</strong>）</span>
+      <span>正答: <strong id="sessionScore">0 / 0</strong></span>
     </div>
   </div>
 
@@ -640,7 +646,7 @@
   <div class="card" id="drillCard">
     <div class="card-top">
       <div class="tag-group" id="cardTags"></div>
-      <button class="audio-btn" onclick="speakCurrent()">🔊 音声再生 (R)</button>
+      <button class="audio-btn" onclick="speakCurrent()">音声再生 (R)</button>
     </div>
     <div class="base-lemma" id="baseLemma">原形 / 手がかり</div>
     <div class="sentence-de" id="sentenceDe">読み込み中...</div>
@@ -678,12 +684,12 @@
     <div class="card-top">
       <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
         <div class="type-pills">
-          <button class="pill active" id="fcTypeVocab" onclick="setFcType('vocab')">📖 教科書単語</button>
-          <button class="pill" id="fcTypeSent" onclick="setFcType('sentence')">💬 例文カード</button>
+          <button class="pill active" id="fcTypeVocab" onclick="setFcType('vocab')">教科書単語</button>
+          <button class="pill" id="fcTypeSent" onclick="setFcType('sentence')">例文カード</button>
         </div>
         <div class="tag-group" id="fcTags"></div>
       </div>
-      <button class="audio-btn" onclick="speakCurrent()">🔊 音声再生 (R)</button>
+      <button class="audio-btn" onclick="speakCurrent()">音声再生 (R)</button>
     </div>
     <div class="flashcard" onclick="flipFlashcard()">
       <div class="fc-front" id="fcFront">読み込み中...</div>
@@ -694,8 +700,8 @@
       </div>
     </div>
     <div class="fc-actions">
-      <button class="btn-danger" onclick="markFlashcard(false)">🔥 もう一度</button>
-      <button class="btn-primary" onclick="markFlashcard(true)">✅ 覚えた！次へ →</button>
+      <button class="btn-danger" onclick="markFlashcard(false)">もう一度</button>
+      <button class="btn-primary" onclick="markFlashcard(true)">覚えた！次へ →</button>
     </div>
   </div>
 
@@ -703,13 +709,13 @@
   <div class="card" id="conjugationArea" style="display:none;">
     <div class="conj-header">
       <div>
-        <span class="tag orig-badge">⚡ 動詞活用トレーニング</span>
+        <span class="tag orig-badge">動詞活用トレーニング</span>
         <h2 style="margin:6px 0 2px; font-size:1.3rem;" id="conjTitle">fahren（乗り物で行く）</h2>
         <div style="font-size:0.86rem; color:var(--muted);" id="conjNote">現在人称変化（a → ä 幹母音変化）</div>
       </div>
       <div style="display:flex; gap:8px; align-items:center;">
         <select class="tb-select" id="conjSelect" onchange="loadConjugationByIndex()"></select>
-        <button class="audio-btn" onclick="speakConjugation()">🔊 読み上げ</button>
+        <button class="audio-btn" onclick="speakConjugation()">読み上げ</button>
       </div>
     </div>
 
@@ -725,7 +731,7 @@
     <div id="conj3Forms" style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:14px; display:none;"></div>
 
     <div class="next-row">
-      <button class="btn-secondary" onclick="showConjAnswers()">👀 答えを見る</button>
+      <button class="btn-secondary" onclick="showConjAnswers()">答えを見る</button>
       <div style="display:flex; gap:8px;">
         <button class="btn-primary" onclick="checkConjugation()">採点する</button>
         <button class="btn-secondary" onclick="nextConjugation()">次の動詞 →</button>
@@ -737,10 +743,10 @@
   <div class="card" id="listeningArea" style="display:none;">
     <div class="card-top">
       <div class="tag-group" id="listenTags"></div>
-      <span class="tag" id="listenModeBadge">🎧 聴解チャレンジ</span>
+      <span class="tag" id="listenModeBadge">聴解チャレンジ</span>
     </div>
     <div class="listen-box">
-      <button class="listen-play-big" onclick="speakCurrent()">🔊 ドイツ語を聞く</button>
+      <button class="listen-play-big" onclick="speakCurrent()">ドイツ語を聞く</button>
       <p style="font-size:0.86rem; color:var(--muted); margin:10px 0 0;">音声を聞いて、空欄に入る正しい語句を選んでください</p>
       <div class="sentence-de" id="listenMaskedSentence" style="margin-top:14px; font-size:1.25rem;"></div>
       <div class="sentence-ja" id="listenJa" style="display:none; margin-top:6px;"></div>
@@ -749,28 +755,39 @@
     <div class="options-grid" id="listenOptionsGrid"></div>
     <div class="feedback" id="listenFeedback"></div>
     <div class="next-row">
-      <button class="btn-secondary" onclick="toggleListenScript()">👀 原文・訳を見る</button>
+      <button class="btn-secondary" onclick="toggleListenScript()">原文・訳を見る</button>
       <button class="btn-primary" onclick="nextQuestion()">次の問題へ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- メニューモーダル -->
+<div class="modal-backdrop" id="menuModal" onclick="if(event.target===this) closeModal('menuModal')">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-head">
+      <h2>メニュー</h2>
+      <button class="close-btn" onclick="closeModal('menuModal')">×</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('menuModal'); openDashboard();">学習記録ダッシュボードを見る</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('menuModal'); openModal('grammarModal');">クイック文法表を開く</button>
+      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('menuModal'); openModal('addModal');">オリジナル問題を追加・管理</button>
     </div>
   </div>
 </div>
 
 <!-- 設定モーダル -->
 <div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this) closeModal('settingsModal')">
-  <div class="modal" style="max-width:460px;">
+  <div class="modal" style="max-width:440px;">
     <div class="modal-head">
-      <h2>⚙️ 設定・メニュー</h2>
+      <h2>設定</h2>
       <button class="close-btn" onclick="closeModal('settingsModal')">×</button>
     </div>
     <div style="display:flex; flex-direction:column; gap:10px;">
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleHintBtn" onclick="toggleHint()"><span>💡 ヒント表示</span><strong>ON</strong></button>
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleTypeBtn" onclick="toggleTyping()"><span>⌨️ 解答方式</span><strong>4択モード</strong></button>
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="autoSpeakBtn" onclick="toggleAutoSpeak()"><span>🔊 解答時の自動音声再生</span><strong>ON</strong></button>
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="themeBtn" onclick="toggleTheme()"><span>🌙 画面テーマ</span><strong>ライト</strong></button>
-      <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openDashboard();">📊 学習記録ダッシュボードを見る</button>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('grammarModal');">📖 クイック文法表を開く</button>
-      <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('addModal');">＋ オリジナル問題を追加・管理</button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleHintBtn" onclick="toggleHint()"><span>ヒント表示</span><strong>ON</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleTypeBtn" onclick="toggleTyping()"><span>解答方式</span><strong>4択モード</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="autoSpeakBtn" onclick="toggleAutoSpeak()"><span>解答時の自動音声再生</span><strong>ON</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="themeBtn" onclick="toggleTheme()"><span>画面テーマ</span><strong>ライト</strong></button>
     </div>
   </div>
 </div>
@@ -779,15 +796,15 @@
 <div class="modal-backdrop" id="dashboardModal" onclick="if(event.target===this) closeModal('dashboardModal')">
   <div class="modal">
     <div class="modal-head">
-      <h2>📊 学習ダッシュボード</h2>
+      <h2>学習ダッシュボード</h2>
       <button class="close-btn" onclick="closeModal('dashboardModal')">×</button>
     </div>
     <div class="dash-summary" id="dashSummary"></div>
-    <h4 style="margin:0 0 10px;">📘 教科書 全20課の達成状況</h4>
+    <h4 style="margin:0 0 10px;">ideal 全20課の達成状況</h4>
     <div class="dash-list" id="dashLessonList"></div>
     <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:14px;">
-      <button class="btn-danger" onclick="resetWrong()">🔥 苦手リストを空にする</button>
-      <button class="btn-danger" onclick="resetAllProgress()">🗑️ 学習履歴をすべてリセット</button>
+      <button class="btn-danger" onclick="resetWrong()">苦手リストを空にする</button>
+      <button class="btn-danger" onclick="resetAllProgress()">学習履歴をすべてリセット</button>
     </div>
   </div>
 </div>
@@ -1657,6 +1674,7 @@ let stats = JSON.parse(localStorage.getItem("de_drill_stats_v1") || '{"total":0,
 
 let currentMode = "drill";
 let fcType = "vocab";
+let activeBook = "ideal";
 let activeTab = "textbook";
 let selectedLesson = 1;
 let subFilter = "all";
@@ -1692,7 +1710,7 @@ function init() {
   LESSON_TITLES.forEach((title, i) => {
     const opt = document.createElement("option");
     opt.value = i + 1;
-    opt.textContent = `${title} (50問)`;
+    opt.textContent = title;
     sel.appendChild(opt);
   });
 
@@ -1764,11 +1782,18 @@ function setMode(mode) {
   if (mode === "listening") setTimeout(speakCurrent, 150);
 }
 
+function setBook(book) {
+  activeBook = book;
+  document.querySelectorAll("[data-book]").forEach(b => b.classList.toggle("active", b.dataset.book === book));
+  renderTabs();
+  nextQuestion();
+}
+
 function renderTabs() {
-  const all = getAllQuestions();
+  const all = activeBook === "ideal" ? getAllQuestions() : [];
   const tabs = [
-    { id: "textbook", label: "📘 教科書問題 (全20課)", count: all.length, isTb: true },
-    { id: "wrong", label: "🔥 苦手復習", count: all.filter(q => wrongIds.has(q.id)).length }
+    { id: "textbook", label: "教科書問題", count: all.length, isTb: true },
+    { id: "wrong", label: "苦手復習", count: all.filter(q => wrongIds.has(q.id)).length }
   ];
   const bar = document.getElementById("tabsBar");
   bar.innerHTML = "";
@@ -1785,7 +1810,7 @@ function renderTabs() {
   });
 
   const tbBar = document.getElementById("tbFilterBar");
-  if (activeTab === "textbook") {
+  if (activeBook === "ideal" && activeTab === "textbook") {
     tbBar.classList.add("show");
     updateLessonProgress();
   } else {
@@ -1816,6 +1841,7 @@ function updateLessonProgress() {
 }
 
 function getFilteredPool() {
+  if (activeBook !== "ideal") return [];
   const all = getAllQuestions();
   if (activeTab === "wrong") {
     return all.filter(q => wrongIds.has(q.id));
@@ -1838,6 +1864,7 @@ function buildFullGermanSentence(q) {
 }
 
 function getVocabPool() {
+  if (activeBook !== "ideal") return [];
   const list = [];
   if (activeTab === "wrong") {
     for (let l = 1; l <= 20; l++) {
@@ -1880,9 +1907,22 @@ function nextQuestion() {
 
   if (pool.length === 0) {
     currentQ = null;
-    if (activeTab === "wrong") {
-      document.getElementById("cardTags").innerHTML = `<span class="tag orig-badge">🎉 復習完了</span>`;
-      document.getElementById("baseLemma").textContent = "苦手問題ゼロ！";
+    if (activeBook === "kiso") {
+      document.getElementById("cardTags").innerHTML = `<span class="tag orig-badge">基礎固めのドイツ語</span>`;
+      document.getElementById("baseLemma").textContent = "教材準備中";
+      document.getElementById("sentenceDe").textContent = "「基礎固めのドイツ語」の教材データを待っています。";
+      document.getElementById("sentenceJa").textContent = "教材が追加されると、ここに課ごとの問題と単語カードが表示されます。";
+      document.getElementById("hintBox").classList.add("hidden");
+      document.getElementById("optionsGrid").innerHTML = "";
+      document.getElementById("feedbackBox").className = "feedback";
+      document.getElementById("listenTags").innerHTML = `<span class="tag orig-badge">基礎固めのドイツ語</span>`;
+      document.getElementById("listenMaskedSentence").textContent = "教材準備中";
+      document.getElementById("listenMaskedSentence").style.filter = "none";
+      document.getElementById("listenOptionsGrid").innerHTML = "";
+      document.getElementById("listenFeedback").className = "feedback";
+    } else if (activeTab === "wrong") {
+      document.getElementById("cardTags").innerHTML = `<span class="tag orig-badge">復習完了</span>`;
+      document.getElementById("baseLemma").textContent = "苦手問題ゼロ";
       document.getElementById("sentenceDe").textContent = "現在、復習リストに問題はありません。";
       document.getElementById("sentenceJa").textContent = "他のタブで問題を解いて、間違えた問題がここに自動で溜まります。";
       document.getElementById("hintBox").classList.add("hidden");
@@ -2053,7 +2093,6 @@ function checkAnswer(userAns, clickedBtn = null, isListen = false) {
   localStorage.setItem("de_drill_stats_v1", JSON.stringify(stats));
 
   document.getElementById("sessionScore").textContent = `${sessionCorrect} / ${sessionTotal}`;
-  document.getElementById("streakCount").textContent = streak;
 
   if (isListen) {
     const listenEl = document.getElementById("listenMaskedSentence");
@@ -2320,7 +2359,6 @@ function openDashboard() {
   document.getElementById("dashSummary").innerHTML = `
     <div class="dash-stat"><div class="dash-val">${solvedIds.size}</div><div class="dash-lbl">クリア済み問題</div></div>
     <div class="dash-stat"><div class="dash-val">${acc}%</div><div class="dash-lbl">通算正答率 (${stats.correct}/${stats.total})</div></div>
-    <div class="dash-stat"><div class="dash-val">${stats.bestStreak}</div><div class="dash-lbl">最高連続正解</div></div>
     <div class="dash-stat"><div class="dash-val" style="color:var(--danger);">${wrongIds.size}</div><div class="dash-lbl">苦手復習リスト</div></div>
   `;
 
@@ -2353,7 +2391,7 @@ function resetWrong() {
 }
 
 function resetAllProgress() {
-  if (!confirm("クリア済み問題・正答率・最高連続記録など、すべての学習履歴をリセットしますか？")) return;
+  if (!confirm("クリア済み問題・正答率など、すべての学習履歴をリセットしますか？")) return;
   wrongIds.clear();
   solvedIds.clear();
   stats = { total: 0, correct: 0, bestStreak: 0 };
@@ -2364,7 +2402,6 @@ function resetAllProgress() {
   localStorage.removeItem("de_drill_solved_v3");
   localStorage.removeItem("de_drill_stats_v1");
   document.getElementById("sessionScore").textContent = "0 / 0";
-  document.getElementById("streakCount").textContent = "0";
   renderTabs();
   updateLessonProgress();
   openDashboard();
