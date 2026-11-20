@@ -745,7 +745,7 @@
   <!-- 3. 動詞活用道場エリア -->
   <div class="type-pills" id="conjTypeBar" style="display:none; margin-bottom:10px;">
     <button class="pill active" id="conjTypePresent" onclick="setConjMode('present')">現在人称変化</button>
-    <button class="pill" id="conjTypeIrreg" onclick="setConjMode('irregular')">不規則動詞変化表</button>
+    <button class="pill" id="conjTypeIrreg" onclick="setConjMode('irregular')">不規則動詞変化</button>
   </div>
   <div class="card" id="conjugationArea" style="display:none;">
     <div class="conj-header">
@@ -2977,7 +2977,8 @@ function setConjMode(mode) {
   conjMode = mode;
   document.getElementById("conjTypePresent").classList.toggle("active", mode === "present");
   document.getElementById("conjTypeIrreg").classList.toggle("active", mode === "irregular");
-  document.getElementById("conjBadge").textContent = mode === "present" ? "現在人称変化" : "主要不規則動詞変化表";
+  document.getElementById("conjBadge").textContent = mode === "present" ? "現在人称変化" : "不規則動詞変化";
+  document.getElementById("conjSelect").style.display = mode === "present" ? "inline-block" : "none";
   populateConjSelect();
   renderConjugation();
 }
