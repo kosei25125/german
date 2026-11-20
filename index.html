@@ -80,6 +80,9 @@
   }
 
   * { box-sizing: border-box; }
+  html, body {
+    overscroll-behavior-y: none;
+  }
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
@@ -102,6 +105,16 @@
     position: sticky;
     top: 0;
     z-index: 30;
+  }
+  header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: 300px;
+    background: var(--header-bg);
+    pointer-events: none;
   }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; letter-spacing: 0.01em; }
   .flag {
