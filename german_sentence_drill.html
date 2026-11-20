@@ -656,7 +656,7 @@
   <div class="mode-bar">
     <button class="mode-btn active" data-mode="drill" onclick="setMode('drill')">練習問題</button>
     <button class="mode-btn" data-mode="flashcard" onclick="setMode('flashcard')">単語・例文カード</button>
-    <button class="mode-btn" data-mode="conjugation" onclick="setMode('conjugation')">動詞活用道場</button>
+    <button class="mode-btn" data-mode="conjugation" onclick="setMode('conjugation')">動詞活用</button>
     <button class="mode-btn" data-mode="listening" onclick="setMode('listening')">リスニング</button>
   </div>
 
@@ -752,7 +752,6 @@
       <div>
         <span class="tag orig-badge" id="conjBadge">現在人称変化</span>
         <h2 style="margin:6px 0 2px; font-size:1.3rem;" id="conjTitle">fahren（乗り物で行く）</h2>
-        <div style="font-size:0.86rem; color:var(--muted);" id="conjNote">現在人称変化（a → ä 幹母音変化）</div>
       </div>
       <div style="display:flex; gap:8px; align-items:center;">
         <select class="tb-select" id="conjSelect" onchange="loadConjugationByIndex()"></select>
@@ -3030,7 +3029,6 @@ function renderConjugation() {
   if (conjMode === "present") {
     const v = CONJUGATION_VERBS[conjIdx];
     document.getElementById("conjTitle").textContent = `${v.inf}（${v.meaning}）`;
-    document.getElementById("conjNote").textContent = v.note;
     document.getElementById("conj3Forms").style.display = "none";
     document.getElementById("conj3Forms").textContent = `3基本形: ${v.three}`;
     PRONOUNS.forEach((p, idx) => {
@@ -3046,7 +3044,6 @@ function renderConjugation() {
     const v = IRREGULAR_VERBS_TABLE[irregIdx];
     const fields = getIrregularFields(v);
     document.getElementById("conjTitle").textContent = `${v.inf}（${v.ja}）`;
-    document.getElementById("conjNote").textContent = "教科書 pp.82〜87 主要不規則動詞変化表";
     document.getElementById("conj3Forms").style.display = "none";
     document.getElementById("conj3Forms").textContent = `${v.inf} - ${v.past} - ${v.pp}`;
     fields.forEach((f, idx) => {
