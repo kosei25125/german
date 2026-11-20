@@ -573,8 +573,9 @@
   .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
   .modal-head h2 { margin: 0; font-size: 1.15rem; }
   .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--muted); }
-  table.grammar { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 16px; }
-  table.grammar th, table.grammar td { border: 1px solid var(--border); padding: 6px 8px; text-align: center; }
+  .table-scroll { overflow-x: auto; margin-bottom: 14px; -webkit-overflow-scrolling: touch; }
+  table.grammar { width: 100%; border-collapse: collapse; font-size: 0.82rem; white-space: nowrap; }
+  table.grammar th, table.grammar td { border: 1px solid var(--border); padding: 5px 7px; text-align: center; }
   table.grammar th { background: var(--card-elevated); }
   .form-group { margin-bottom: 10px; }
   .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; }
@@ -742,10 +743,14 @@
   </div>
 
   <!-- 3. 動詞活用道場エリア -->
+  <div class="type-pills" id="conjTypeBar" style="display:none; margin-bottom:10px;">
+    <button class="pill active" id="conjTypePresent" onclick="setConjMode('present')">現在人称変化</button>
+    <button class="pill" id="conjTypeIrreg" onclick="setConjMode('irregular')">不規則動詞変化表</button>
+  </div>
   <div class="card" id="conjugationArea" style="display:none;">
     <div class="conj-header">
       <div>
-        <span class="tag orig-badge">動詞活用トレーニング</span>
+        <span class="tag orig-badge" id="conjBadge">現在人称変化</span>
         <h2 style="margin:6px 0 2px; font-size:1.3rem;" id="conjTitle">fahren（乗り物で行く）</h2>
         <div style="font-size:0.86rem; color:var(--muted);" id="conjNote">現在人称変化（a → ä 幹母音変化）</div>
       </div>
@@ -835,30 +840,121 @@
 <div class="modal-backdrop" id="grammarModal" onclick="if(event.target===this) closeModal('grammarModal')">
   <div class="modal">
     <div class="modal-head">
-      <h2>📖 ドイツ語 クイック文法カンペ表</h2>
+      <h2>各文法項目の変化表</h2>
       <button class="close-btn" onclick="closeModal('grammarModal')">×</button>
     </div>
-    <h4>1. 定冠詞の格変化 (der / die / das / die)</h4>
-    <table class="grammar">
-      <tr><th>格</th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
-      <tr><td>1格 (主語)</td><td>der</td><td>die</td><td>das</td><td>die</td></tr>
-      <tr><td>2格 (〜の)</td><td>des (+s/es)</td><td>der</td><td>des (+s/es)</td><td>der</td></tr>
-      <tr><td>3格 (〜に)</td><td>dem</td><td>der</td><td>dem</td><td>den (+n)</td></tr>
-      <tr><td>4格 (〜を)</td><td>den</td><td>die</td><td>das</td><td>die</td></tr>
-    </table>
-    <h4>2. 形容詞の格変化（弱変化 / 混合変化 / 強変化）</h4>
-    <table class="grammar">
-      <tr><th>種類</th><th>男性 1/4格</th><th>女性 1/4格</th><th>中性 1/4格</th><th>複数 & 2/3格</th></tr>
-      <tr><td>定冠詞類の後 (弱変化)</td><td>1格 -e / 4格 -en</td><td>-e</td><td>-e</td><td>すべて -en</td></tr>
-      <tr><td>不定冠詞類の後 (混合)</td><td>1格 -er / 4格 -en</td><td>-e</td><td>-es</td><td>すべて -en</td></tr>
-      <tr><td>無冠詞 (強変化)</td><td>1格 -er / 4格 -en</td><td>-e</td><td>-es</td><td>3格 -en / 2格男中 -en</td></tr>
-    </table>
-    <h4>3. 前置詞の格支配</h4>
-    <p style="font-size:0.88rem; margin:0;">
-      <strong>3格支配：</strong> aus, bei, mit, nach, seit, von, zu<br>
-      <strong>4格支配：</strong> bis, durch, für, gegen, ohne, um<br>
-      <strong>3・4格支配（静=3格 / 動=4格）：</strong> an, auf, hinter, in, neben, über, unter, vor, zwischen
-    </p>
+
+    <h4>1. 動詞の現在人称変化</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th>不定詞</th><th>wohnen</th><th>sein</th><th>haben</th><th>werden</th></tr>
+      <tr><th>ich</th><td>wohne</td><td><strong>bin</strong></td><td>habe</td><td>werde</td></tr>
+      <tr><th>du</th><td>wohnst</td><td><strong>bist</strong></td><td><strong>hast</strong></td><td><strong>wirst</strong></td></tr>
+      <tr><th>er/sie/es</th><td>wohnt</td><td><strong>ist</strong></td><td><strong>hat</strong></td><td><strong>wird</strong></td></tr>
+      <tr><th>wir</th><td>wohnen</td><td><strong>sind</strong></td><td>haben</td><td>werden</td></tr>
+      <tr><th>ihr</th><td>wohnt</td><td><strong>seid</strong></td><td>habt</td><td>werdet</td></tr>
+      <tr><th>sie/Sie</th><td>wohnen</td><td><strong>sind</strong></td><td>haben</td><td>werden</td></tr>
+    </table></div>
+
+    <h4>2. 定冠詞の格変化</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><th>1格</th><td><strong>der</strong></td><td><strong>die</strong></td><td><strong>das</strong></td><td><strong>die</strong></td></tr>
+      <tr><th>2格</th><td><strong>des</strong></td><td><strong>der</strong></td><td><strong>des</strong></td><td><strong>der</strong></td></tr>
+      <tr><th>3格</th><td><strong>dem</strong></td><td><strong>der</strong></td><td><strong>dem</strong></td><td><strong>den</strong></td></tr>
+      <tr><th>4格</th><td><strong>den</strong></td><td><strong>die</strong></td><td><strong>das</strong></td><td><strong>die</strong></td></tr>
+    </table></div>
+
+    <h4>3. 不定冠詞の格変化</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th></tr>
+      <tr><th>1格</th><td><strong>ein</strong></td><td><strong>eine</strong></td><td><strong>ein</strong></td></tr>
+      <tr><th>2格</th><td>eines</td><td>einer</td><td>eines</td></tr>
+      <tr><th>3格</th><td>einem</td><td>einer</td><td>einem</td></tr>
+      <tr><th>4格</th><td>einen</td><td>eine</td><td><strong>ein</strong></td></tr>
+    </table></div>
+
+    <h4>4. 人称代名詞</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th>1格</th><th>ich</th><th>du</th><th>er</th><th>sie</th><th>es</th><th>wir</th><th>ihr</th><th>sie</th><th>Sie</th></tr>
+      <tr><th>3格</th><td><strong>mir</strong></td><td><strong>dir</strong></td><td><strong>ihm</strong></td><td><strong>ihr</strong></td><td><strong>ihm</strong></td><td><strong>uns</strong></td><td><strong>euch</strong></td><td><strong>ihnen</strong></td><td><strong>Ihnen</strong></td></tr>
+      <tr><th>4格</th><td><strong>mich</strong></td><td><strong>dich</strong></td><td><strong>ihn</strong></td><td><strong>sie</strong></td><td><strong>es</strong></td><td><strong>uns</strong></td><td><strong>euch</strong></td><td><strong>sie</strong></td><td><strong>Sie</strong></td></tr>
+    </table></div>
+
+    <h4>5. 定冠詞類の格変化</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><th>1格</th><td><strong>dieser</strong></td><td>diese</td><td>dieses</td><td>diese</td></tr>
+      <tr><th>2格</th><td>dieses</td><td>dieser</td><td>dieses</td><td>dieser</td></tr>
+      <tr><th>3格</th><td>diesem</td><td>dieser</td><td>diesem</td><td>diesen</td></tr>
+      <tr><th>4格</th><td>diesen</td><td>diese</td><td>dieses</td><td>diese</td></tr>
+    </table></div>
+
+    <h4>6. 不定冠詞類の格変化</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><th>1格</th><td><strong>mein</strong></td><td>meine</td><td><strong>mein</strong></td><td>meine</td></tr>
+      <tr><th>2格</th><td>meines</td><td>meiner</td><td>meines</td><td>meiner</td></tr>
+      <tr><th>3格</th><td>meinem</td><td>meiner</td><td>meinem</td><td>meinen</td></tr>
+      <tr><th>4格</th><td>meinen</td><td>meine</td><td><strong>mein</strong></td><td>meine</td></tr>
+    </table></div>
+
+    <h4>7. 話法の助動詞の現在人称変化</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th>不定詞</th><th>dürfen</th><th>können</th><th>mögen</th><th>müssen</th><th>sollen</th><th>wollen</th><th>(möchte)</th></tr>
+      <tr><th>ich</th><td><strong>darf</strong></td><td><strong>kann</strong></td><td><strong>mag</strong></td><td><strong>muss</strong></td><td><strong>soll</strong></td><td><strong>will</strong></td><td><strong>möchte</strong></td></tr>
+      <tr><th>du</th><td><strong>darfst</strong></td><td><strong>kannst</strong></td><td><strong>magst</strong></td><td><strong>musst</strong></td><td><strong>sollst</strong></td><td><strong>willst</strong></td><td><strong>möchtest</strong></td></tr>
+      <tr><th>er/sie/es</th><td><strong>darf</strong></td><td><strong>kann</strong></td><td><strong>mag</strong></td><td><strong>muss</strong></td><td><strong>soll</strong></td><td><strong>will</strong></td><td><strong>möchte</strong></td></tr>
+      <tr><th>wir</th><td>dürfen</td><td>können</td><td>mögen</td><td>müssen</td><td>sollen</td><td>wollen</td><td>möchten</td></tr>
+      <tr><th>ihr</th><td>dürft</td><td>könnt</td><td>mögt</td><td>müsst</td><td>sollt</td><td>wollt</td><td>möchtet</td></tr>
+      <tr><th>sie/Sie</th><td>dürfen</td><td>können</td><td>mögen</td><td>müssen</td><td>sollen</td><td>wollen</td><td>möchten</td></tr>
+    </table></div>
+
+    <h4>8. 形容詞の格変化</h4>
+    <p style="font-size:0.84rem; font-weight:700; margin:6px 0 4px;">(1) 定冠詞(類)＋形容詞＋名詞</p>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><th>1格</th><td>der <strong>neue</strong> Wagen</td><td>die <strong>neue</strong> Tasche</td><td>das <strong>neue</strong> Fahrrad</td><td>die <strong>neuen</strong> Bücher</td></tr>
+      <tr><th>2格</th><td>des <strong>neuen</strong> Wagens</td><td>der <strong>neuen</strong> Tasche</td><td>des <strong>neuen</strong> Fahrrad[e]s</td><td>der <strong>neuen</strong> Bücher</td></tr>
+      <tr><th>3格</th><td>dem <strong>neuen</strong> Wagen</td><td>der <strong>neuen</strong> Tasche</td><td>dem <strong>neuen</strong> Fahrrad</td><td>den <strong>neuen</strong> Büchern</td></tr>
+      <tr><th>4格</th><td>den <strong>neuen</strong> Wagen</td><td>die <strong>neue</strong> Tasche</td><td>das <strong>neue</strong> Fahrrad</td><td>die <strong>neuen</strong> Bücher</td></tr>
+    </table></div>
+    <p style="font-size:0.84rem; font-weight:700; margin:6px 0 4px;">(2) 不定冠詞(類)＋形容詞＋名詞</p>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><th>1格</th><td>ein <strong>neuer</strong> Wagen</td><td>eine <strong>neue</strong> Tasche</td><td>ein <strong>neues</strong> Fahrrad</td><td>meine <strong>neuen</strong> Bücher</td></tr>
+      <tr><th>2格</th><td>eines <strong>neuen</strong> Wagens</td><td>einer <strong>neuen</strong> Tasche</td><td>eines <strong>neuen</strong> Fahrrad[e]s</td><td>meiner <strong>neuen</strong> Bücher</td></tr>
+      <tr><th>3格</th><td>einem <strong>neuen</strong> Wagen</td><td>einer <strong>neuen</strong> Tasche</td><td>einem <strong>neuen</strong> Fahrrad</td><td>meinen <strong>neuen</strong> Büchern</td></tr>
+      <tr><th>4格</th><td>einen <strong>neuen</strong> Wagen</td><td>eine <strong>neue</strong> Tasche</td><td>ein <strong>neues</strong> Fahrrad</td><td>meine <strong>neuen</strong> Bücher</td></tr>
+    </table></div>
+    <p style="font-size:0.84rem; font-weight:700; margin:6px 0 4px;">(3) (冠詞(類)なし) 形容詞＋名詞</p>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><th>1格</th><td><strong>guter</strong> Wein</td><td><strong>frische</strong> Milch</td><td><strong>kaltes</strong> Wasser</td><td><strong>kurze</strong> Haare</td></tr>
+      <tr><th>2格</th><td><strong>guten</strong> Wein[e]s</td><td><strong>frischer</strong> Milch</td><td><strong>kalten</strong> Wassers</td><td><strong>kurzer</strong> Haare</td></tr>
+      <tr><th>3格</th><td><strong>gutem</strong> Wein</td><td><strong>frischer</strong> Milch</td><td><strong>kaltem</strong> Wasser</td><td><strong>kurzen</strong> Haaren</td></tr>
+      <tr><th>4格</th><td><strong>guten</strong> Wein</td><td><strong>frische</strong> Milch</td><td><strong>kaltes</strong> Wasser</td><td><strong>kurze</strong> Haare</td></tr>
+    </table></div>
+
+    <h4>9. 動詞の過去人称変化</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th>不定詞</th><th>wohnen</th><th>sein</th><th>haben</th><th>werden</th></tr>
+      <tr><th>過去基本形</th><td>wohnte</td><td>war</td><td>hatte</td><td>wurde</td></tr>
+      <tr><th>ich</th><td>wohnte</td><td>war</td><td>hatte</td><td>wurde</td></tr>
+      <tr><th>du</th><td>wohnt<strong>est</strong></td><td>war<strong>st</strong></td><td>hatt<strong>est</strong></td><td>wurd<strong>est</strong></td></tr>
+      <tr><th>er/sie/es</th><td>wohnte</td><td>war</td><td>hatte</td><td>wurde</td></tr>
+      <tr><th>wir</th><td>wohnt<strong>en</strong></td><td>war<strong>en</strong></td><td>hatt<strong>en</strong></td><td>wurd<strong>en</strong></td></tr>
+      <tr><th>ihr</th><td>wohnt<strong>et</strong></td><td>war<strong>t</strong></td><td>hatt<strong>et</strong></td><td>wurd<strong>et</strong></td></tr>
+      <tr><th>sie/Sie</th><td>wohnt<strong>en</strong></td><td>war<strong>en</strong></td><td>hatt<strong>en</strong></td><td>wurd<strong>en</strong></td></tr>
+    </table></div>
+
+    <h4>10. 関係代名詞</h4>
+    <div class="table-scroll"><table class="grammar">
+      <tr><th></th><th>男性</th><th>女性</th><th>中性</th><th>複数</th></tr>
+      <tr><th>1格</th><td>der</td><td>die</td><td>das</td><td>die</td></tr>
+      <tr><th>2格</th><td><strong>dessen</strong></td><td><strong>deren</strong></td><td><strong>dessen</strong></td><td><strong>deren</strong></td></tr>
+      <tr><th>3格</th><td>dem</td><td>der</td><td>dem</td><td><strong>denen</strong></td></tr>
+      <tr><th>4格</th><td>den</td><td>die</td><td>das</td><td>die</td></tr>
+    </table></div>
   </div>
 </div>
 
@@ -1481,6 +1577,119 @@ const CONJUGATION_VERBS = [
   { inf: "dürfen", meaning: "〜してよい", note: "話法の助動詞（単数は ü→a）", forms: ["darf", "darfst", "darf", "dürfen", "dürft", "dürfen"], three: "dürfen - durfte - gedurft" }
 ];
 const PRONOUNS = ["ich", "du", "er / sie / es", "wir", "ihr", "Sie / sie"];
+
+// --- 3.2 主要不規則動詞変化表（教科書 pp.82〜87 全109語） ---
+const IRREGULAR_VERBS_TABLE = [
+  { inf: "backen", ja: "(パンなどを) 焼く", pres: { du: "bäckst (backst)", er: "bäckt (backt)" }, past: "backte (buk)", k2: "backte (büke)", pp: "gebacken" },
+  { inf: "befehlen", ja: "命令する", pres: { du: "befiehlst", er: "befiehlt" }, past: "befahl", k2: "befähle/beföhle", pp: "befohlen" },
+  { inf: "beginnen", ja: "始める、始まる", pres: {}, past: "begann", k2: "begänne/begönne", pp: "begonnen" },
+  { inf: "bieten", ja: "提供する", pres: {}, past: "bot", k2: "böte", pp: "geboten" },
+  { inf: "binden", ja: "結ぶ", pres: {}, past: "band", k2: "bände", pp: "gebunden" },
+  { inf: "bitten", ja: "頼む", pres: {}, past: "bat", k2: "bäte", pp: "gebeten" },
+  { inf: "bleiben", ja: "とどまる", pres: {}, past: "blieb", k2: "bliebe", pp: "geblieben" },
+  { inf: "braten", ja: "(肉などを) 焼く", pres: { du: "brätst", er: "brät" }, past: "briet", k2: "briete", pp: "gebraten" },
+  { inf: "brechen", ja: "破る、折る", pres: { du: "brichst", er: "bricht" }, past: "brach", k2: "bräche", pp: "gebrochen" },
+  { inf: "brennen", ja: "燃える", pres: {}, past: "brannte", k2: "brennte", pp: "gebrannt" },
+  { inf: "bringen", ja: "運ぶ、持ってくる", pres: {}, past: "brachte", k2: "brächte", pp: "gebracht" },
+  { inf: "denken", ja: "考える", pres: {}, past: "dachte", k2: "dächte", pp: "gedacht" },
+  { inf: "dürfen", ja: "…してもよい", pres: { ich: "darf", du: "darfst", er: "darf" }, past: "durfte", k2: "dürfte", pp: "gedurft (dürfen)" },
+  { inf: "empfehlen", ja: "推薦する", pres: { du: "empfiehlst", er: "empfiehlt" }, past: "empfahl", k2: "empföhle/empfähle", pp: "empfohlen" },
+  { inf: "erschrecken", ja: "驚く", pres: { du: "erschrickst", er: "erschrickt" }, past: "erschrak", k2: "erschräke", pp: "erschrocken" },
+  { inf: "essen", ja: "食べる", pres: { du: "isst", er: "isst" }, past: "aß", k2: "äße", pp: "gegessen" },
+  { inf: "fahren", ja: "(乗物で) 行く", pres: { du: "fährst", er: "fährt" }, past: "fuhr", k2: "führe", pp: "gefahren" },
+  { inf: "fallen", ja: "落ちる", pres: { du: "fällst", er: "fällt" }, past: "fiel", k2: "fiele", pp: "gefallen" },
+  { inf: "fangen", ja: "捕える", pres: { du: "fängst", er: "fängt" }, past: "fing", k2: "finge", pp: "gefangen" },
+  { inf: "finden", ja: "見つける", pres: {}, past: "fand", k2: "fände", pp: "gefunden" },
+  { inf: "fliegen", ja: "飛ぶ", pres: {}, past: "flog", k2: "flöge", pp: "geflogen" },
+  { inf: "fliehen", ja: "逃げる", pres: {}, past: "floh", k2: "flöhe", pp: "geflohen" },
+  { inf: "fließen", ja: "流れる", pres: {}, past: "floss", k2: "flösse", pp: "geflossen" },
+  { inf: "frieren", ja: "凍る", pres: {}, past: "fror", k2: "fröre", pp: "gefroren" },
+  { inf: "geben", ja: "与える", pres: { du: "gibst", er: "gibt" }, past: "gab", k2: "gäbe", pp: "gegeben" },
+  { inf: "gehen", ja: "行く", pres: {}, past: "ging", k2: "ginge", pp: "gegangen" },
+  { inf: "gelingen", ja: "成功する", pres: {}, past: "gelang", k2: "gelänge", pp: "gelungen" },
+  { inf: "gelten", ja: "値する、有効である", pres: { du: "giltst", er: "gilt" }, past: "galt", k2: "gölte", pp: "gegolten" },
+  { inf: "genießen", ja: "享受する、楽しむ", pres: {}, past: "genoss", k2: "genösse", pp: "genossen" },
+  { inf: "geschehen", ja: "起こる", pres: { es: "geschieht" }, past: "geschah", k2: "geschähe", pp: "geschehen" },
+  { inf: "gewinnen", ja: "獲得する、勝つ", pres: {}, past: "gewann", k2: "gewönne/gewänne", pp: "gewonnen" },
+  { inf: "graben", ja: "掘る", pres: { du: "gräbst", er: "gräbt" }, past: "grub", k2: "grübe", pp: "gegraben" },
+  { inf: "greifen", ja: "つかむ", pres: {}, past: "griff", k2: "griffe", pp: "gegriffen" },
+  { inf: "haben", ja: "持っている", pres: { ich: "habe", du: "hast", er: "hat" }, past: "hatte", k2: "hätte", pp: "gehabt" },
+  { inf: "halten", ja: "持って(つかんで)いる", pres: { du: "hältst", er: "hält" }, past: "hielt", k2: "hielte", pp: "gehalten" },
+  { inf: "hängen", ja: "掛っている", pres: {}, past: "hing", k2: "hinge", pp: "gehangen" },
+  { inf: "heben", ja: "持ち上げる", pres: {}, past: "hob", k2: "höbe", pp: "gehoben" },
+  { inf: "heißen", ja: "…と呼ばれる、という名前である", pres: {}, past: "hieß", k2: "hieße", pp: "geheißen" },
+  { inf: "helfen", ja: "助ける", pres: { du: "hilfst", er: "hilft" }, past: "half", k2: "hülfe/hälfe", pp: "geholfen" },
+  { inf: "kennen", ja: "知る", pres: {}, past: "kannte", k2: "kennte", pp: "gekannt" },
+  { inf: "kommen", ja: "来る", pres: {}, past: "kam", k2: "käme", pp: "gekommen" },
+  { inf: "können", ja: "…できる", pres: { ich: "kann", du: "kannst", er: "kann" }, past: "konnte", k2: "könnte", pp: "gekonnt (können)" },
+  { inf: "laden", ja: "(荷を) 積む", pres: { du: "lädst", er: "lädt" }, past: "lud", k2: "lüde", pp: "geladen" },
+  { inf: "lassen", ja: "…させる", pres: { du: "lässt", er: "lässt" }, past: "ließ", k2: "ließe", pp: "gelassen (lassen)" },
+  { inf: "laufen", ja: "走る", pres: { du: "läufst", er: "läuft" }, past: "lief", k2: "liefe", pp: "gelaufen" },
+  { inf: "leiden", ja: "悩む、苦しむ", pres: {}, past: "litt", k2: "litte", pp: "gelitten" },
+  { inf: "leihen", ja: "貸す、借りる", pres: {}, past: "lieh", k2: "liehe", pp: "geliehen" },
+  { inf: "lesen", ja: "読む", pres: { du: "liest", er: "liest" }, past: "las", k2: "läse", pp: "gelesen" },
+  { inf: "liegen", ja: "横たわっている", pres: {}, past: "lag", k2: "läge", pp: "gelegen" },
+  { inf: "lügen", ja: "うそをつく", pres: {}, past: "log", k2: "löge", pp: "gelogen" },
+  { inf: "messen", ja: "測る", pres: { du: "misst", er: "misst" }, past: "maß", k2: "mäße", pp: "gemessen" },
+  { inf: "mögen", ja: "…かもしれない", pres: { ich: "mag", du: "magst", er: "mag" }, past: "mochte", k2: "möchte", pp: "gemocht (mögen)" },
+  { inf: "müssen", ja: "…ねばならない", pres: { ich: "muss", du: "musst", er: "muss" }, past: "musste", k2: "müsste", pp: "gemusst (müssen)" },
+  { inf: "nehmen", ja: "取る", pres: { du: "nimmst", er: "nimmt" }, past: "nahm", k2: "nähme", pp: "genommen" },
+  { inf: "nennen", ja: "…と呼ぶ", pres: {}, past: "nannte", k2: "nennte", pp: "genannt" },
+  { inf: "raten", ja: "助言する", pres: { du: "rätst", er: "rät" }, past: "riet", k2: "riete", pp: "geraten" },
+  { inf: "reißen", ja: "引きちぎる", pres: { du: "reißt", er: "reißt" }, past: "riss", k2: "risse", pp: "gerissen" },
+  { inf: "reiten", ja: "(馬で) 行く", pres: {}, past: "ritt", k2: "ritte", pp: "geritten" },
+  { inf: "rennen", ja: "走る", pres: {}, past: "rannte", k2: "rennte", pp: "gerannt" },
+  { inf: "rufen", ja: "叫ぶ、呼ぶ", pres: {}, past: "rief", k2: "riefe", pp: "gerufen" },
+  { inf: "schaffen", ja: "創造する", pres: {}, past: "schuf", k2: "schüfe", pp: "geschaffen" },
+  { inf: "scheinen", ja: "輝く、思われる", pres: {}, past: "schien", k2: "schiene", pp: "geschienen" },
+  { inf: "schieben", ja: "押す", pres: {}, past: "schob", k2: "schöbe", pp: "geschoben" },
+  { inf: "schießen", ja: "撃つ", pres: {}, past: "schoss", k2: "schösse", pp: "geschossen" },
+  { inf: "schlafen", ja: "眠っている", pres: { du: "schläfst", er: "schläft" }, past: "schlief", k2: "schliefe", pp: "geschlafen" },
+  { inf: "schlagen", ja: "打つ", pres: { du: "schlägst", er: "schlägt" }, past: "schlug", k2: "schlüge", pp: "geschlagen" },
+  { inf: "schließen", ja: "閉じる", pres: {}, past: "schloss", k2: "schlösse", pp: "geschlossen" },
+  { inf: "schmelzen", ja: "溶ける", pres: { du: "schmilzt", er: "schmilzt" }, past: "schmolz", k2: "schmölze", pp: "geschmolzen" },
+  { inf: "schneiden", ja: "切る", pres: {}, past: "schnitt", k2: "schnitte", pp: "geschnitten" },
+  { inf: "schreiben", ja: "書く", pres: {}, past: "schrieb", k2: "schriebe", pp: "geschrieben" },
+  { inf: "schreien", ja: "叫ぶ", pres: {}, past: "schrie", k2: "schrie", pp: "geschrien" },
+  { inf: "schweigen", ja: "沈黙する", pres: {}, past: "schwieg", k2: "schwiege", pp: "geschwiegen" },
+  { inf: "schwimmen", ja: "泳ぐ", pres: {}, past: "schwamm", k2: "schwömme", pp: "geschwommen" },
+  { inf: "schwinden", ja: "消える", pres: {}, past: "schwand", k2: "schwände", pp: "geschwunden" },
+  { inf: "sehen", ja: "見る", pres: { du: "siehst", er: "sieht" }, past: "sah", k2: "sähe", pp: "gesehen" },
+  { inf: "sein", ja: "…である", pres: { ich: "bin", du: "bist", er: "ist" }, past: "war", k2: "wäre", pp: "gewesen" },
+  { inf: "senden", ja: "送る(、放送する)", pres: {}, past: "sandte/sendete", k2: "sendete", pp: "gesandt/gesendet" },
+  { inf: "singen", ja: "歌う", pres: {}, past: "sang", k2: "sänge", pp: "gesungen" },
+  { inf: "sinken", ja: "沈む", pres: {}, past: "sank", k2: "sänke", pp: "gesunken" },
+  { inf: "sitzen", ja: "座っている", pres: { du: "sitzt", er: "sitzt" }, past: "saß", k2: "säße", pp: "gesessen" },
+  { inf: "sollen", ja: "…すべきである", pres: { ich: "soll", du: "sollst", er: "soll" }, past: "sollte", k2: "sollte", pp: "gesollt (sollen)" },
+  { inf: "sprechen", ja: "話す", pres: { du: "sprichst", er: "spricht" }, past: "sprach", k2: "spräche", pp: "gesprochen" },
+  { inf: "springen", ja: "跳ぶ", pres: {}, past: "sprang", k2: "spränge", pp: "gesprungen" },
+  { inf: "stechen", ja: "刺す", pres: { du: "stichst", er: "sticht" }, past: "stach", k2: "stäche", pp: "gestochen" },
+  { inf: "stehen", ja: "立っている", pres: {}, past: "stand", k2: "stände/stünde", pp: "gestanden" },
+  { inf: "stehlen", ja: "盗む", pres: { du: "stiehlst", er: "stiehlt" }, past: "stahl", k2: "stähle/stöhle", pp: "gestohlen" },
+  { inf: "steigen", ja: "登る", pres: {}, past: "stieg", k2: "stiege", pp: "gestiegen" },
+  { inf: "sterben", ja: "死ぬ", pres: { du: "stirbst", er: "stirbt" }, past: "starb", k2: "stürbe", pp: "gestorben" },
+  { inf: "stoßen", ja: "突く", pres: { du: "stößt", er: "stößt" }, past: "stieß", k2: "stieße", pp: "gestoßen" },
+  { inf: "streichen", ja: "なでる", pres: {}, past: "strich", k2: "striche", pp: "gestrichen" },
+  { inf: "streiten", ja: "争う", pres: {}, past: "stritt", k2: "stritte", pp: "gestritten" },
+  { inf: "tragen", ja: "運ぶ", pres: { du: "trägst", er: "trägt" }, past: "trug", k2: "trüge", pp: "getragen" },
+  { inf: "treffen", ja: "当たる、会う", pres: { du: "triffst", er: "trifft" }, past: "traf", k2: "träfe", pp: "getroffen" },
+  { inf: "treiben", ja: "追い立てる", pres: {}, past: "trieb", k2: "triebe", pp: "getrieben" },
+  { inf: "treten", ja: "歩む、踏む", pres: { du: "trittst", er: "tritt" }, past: "trat", k2: "träte", pp: "getreten" },
+  { inf: "trinken", ja: "飲む", pres: {}, past: "trank", k2: "tränke", pp: "getrunken" },
+  { inf: "tun", ja: "する", pres: { ich: "tue", du: "tust", er: "tut" }, past: "tat", k2: "täte", pp: "getan" },
+  { inf: "vergessen", ja: "忘れる", pres: { du: "vergisst", er: "vergisst" }, past: "vergaß", k2: "vergäße", pp: "vergessen" },
+  { inf: "verlieren", ja: "失う", pres: {}, past: "verlor", k2: "verlöre", pp: "verloren" },
+  { inf: "wachsen", ja: "成長する", pres: { du: "wächst", er: "wächst" }, past: "wuchs", k2: "wüchse", pp: "gewachsen" },
+  { inf: "waschen", ja: "洗う", pres: { du: "wäschst", er: "wäscht" }, past: "wusch", k2: "wüsche", pp: "gewaschen" },
+  { inf: "wenden", ja: "向ける、裏返す", pres: {}, past: "wandte/wendete", k2: "wendete", pp: "gewandt/gewendet" },
+  { inf: "werben", ja: "得ようと努める", pres: { du: "wirbst", er: "wirbt" }, past: "warb", k2: "würbe", pp: "geworben" },
+  { inf: "werden", ja: "…になる", pres: { du: "wirst", er: "wird" }, past: "wurde", k2: "würde", pp: "geworden (worden)" },
+  { inf: "werfen", ja: "投げる", pres: { du: "wirfst", er: "wirft" }, past: "warf", k2: "würfe", pp: "geworfen" },
+  { inf: "wissen", ja: "知る", pres: { ich: "weiß", du: "weißt", er: "weiß" }, past: "wusste", k2: "wüsste", pp: "gewusst" },
+  { inf: "wollen", ja: "…しようと思う", pres: { ich: "will", du: "willst", er: "will" }, past: "wollte", k2: "wollte", pp: "gewollt (wollen)" },
+  { inf: "ziehen", ja: "引く、移動する", pres: {}, past: "zog", k2: "zöge", pp: "gezogen" },
+  { inf: "zwingen", ja: "強要する", pres: {}, past: "zwang", k2: "zwänge", pp: "gezwungen" }
+];
 
 // --- 3.5 教科書 Lektion 1〜20 重要単語帳データ ---
 const LESSON_VOCAB = {
@@ -2235,11 +2444,35 @@ let listenShowText = false;
 let sessionCorrect = 0;
 let sessionTotal = 0;
 let streak = 0;
+let conjMode = "present";
 let conjIdx = 0;
+let irregIdx = 0;
 let activeConjInput = null;
 
 function getAllQuestions() {
   return [...TEXTBOOK_QUESTIONS, ...customQuestions];
+}
+
+function populateConjSelect() {
+  const cSel = document.getElementById("conjSelect");
+  cSel.innerHTML = "";
+  if (conjMode === "present") {
+    CONJUGATION_VERBS.forEach((v, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = `${v.inf}（${v.meaning}）`;
+      cSel.appendChild(opt);
+    });
+    cSel.value = conjIdx;
+  } else {
+    IRREGULAR_VERBS_TABLE.forEach((v, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = `${v.inf}（${v.ja}）`;
+      cSel.appendChild(opt);
+    });
+    cSel.value = irregIdx;
+  }
 }
 
 function init() {
@@ -2256,13 +2489,7 @@ function init() {
     sel.appendChild(opt);
   });
 
-  const cSel = document.getElementById("conjSelect");
-  CONJUGATION_VERBS.forEach((v, i) => {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = `${v.inf}（${v.meaning}）`;
-    cSel.appendChild(opt);
-  });
+  populateConjSelect();
 
   document.addEventListener("keydown", handleGlobalKey);
   renderTabs();
@@ -2317,6 +2544,7 @@ function setMode(mode) {
   document.getElementById("drillCard").style.display = mode === "drill" ? "block" : "none";
   document.getElementById("fcTypeBar").style.display = mode === "flashcard" ? "flex" : "none";
   document.getElementById("flashcardArea").style.display = mode === "flashcard" ? "block" : "none";
+  document.getElementById("conjTypeBar").style.display = mode === "conjugation" ? "flex" : "none";
   document.getElementById("conjugationArea").style.display = mode === "conjugation" ? "block" : "none";
   document.getElementById("listeningArea").style.display = mode === "listening" ? "block" : "none";
 
@@ -2675,7 +2903,7 @@ function checkAnswer(userAns, clickedBtn = null, isListen = false) {
     });
     const lfb = document.getElementById("listenFeedback");
     lfb.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
-    lfb.innerHTML = `<strong>${isCorrect ? "✅ 正解！" : `❌ 不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
+    lfb.innerHTML = `<strong>${isCorrect ? "正解！" : `不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
   } else {
     if (!typingMode) {
       document.querySelectorAll("#optionsGrid .opt-btn").forEach(b => {
@@ -2689,7 +2917,7 @@ function checkAnswer(userAns, clickedBtn = null, isListen = false) {
     }
     const fb = document.getElementById("feedbackBox");
     fb.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
-    fb.innerHTML = `<strong>${isCorrect ? "✅ 正解！" : `❌ 不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
+    fb.innerHTML = `<strong>${isCorrect ? "正解！" : `不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
   }
 
   renderTabs();
@@ -2745,41 +2973,97 @@ function markFlashcard(known) {
 }
 
 // --- 動詞活用道場操作 ---
+function setConjMode(mode) {
+  conjMode = mode;
+  document.getElementById("conjTypePresent").classList.toggle("active", mode === "present");
+  document.getElementById("conjTypeIrreg").classList.toggle("active", mode === "irregular");
+  document.getElementById("conjBadge").textContent = mode === "present" ? "現在人称変化" : "主要不規則動詞変化表";
+  populateConjSelect();
+  renderConjugation();
+}
+
 function loadConjugationByIndex() {
-  conjIdx = parseInt(document.getElementById("conjSelect").value, 10);
+  const val = parseInt(document.getElementById("conjSelect").value, 10);
+  if (conjMode === "present") conjIdx = val;
+  else irregIdx = val;
   renderConjugation();
 }
 
 function nextConjugation() {
-  conjIdx = (conjIdx + 1) % CONJUGATION_VERBS.length;
-  document.getElementById("conjSelect").value = conjIdx;
+  if (conjMode === "present") {
+    conjIdx = (conjIdx + 1) % CONJUGATION_VERBS.length;
+    document.getElementById("conjSelect").value = conjIdx;
+  } else {
+    irregIdx = (irregIdx + 1) % IRREGULAR_VERBS_TABLE.length;
+    document.getElementById("conjSelect").value = irregIdx;
+  }
   renderConjugation();
 }
 
-function renderConjugation() {
-  const v = CONJUGATION_VERBS[conjIdx];
-  document.getElementById("conjTitle").textContent = `${v.inf}（${v.meaning}）`;
-  document.getElementById("conjNote").textContent = v.note;
-  document.getElementById("conj3Forms").style.display = "none";
-  document.getElementById("conj3Forms").textContent = `3基本形: ${v.three}`;
-
-  const grid = document.getElementById("conjGrid");
-  grid.innerHTML = "";
-  PRONOUNS.forEach((p, idx) => {
-    const div = document.createElement("div");
-    div.className = "conj-item";
-    div.innerHTML = `
-      <span class="conj-pronoun">${p}</span>
-      <input type="text" class="conj-input" id="conj_${idx}" placeholder="活用形..." onfocus="activeConjInput=this" oninput="delete this.dataset.graded" onkeydown="handleConjKey(event, ${idx})">
-    `;
-    grid.appendChild(div);
-  });
+function getIrregularFields(v) {
+  const fields = [];
+  if (v.pres.ich) fields.push({ label: "現在 (ich)", ans: v.pres.ich });
+  if (v.pres.du) fields.push({ label: "現在 (du)", ans: v.pres.du });
+  if (v.pres.er) fields.push({ label: "現在 (er)", ans: v.pres.er });
+  if (v.pres.es) fields.push({ label: "現在 (es)", ans: v.pres.es });
+  fields.push({ label: "過去基本形", ans: v.past });
+  fields.push({ label: "接続法第Ⅱ式", ans: v.k2 });
+  fields.push({ label: "過去分詞", ans: v.pp });
+  return fields;
 }
 
-function handleConjKey(e, idx) {
+function matchIrregularAns(userVal, expectedStr) {
+  const u = userVal.trim().toLowerCase();
+  if (!u) return false;
+  const candidates = expectedStr
+    .replace(/[()]/g, "/")
+    .split(/[\/,\s]+/)
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean);
+  return candidates.includes(u) || u === expectedStr.trim().toLowerCase();
+}
+
+function renderConjugation() {
+  const grid = document.getElementById("conjGrid");
+  grid.innerHTML = "";
+  if (conjMode === "present") {
+    const v = CONJUGATION_VERBS[conjIdx];
+    document.getElementById("conjTitle").textContent = `${v.inf}（${v.meaning}）`;
+    document.getElementById("conjNote").textContent = v.note;
+    document.getElementById("conj3Forms").style.display = "none";
+    document.getElementById("conj3Forms").textContent = `3基本形: ${v.three}`;
+    PRONOUNS.forEach((p, idx) => {
+      const div = document.createElement("div");
+      div.className = "conj-item";
+      div.innerHTML = `
+        <span class="conj-pronoun">${p}</span>
+        <input type="text" class="conj-input" id="conj_${idx}" placeholder="活用形..." onfocus="activeConjInput=this" oninput="delete this.dataset.graded" onkeydown="handleConjKey(event, ${idx}, ${PRONOUNS.length})">
+      `;
+      grid.appendChild(div);
+    });
+  } else {
+    const v = IRREGULAR_VERBS_TABLE[irregIdx];
+    const fields = getIrregularFields(v);
+    document.getElementById("conjTitle").textContent = `${v.inf}（${v.ja}）`;
+    document.getElementById("conjNote").textContent = "教科書 pp.82〜87 主要不規則動詞変化表";
+    document.getElementById("conj3Forms").style.display = "none";
+    document.getElementById("conj3Forms").textContent = `${v.inf} - ${v.past} - ${v.pp}`;
+    fields.forEach((f, idx) => {
+      const div = document.createElement("div");
+      div.className = "conj-item";
+      div.innerHTML = `
+        <span class="conj-pronoun" style="min-width:96px;">${f.label}</span>
+        <input type="text" class="conj-input" id="conj_${idx}" placeholder="活用形..." onfocus="activeConjInput=this" oninput="delete this.dataset.graded" onkeydown="handleConjKey(event, ${idx}, ${fields.length})">
+      `;
+      grid.appendChild(div);
+    });
+  }
+}
+
+function handleConjKey(e, idx, total) {
   if (e.key !== "Enter") return;
   e.preventDefault();
-  if (idx < PRONOUNS.length - 1) {
+  if (idx < total - 1) {
     const nextInp = document.getElementById(`conj_${idx + 1}`);
     if (nextInp) nextInp.focus();
   } else {
@@ -2788,13 +3072,19 @@ function handleConjKey(e, idx) {
 }
 
 function checkConjugation() {
-  const v = CONJUGATION_VERBS[conjIdx];
-  v.forms.forEach((ans, idx) => {
+  const expectedList = conjMode === "present"
+    ? CONJUGATION_VERBS[conjIdx].forms
+    : getIrregularFields(IRREGULAR_VERBS_TABLE[irregIdx]).map(f => f.ans);
+
+  expectedList.forEach((ans, idx) => {
     const inp = document.getElementById(`conj_${idx}`);
-    if (inp.dataset.graded === "1") return;
-    const val = inp.value.trim().toLowerCase();
+    if (!inp || inp.dataset.graded === "1") return;
+    const val = inp.value.trim();
     inp.classList.remove("ok", "ng");
-    if (val === ans.toLowerCase()) {
+    const isOk = conjMode === "present"
+      ? val.toLowerCase() === ans.toLowerCase()
+      : matchIrregularAns(val, ans);
+    if (isOk) {
       inp.classList.add("ok");
     } else {
       inp.classList.add("ng");
@@ -2806,9 +3096,13 @@ function checkConjugation() {
 }
 
 function showConjAnswers() {
-  const v = CONJUGATION_VERBS[conjIdx];
-  v.forms.forEach((ans, idx) => {
+  const expectedList = conjMode === "present"
+    ? CONJUGATION_VERBS[conjIdx].forms
+    : getIrregularFields(IRREGULAR_VERBS_TABLE[irregIdx]).map(f => f.ans);
+
+  expectedList.forEach((ans, idx) => {
     const inp = document.getElementById(`conj_${idx}`);
+    if (!inp) return;
     inp.classList.remove("ng");
     inp.classList.add("ok");
     inp.value = ans;
@@ -2817,9 +3111,18 @@ function showConjAnswers() {
 }
 
 function speakConjugation() {
-  const v = CONJUGATION_VERBS[conjIdx];
-  const text = `ich ${v.forms[0]}, du ${v.forms[1]}, er ${v.forms[2]}, wir ${v.forms[3]}, ihr ${v.forms[4]}, Sie ${v.forms[5]}`;
-  speakText(text);
+  if (conjMode === "present") {
+    const v = CONJUGATION_VERBS[conjIdx];
+    const text = `ich ${v.forms[0]}, du ${v.forms[1]}, er ${v.forms[2]}, wir ${v.forms[3]}, ihr ${v.forms[4]}, Sie ${v.forms[5]}`;
+    speakText(text);
+  } else {
+    const v = IRREGULAR_VERBS_TABLE[irregIdx];
+    const firstPast = v.past.split("/")[0].replace(/\([^)]*\)/g, "").trim();
+    const firstK2 = v.k2.split("/")[0].replace(/\([^)]*\)/g, "").trim();
+    const firstPp = v.pp.split("/")[0].replace(/\([^)]*\)/g, "").trim();
+    const presPart = v.pres.er ? `, er ${v.pres.er.replace(/\([^)]*\)/g, "").trim()}` : (v.pres.es ? `, es ${v.pres.es}` : "");
+    speakText(`${v.inf}${presPart}, ${firstPast}, ${firstK2}, ${firstPp}`);
+  }
 }
 
 // --- リスニング操作 ---
