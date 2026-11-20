@@ -1,4 +1,4 @@
-const CACHE_NAME = "german-drill-pwa-v18";
+const CACHE_NAME = "german-drill-pwa-v19";
 const ASSETS = [
   "./",
   "./index.html",
