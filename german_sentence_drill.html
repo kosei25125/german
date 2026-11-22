@@ -819,10 +819,10 @@
       <button class="close-btn" onclick="closeModal('settingsModal')">×</button>
     </div>
     <div style="display:flex; flex-direction:column; gap:10px;">
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleHintBtn" onclick="toggleHint()"><span>ヒント表示</span><strong>ON</strong></button>
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleTypeBtn" onclick="toggleTyping()"><span>解答方式</span><strong>4択モード</strong></button>
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="autoSpeakBtn" onclick="toggleAutoSpeak()"><span>解答時の自動音声再生</span><strong>ON</strong></button>
-      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="themeBtn" onclick="toggleTheme()"><span>画面テーマ</span><strong>ライト</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleHintBtn" onclick="toggleHint()"><span>ヒント表示</span><strong>OFF</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="toggleTypeBtn" onclick="toggleTyping()"><span>解答方式</span><strong>タイピング</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="autoSpeakBtn" onclick="toggleAutoSpeak()"><span>解答時の自動音声再生</span><strong>OFF</strong></button>
+      <button class="btn-secondary" style="display:flex; justify-content:space-between; align-items:center; width:100%;" id="themeBtn" onclick="toggleTheme()"><span>画面テーマ</span><strong>ダーク</strong></button>
       <div style="border-top:1px solid var(--border); margin:4px 0;"></div>
       <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openDashboard();">学習記録を見る</button>
       <button class="btn-secondary" style="text-align:left; width:100%;" onclick="closeModal('settingsModal'); openModal('grammarModal');">文法表を開く</button>
@@ -2440,11 +2440,11 @@ let activeTab = "textbook";
 let selectedLesson = 1;
 let subFilter = "all";
 let currentVocab = null;
-let showHint = true;
-let typingMode = false;
-let autoSpeak = true;
+let showHint = false;
+let typingMode = true;
+let autoSpeak = false;
 let speechRate = 0.92;
-let darkTheme = localStorage.getItem("de_drill_theme") === "dark";
+let darkTheme = localStorage.getItem("de_drill_theme") !== "light";
 
 let currentQ = null;
 let currentChoices = [];
@@ -2488,9 +2488,15 @@ function populateConjSelect() {
 }
 
 function init() {
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock("portrait").catch(() => {});
+  }
   if (darkTheme) {
     document.documentElement.setAttribute("data-theme", "dark");
     document.getElementById("themeBtn").querySelector("strong").textContent = "ダーク";
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+    document.getElementById("themeBtn").querySelector("strong").textContent = "ライト";
   }
 
   const sel = document.getElementById("lessonSelect");
