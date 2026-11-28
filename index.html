@@ -839,7 +839,7 @@
       <button class="close-btn" onclick="closeModal('dashboardModal')">×</button>
     </div>
     <div class="dash-summary" id="dashSummary"></div>
-    <h4 style="margin:0 0 10px;">ideal 全20課の達成状況</h4>
+    <h4 style="margin:0 0 10px;" id="dashBookTitle">ideal 全20課の達成状況</h4>
     <div class="dash-list" id="dashLessonList"></div>
     <div style="display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:14px;">
       <button class="btn-danger" onclick="resetWrong()">苦手リストを空にする</button>
@@ -1570,6 +1570,291 @@ function buildTextbookPool() {
 }
 
 const TEXTBOOK_QUESTIONS = buildTextbookPool();
+
+// --- 2.5 教科書『基礎固めのドイツ語』 Lektion 1〜10 全500問（各課50問） ---
+const KISO_LESSON_TITLES = [
+  "Lektion 1: 動詞の変化",
+  "Lektion 2: 名詞の性と定冠詞・不定冠詞の格変化",
+  "Lektion 3: 不規則動詞・命令形",
+  "Lektion 4: 名詞の複数形・冠詞類の変化・keinとnichtによる否定",
+  "Lektion 5: 人称代名詞・特殊な変化をする名詞・疑問詞",
+  "Lektion 6: 前置詞",
+  "Lektion 7: 形容詞の格変化・序数",
+  "Lektion 8: 話法の助動詞・未来形",
+  "Lektion 9: 分離動詞と非分離動詞",
+  "Lektion 10: 三基本形・過去形"
+];
+
+const KISO_SEEDS = {
+  1: [
+    ["Hallo, ich ___ aus Japan und lerne jetzt Deutsch. (kommen)", "komme", ["kommst", "kommt", "kommen"], "ハロー、私は日本から来ていて、今ドイツ語を習っています。", "1人称単数 ich の語尾は -e", "ich に対する現在人称変化は語幹 komm + e = komme です。"],
+    ["Wie ___ du? — Ich heiße Julia. (heißen)", "heißt", ["heißst", "heiße", "heißen"], "君は何という名前なの？ — 私の名前はユリアよ。", "語幹末が -ß のときの du 変化", "語幹が -s, -ss, -ß, -tz, -z で終わる動詞は du で -t のみをつけます。"],
+    ["Wo ___ er? — Er wohnt jetzt in Köln. (wohnen)", "wohnt", ["wohnst", "wohne", "wohnen"], "彼はどこに住んでいますか？ — 彼は今ケルンに住んでいます。", "3人称単数 er の語尾は -t", "er/sie/es に対する現在人称変化は語幹 wohn + t = wohnt です。"],
+    ["Was ___ Sie gern? — Ich trinke gern Tee. (trinken)", "trinken", ["trinkt", "trinkst", "trinke"], "あなたは何を飲むのが好きですか？ — 私はお茶を飲むのが好きです。", "敬称 Sie の語尾は -en", "敬称2人称 Sie は単数・複数とも不定詞と同じ trinken です。"],
+    ["Wo ___ du? (arbeiten)", "arbeitest", ["arbeitst", "arbeitet", "arbeite"], "君はどこで働いているの？", "語幹末が -t のときの du 変化", "語幹が -t, -d で終わる動詞は du で口調上の -e を入れて arbeitest にします。"],
+    ["Er ___ immer vorsichtig. (handeln)", "handelt", ["handelst", "handele", "handeln"], "彼はいつも慎重に行動する。", "-ln で終わる動詞の3人称単数", "handeln = handel + n。er に対しては語幹 handel + t = handelt です。"],
+    ["___ du Student? — Ja, ich bin noch Student. (sein)", "Bist", ["Bin", "Ist", "Seid"], "君は学生ですか？ — はい、私はまだ学生です。", "sein の du 変化", "sein の現在変化は bin, bist, ist, sind, seid, sind です。"],
+    ["___ ihr ein Haustier? — Ja, wir haben einen Hund. (haben)", "Habt", ["Hast", "Hat", "Haben"], "君たちはペットを飼っていますか？ — はい、犬を飼っています。", "haben の ihr 変化", "2人称複数 ihr に対する haben は habt です。"],
+    ["Was ___ du später? — Ich werde Fußballspieler. (werden)", "wirst", ["werdest", "wird", "werdet"], "君は将来何になるの？ — サッカー選手だよ。", "werden の du 変化", "werden は du で wirst、er/sie/es で wird に変化します。"],
+    ["___ ihr heute ins Kino? (gehen)", "Geht", ["Gehst", "Gehen", "Gehe"], "君たちは今日映画館に行くの？", "決定疑問文は定動詞を文頭に置く", "Ja か Nein で答える疑問文では定動詞（ihr → Geht）を文頭に置きます。"]
+  ],
+  2: [
+    ["Ich kenne die Eltern ___ Mädchens sehr gut.", "des", ["der", "dem", "das"], "私はその少女の両親をよく知っています。", "中性名詞 das Mädchen の単数2格", "-chen で終わる名詞は中性名詞。中性単数2格の定冠詞は des です。"],
+    ["Jens schreibt jetzt ___ Brief.", "einen", ["ein", "einem", "eines"], "イェンスは今一通の手紙を書いています。", "男性名詞 der Brief の単数4格（不定冠詞）", "schreiben + 4格（男性単数）なので einen Brief になります。"],
+    ["Wem gehört das Auto? — Es gehört ___ Japaner da.", "dem", ["der", "den", "des"], "その車は誰のものですか？ — それはそこの日本人のものです。", "gehören + 3格（男性単数）", "gehören は3格を支配する動詞です。男性単数3格は dem です。"],
+    ["Ich danke ___ Lehrer herzlich.", "dem", ["den", "der", "des"], "私は先生に心から感謝します。", "danken + 3格（男性単数）", "danken は3格を支配する動詞です。"],
+    ["Er zeigt der Freundin ___ Foto der Stadt.", "ein", ["eine", "einen", "einem"], "彼は女友達にその町の写真を見せます。", "中性名詞 das Foto の単数4格（不定冠詞）", "das Foto は中性名詞なので、4格の不定冠詞は ein です。"],
+    ["___ bist du? — Ich bin Martin.", "Wer", ["Wen", "Wem", "Wessen"], "君は誰なの？ — ぼくはマルティンだよ。", "1格を尋ねる疑問詞 wer", "主語（1格）を尋ねるときは wer を使います。"],
+    ["___ besuchen Sie heute? — Ich besuche heute einen Freund.", "Wen", ["Wer", "Wem", "Wessen"], "あなたはきょう誰を訪問なさるのですか？ — 私はきょうある友人を訪ねます。", "4格を尋ねる疑問詞 wen", "besuchen は4格支配なので wen を使います。"],
+    ["Wir helfen ___ Lehrerin immer.", "der", ["die", "dem", "den"], "私たちはいつも女性の先生を手伝います。", "helfen + 3格（女性単数）", "helfen は3格支配。女性単数3格の定冠詞は der です。"],
+    ["___ Wagen kaufe ich nicht.", "Den", ["Der", "Dem", "Des"], "その車は買いません。", "kaufen + 4格（男性単数）", "der Wagen を目的語（4格）にするため文頭でも Den になります。"],
+    ["Das Auto gehört dem Sohn ___ Politikers.", "eines", ["einem", "einen", "einer"], "その車はある政治家の息子のものです。", "男性単数2格（不定冠詞）", "「ある政治家の」は2格なので eines Politikers です。"]
+  ],
+  3: [
+    ["Hallo Peter, wohin ___ du heute? (fahren)", "fährst", ["fahrst", "fährt", "fahrt"], "やあペーター、きょうはどこに行くの？", "a→ä 型の幹母音変化（du）", "fahren は du と er/sie/es で a が ä に変わります（fährst）。"],
+    ["Katrin ___ sehr gut Japanisch. (sprechen)", "spricht", ["sprecht", "sprichst", "spreche"], "カトリンはとても上手に日本語を話すよ。", "e→i 型の幹母音変化（3人称単数）", "sprechen は er/sie/es で e が i に変わり spricht になります。"],
+    ["___ du den Vogel da drüben? (sehen)", "Siehst", ["Sehst", "Sieht", "Seht"], "あの向こうの鳥が見えるかい？", "e→ie 型の幹母音変化（du）", "sehen は du で siehst になります。"],
+    ["Hier ___ der Bus nicht. (halten)", "hält", ["haltet", "hältst", "halten"], "ここにはバスは停まりません。", "halten の3人称単数（語尾 -t なし）", "halten は er/sie/es で hält になります（語尾 -et はつけません）。"],
+    ["___ du Kaffee oder Tee? (nehmen)", "Nimmst", ["Nehmst", "Nimmt", "Nehmt"], "コーヒーにする、それともお茶にする？", "nehmen の特殊な変化（du）", "nehmen は du で nimmst になります。"],
+    ["Das Baby ___ tief. (schlafen)", "schläft", ["schlaft", "schläfst", "schlafen"], "赤ちゃんはぐっすり眠っている。", "a→ä 型の幹母音変化（er/sie/es）", "das Baby（3人称単数）なので schläft になります。"],
+    ["Heute ___ es ein Gewitter. (geben)", "gibt", ["gebt", "gibst", "geben"], "今日は雷雨がある。", "非人称の es gibt", "es gibt + 4格 で「〜がある、起きる」を表します。"],
+    ["In Japan ___ man viel Reis. (essen)", "isst", ["esst", "esse", "essen"], "日本では人々はたくさん米を食べる。", "man は3人称単数扱い（essen）", "essen の3人称単数は isst です。"],
+    ["Maria, ___ noch ein Stück Kuchen! (nehmen / du命令)", "nimm", ["nehm", "nimmst", "nehmt"], "マリア、もう一切れケーキを食べて！", "e→i 型動詞の du 命令形", "du の形 nimmst から -st を取った nimm が命令形です。"],
+    ["___ Sie bitte ruhig! (sein / Sie命令)", "Seien", ["Sind", "Seid", "Sei"], "どうぞお静かに！", "sein の Sie 命令形", "sein の Sie に対する命令形は Seien Sie! です。"]
+  ],
+  4: [
+    ["Welchen Zug nehmen wir? — Wir nehmen ___ Schnellzug um 12.30 Uhr.", "den", ["der", "dem", "des"], "ぼくたちはどの列車に乗るの？ — 12時半の急行だよ。", "nehmen + 4格（男性単数）", "der Schnellzug の4格は den Schnellzug です。"],
+    ["Hier ist der Fahrplan ___ Zuges! (dieser)", "dieses", ["dieser", "diesem", "diesen"], "ここにこの列車の時刻表があるよ！", "定冠詞類 dieser の男性単数2格", "男性単数2格の定冠詞類は dieses です。"],
+    ["___ Fahrrad gehört meinem Sohn. (dieser)", "Dieses", ["Dieser", "Diesem", "Diesen"], "この自転車は私の息子のものです。", "中性単数1格の定冠詞類", "das Fahrrad は中性名詞なので、1格は Dieses です。"],
+    ["Die Wohnung ___ Sohnes ist sehr klein. (mein)", "meines", ["meinem", "meinen", "meiner"], "私の息子の住まいはとても小さい。", "所有冠詞 mein の男性単数2格", "男性単数2格の不定冠詞類は meines です。"],
+    ["Er trinkt ___ Alkohol.", "keinen", ["kein", "keine", "nicht"], "彼はお酒を飲みません。", "男性名詞 der Alkohol の4格否定", "無冠詞の名詞の否定には kein を使います。男性4格は keinen です。"],
+    ["___ Hut gefällt meinem Vater. (dieser)", "Dieser", ["Dieses", "Diesen", "Diesem"], "この帽子は私の父の気に入っている。", "男性単数1格の定冠詞類", "der Hut が主語（1格）なので Dieser です。"],
+    ["Heutzutage hat ___ Schulkind ein Handy. (jeder)", "jedes", ["jeder", "jedem", "jeden"], "近頃はどの学童も携帯を持っている。", "中性単数1格の定冠詞類", "das Schulkind は中性名詞なので jedes です。"],
+    ["Der Lehrer ___ Klasse heißt Konrad Bauer. (unser)", "unserer", ["unsere", "unseres", "unserem"], "私たちのクラスの先生はコンラート・バウアーと言います。", "女性単数2格の所有冠詞", "die Klasse の2格なので unserer です。"],
+    ["Ich helfe ___ Großeltern gern. (euer)", "euren", ["eueren", "euer", "eurer"], "私は君たちの祖父母を喜んで手伝います。", "複数3格の所有冠詞 euer（語幹の e 脱落）", "euer に格語尾がつくと e が落ちて euren になります。"],
+    ["Er kommt heute ___, sondern morgen.", "nicht", ["kein", "keine", "keinen"], "彼はきょうではなく、あす来ます。", "副詞 heute の否定は nicht", "名詞以外（副詞・形容詞・動詞など）の否定は nicht を使います。"]
+  ],
+  5: [
+    ["Besuchst du heute deinen Onkel? — Ja, ich besuche ___ heute.", "ihn", ["ihm", "er", "sein"], "きょう、君のおじさんを訪ねるのかい？ — うん、きょう彼を訪ねるんだ。", "男性単数4格の人称代名詞", "der Onkel（男性）を4格で受けるので ihn になります。"],
+    ["Wie geht es Ihnen? — Danke, es geht ___ sehr gut.", "mir", ["mich", "ich", "mein"], "ご機嫌いかがですか？ — ありがとう、とてもいいですよ。", "es geht + 3格（ich）", "es geht は3格をとるので ich → mir になります。"],
+    ["Bitte frag ___ sofort!", "mich", ["mir", "ich", "mein"], "どうかすぐに私に尋ねて！", "fragen + 4格（ich）", "fragen は4格支配動詞なので mich を使います。"],
+    ["Das T-Shirt steht ___ sehr gut.", "dir", ["dich", "du", "dein"], "そのTシャツは君にとてもよく似合うよ。", "stehen（似合う）+ 3格（du）", "「〜に似合う」の stehen は3格（dir）をとります。"],
+    ["Ich kenne den ___ sehr gut. (der Student)", "Studenten", ["Student", "Students", "Studente"], "私はその大学生をよく知っています。", "男性弱変化名詞 Student の4格", "Student は単数2・3・4格で -en がつき Studenten になります。"],
+    ["Der Vater des ___ fragt einen Polizisten. (der Junge)", "Jungen", ["Junge", "Jungens", "Junges"], "その少年の父親は一人の警官に尋ねる。", "男性弱変化名詞 Junge の2格", "Junge は単数2・3・4格で -n がつき Jungen になります。"],
+    ["Das Auto gehört ___ Koch. (Herr)", "Herrn", ["Herr", "Herren", "Herrs"], "その車はコッホさんのものです。", "男性弱変化名詞 Herr の3格", "Herr は単数2・3・4格で Herrn になります。"],
+    ["Bitte schreiben Sie hier Ihren ___! (der Name)", "Namen", ["Name", "Namens", "Names"], "ここにお名前をお書きください！", "特殊変化名詞 Name の4格", "Name は2格が Namens、3・4格が Namen です。"],
+    ["___ Auto reparieren Sie? — Ich repariere das Auto meines Freundes.", "Wessen", ["Wer", "Wem", "Wen"], "あなたは誰の車を修理しているのですか？ — 私の友人の車を修理しています。", "所有を尋ねる2格疑問詞 wessen", "「誰の」は wer の2格 wessen を使います。"],
+    ["Was für ___ Wagen kaufen Sie? — Ich kaufe einen Mercedes.", "einen", ["ein", "einem", "eines"], "どんな車を買うのですか？ — ベンツです。", "was für ein... の不定冠詞（男性4格）", "kaufen + 4格（der Wagen）なので einen になります。"]
+  ],
+  6: [
+    ["Sie trägt ein Kleid ___ Seide.", "aus", ["mit", "von", "bei"], "彼女は絹でできたドレスを着ている。", "材質を表す前置詞 aus", "「〜でできた」は aus + 3格（材質は無冠詞）を使います。"],
+    ["___ der Kirche steht ein Lindenbaum.", "Gegenüber", ["Durch", "Für", "Ohne"], "教会の向かいに一本の菩提樹がたっている。", "3格支配の前置詞 gegenüber", "「〜の向かいに」は gegenüber + 3格（die Kirche → der Kirche）です。"],
+    ["___ der Ferien reise ich durch Deutschland.", "Während", ["Durch", "Mit", "Für"], "休暇のあいだに私はドイツを旅行します。", "2格支配の前置詞 während", "während は2格支配（die Ferien の複数2格は der Ferien）です。"],
+    ["___ dem Wald kreist ein Vogel.", "Über", ["Auf", "Unter", "Zwischen"], "森の上を一羽の鳥が輪を描いて飛んでいます。", "場所（方向性なし）→ 3格", "der Wald が3格（dem Wald）なので静止・範囲の上方を表します。"],
+    ["Sie springt auf ___ Tisch.", "den", ["dem", "der", "das"], "猫は机の上にジャンプします。", "方向性あり（wohin）→ 4格", "移動・方向性があるため auf + 4格（den Tisch）を使います。"],
+    ["Ich denke oft ___ meinen Großvater.", "an", ["auf", "über", "vor"], "私はよくおじいさんのことを思います。", "an jn. denken（〜のことを思う）", "denken an + 4格 の熟語表現です。"],
+    ["Sie hat Angst ___ ihm.", "vor", ["an", "auf", "mit"], "彼女は彼を怖がっている。", "Angst haben vor + 3格", "「〜が怖い」は Angst vor + 3格で表します。"],
+    ["Wartest du auf den Bus? — Ja, ich warte ___.", "darauf", ["worauf", "auf ihn", "damit"], "君はバスを待っているの？ — うん、ぼくはそれを待っているんだよ。", "前置詞 + 事物の代名詞 → da(r) + 前置詞", "母音で始まる前置詞 auf には r を挟み darauf にします。"],
+    ["Ich fahre ___ die Schweiz.", "in", ["nach", "zu", "auf"], "私はスイスへ行く。", "女性名詞の国名には in + 4格", "die Schweiz, die USA などの冠詞付き国名は in + 4格を使います。"],
+    ["Wie spät ist es? — Es ist ___ 6. (5時30分)", "halb", ["vor", "nach", "Viertel"], "何時ですか？ — 5時半です。", "12時間制の「〜半」は向かっていく時間", "5時30分は「6時の半分前」と考えて halb 6 と言います。"]
+  ],
+  7: [
+    ["Sie singt ein ___ Volkslied. (schön)", "schönes", ["schöne", "schönen", "schöner"], "彼女は美しい民謡を歌う。", "不定冠詞 + 中性4格 → 混合変化", "das Volkslied は中性名詞。ein に性語尾がないため schönes になります。"],
+    ["Jeden Morgen esse ich ___ Obst. (frisch)", "frisches", ["frische", "frischen", "frischer"], "毎朝私は新鮮な果物を食べます。", "無冠詞 + 中性4格 → 強変化", "das Obst の無冠詞4格なので定冠詞 das と同じ語尾 -es です。"],
+    ["Ich wünsche Ihnen ___ Reise. (gut)", "gute", ["guter", "guten", "gutes"], "よいご旅行をお祈りします。", "無冠詞 + 女性4格 → 強変化", "die Reise（女性名詞）の無冠詞4格は -e です。"],
+    ["Wegen ___ Wetters bleiben wir heute zu Hause. (schlecht)", "schlechten", ["schlechtes", "schlechter", "schlechte"], "悪天候のため今日は家にいます。", "無冠詞 + 中性2格 → 強変化（例外 -en）", "無冠詞の男性・中性単数2格は形容詞語尾 -en をとります。"],
+    ["Der ___ Himmel gefällt mir sehr. (blau)", "blaue", ["blauer", "blauen", "blaues"], "青い空がとても気に入っています。", "定冠詞 + 男性1格 → 弱変化", "定冠詞 der の後の男性1格は -e です。"],
+    ["Der ___ Turm steht im Zentrum. (hoch)", "hohe", ["hoche", "hoher", "hohen"], "その高い塔は中心部に立っている。", "hoch の付加語用法は c が落ちる", "hoch に格語尾がつくと hoh- になり、hohe となります。"],
+    ["Der reiche Mann kauft seiner jungen Braut einen ___ Ring. (teuer)", "teuren", ["teueren", "teure", "teurer"], "その金持ちの男は若い花嫁に高価な指輪を買ってやる。", "teuer は語尾がつくと語幹の e が落ちる", "teuer + en → teuren になります。"],
+    ["Steht etwas ___ in der Zeitung? (neu)", "Neues", ["neues", "Neue", "Neuen"], "新聞に何か新しいことは載っていますか？", "etwas の後の形容詞は中性名詞化して大文字", "etwas + 形容詞は中性1・4格（-es）になり頭文字を大文字にします。"],
+    ["Heute ist der ___ Mai. (15.)", "fünfzehnte", ["fünfzehnten", "fünfzehnter", "fünfzehntes"], "きょうは5月15日です。", "1〜19の序数は基数 + -t + 格語尾", "der の後ろ（男性1格）なので fünfzehnt + e = fünfzehnte です。"],
+    ["Am ___ Januar fahre ich nach Osaka. (23.)", "dreiundzwanzigsten", ["dreiundzwanzigste", "dreiundzwanzigster", "dreiundzwanzigst"], "1月23日に私は大阪へ行きます。", "20以上の序数は -st + 格語尾（am + 3格）", "am (an dem) の後ろは3格なので -sten になります。"]
+  ],
+  8: [
+    ["Du ___ viel üben. Sonst kannst du nicht Fußballspieler werden. (müssen)", "musst", ["muss", "müsst", "müssen"], "たくさん練習しなくてはいけない。でないとサッカー選手にはなれないよ。", "話法の助動詞 müssen（du）", "müssen の du 変化は musst です（ウムラウトなし）。"],
+    ["___ ich Sie kurz stören? (dürfen)", "Darf", ["Dürfe", "Darfst", "Dürft"], "ちょっとお邪魔してよろしいですか？", "許可を求める dürfen（ich）", "dürfen の1人称単数は darf です。"],
+    ["Ich ___ Bier trinken. (möchte)", "möchte", ["möchtest", "möchtet", "möchten"], "ビールが飲みたいなあ。", "丁寧な願望の möchte（ich）", "möchte の1・3人称単数は möchte です。"],
+    ["Maria muss heute geschäftlich nach München ___. (fahren)", "fahren", ["fährt", "gefahren", "zu fahren"], "マリアはきょう出張でミュンヘンに行かなくてはならない。", "話法の助動詞構文の枠構造（文末は不定詞）", "定動詞が助動詞 muss になるため、本動詞は不定詞のまま文末に置かれます。"],
+    ["Das ___ wahr sein. (mögen)", "mag", ["möge", "magst", "mögt"], "それは本当かもしれない。", "mögen の推量用法（3人称単数）", "es/das に対する mögen の現在形は mag です。"],
+    ["Wir ___ heute zu Hause bleiben. (möchte)", "möchten", ["möchte", "möchtet", "möchtest"], "私たちはきょう家にいたい。", "möchte の複数1人称 wir", "wir に対する möchte は möchten です。"],
+    ["Er ___ wohl am Wochenende zu uns kommen. (werden / 未来形)", "wird", ["werde", "wirst", "werden"], "彼はたぶん週末に我々のところに来るでしょう。", "未来形（werden + 不定詞）の推量用法", "er に対する werden は wird です。"],
+    ["Ich ___ mein Auto waschen. (lassen)", "lasse", ["lässt", "lasst", "lassen"], "私は洗車してもらう。", "使役の助動詞 lassen（ich）", "lassen の1人称単数は lasse です。"],
+    ["___ uns noch mal schwimmen! (lassen)", "Lass", ["Lasst", "Lassen", "Lässt"], "もう一度泳ごうよ！", "Lass uns + 不定詞（〜しようよ）", "1人称複数の勧誘を表す慣用表現です。"],
+    ["___ du unsere Katze auf dem Sofa liegen? (sehen)", "Siehst", ["Sehst", "Sieht", "Seht"], "うちの猫がソファーに寝ているのが見えるかな？", "知覚動詞 sehen + 4格 + 不定詞", "sehen の du 変化は siehst です。"]
+  ],
+  9: [
+    ["Der Zug ___ bald von Gleis 17 ___. (abfahren)", "fährt ... ab", ["abfährt", "fahrt ... ab", "fahren ... ab"], "列車はまもなく17番乗り場から出発します。", "分離動詞 abfahren の現在形（3人称単数）", "定動詞 fährt が第2位、前つづり ab が文末に入ります。"],
+    ["Er ___ 13.56 Uhr in Hamburg ___. (ankommen)", "kommt ... an", ["ankommt", "kommst ... an", "kommen ... an"], "彼は13時56分にハンブルクに到着します。", "分離動詞 ankommen の現在形（3人称単数）", "er kommt ... an となります。"],
+    ["___ Sie in Hamburg ___! (umsteigen)", "Steigen ... um", ["Umsteigen", "Steigt ... um", "Steige ... um"], "ハンブルクで乗り換えて下さい！", "分離動詞の命令形", "命令文でも前つづり um は分離して文末に入ります。"],
+    ["Du musst in Hamburg ___. (umsteigen)", "umsteigen", ["steigen ... um", "umgestiegen", "steigt ... um"], "君はハンブルクで乗り換えなくてはいけないよ。", "助動詞と併用する分離動詞は分離しない", "助動詞の文では不定詞のまま文末に置かれるため分離しません。"],
+    ["Ich ___ Sie zum Essen ___. (einladen)", "lade ... ein", ["einlade", "lädst ... ein", "lädt ... ein"], "私はあなたを食事に招待します。", "分離動詞 einladen（ich）", "ich なので lade ... ein となります。"],
+    ["Hans, ___ mir das Buch bald ___! (zurückgeben)", "gib ... zurück", ["zurückgib", "geb ... zurück", "gibst ... zurück"], "ハンス、その本を私にすぐに返してね！", "e→i 型分離動詞の du 命令形", "geben の du 命令形は gib。前つづり zurück は文末です。"],
+    ["Das Konzert ___ am Freitag in der Philharmonie ___. (stattfinden)", "findet ... statt", ["stattfindet", "findt ... statt", "finden ... statt"], "コンサートは金曜日にフィルハーモニーで催されます。", "語幹末 -d の分離動詞 stattfinden", "findet が第2位、statt が文末です。"],
+    ["Ich ___ Ihre schwierige Situation sehr gut. (verstehen)", "verstehe", ["stehe ... ver", "verstehst", "versteht"], "私はあなたの困難な状況はよく理解いたしております。", "ver- は非分離前つづり", "非分離動詞は前つづりを分離しません。"],
+    ["___ Sie bitte, wo ist die Toilette? (entschuldigen)", "Entschuldigen", ["Schuldigen ... ent", "Entschuldigt", "Entschuldige"], "すみません、トイレはどこですか？", "ent- は非分離前つづり", "非分離動詞 entschuldigen の Sie 命令形です。"],
+    ["Unser Lehrer ___ uns ein interessantes Buch über diese Stadt. (empfehlen)", "empfiehlt", ["empfehlt", "fiehlt ... emp", "empfiehlst"], "私たちの先生は私たちにこの町についての面白い本を薦める。", "emp- は非分離前つづり（e→ie 変化）", "empfehlen は非分離動詞で、3人称単数は empfiehlt です。"]
+  ],
+  10: [
+    ["In der Schweiz ___ ein alter Graf. (wohnen / 過去形)", "wohnte", ["wohnt", "gewohnt", "wohnten"], "スイスに一人の年老いた伯爵が住んでいました。", "規則動詞 wohnen の過去形（3人称単数）", "規則動詞の過去基本形は語幹 + -(e)te で、3人称単数は基本形そのままです。"],
+    ["Er ___ nur einen einzigen Sohn. (haben / 過去形)", "hatte", ["hat", "gehabt", "hatten"], "彼には一人息子がいましたが。", "haben の過去形（3人称単数）", "haben の過去基本形は hatte です。"],
+    ["Aber dieser Sohn ___ dumm. (sein / 過去形)", "war", ["ist", "gewesen", "waren"], "しかしこの息子は愚かだった。", "sein の過去形（3人称単数）", "sein の過去基本形は war です。"],
+    ["Nach einem Jahr ___ er zu seinem Vater ___. (zurückkommen / 過去形)", "kam ... zurück", ["zurückkam", "kommt ... zurück", "kamen ... zurück"], "一年後に息子は父親のもとに帰ってきました。", "分離動詞の過去形", "過去基本形 kam が第2位、前つづり zurück が文末に入ります。"],
+    ["Früher ___ ihr nicht so faul. (sein / 過去形)", "wart", ["waret", "warst", "waren"], "以前は君たちはそんなに怠け者ではなかった。", "sein の過去形（ihr）", "ihr に対する sein の過去形は wart です。"],
+    ["Mit vier Jahren ___ er sehr gut Klavier spielen. (können / 過去形)", "konnte", ["könnte", "kann", "gekonnt"], "4歳のとき彼はとても上手にピアノを弾くことができた。", "können の過去形（ウムラウトなし）", "können の過去基本形は konnte です。"],
+    ["Die Brüder Grimm ___ oft gemeinsam. (arbeiten / 過去形)", "arbeiteten", ["arbeitete", "arbeitet", "gearbeitet"], "グリム兄弟はよく共同で作業した。", "語幹末 -t の規則動詞過去形（複数）", "arbeiten の過去基本形は arbeitete、3人称複数は arbeiteten です。"],
+    ["Mit 25 Jahren ___ Mozart seine Heimatstadt Salzburg. (verlassen / 過去形)", "verließ", ["verlasste", "verlässt", "verlassen"], "25歳でモーツァルトは故郷ザルツブルクを離れた。", "不規則動詞 verlassen の過去形", "verlassen - verließ - verlassen の3人称単数過去形は verließ です。"],
+    ["Röntgen ___ 1901 den ersten Nobelpreis für Physik. (bekommen / 過去形)", "bekam", ["bekommt", "bekommte", "bekommen"], "レントゲンは1901年に第1回ノーベル物理学賞を受賞した。", "非分離動詞 bekommen の過去形", "kommen の過去形 kam に準じて bekam になります。"],
+    ["Martin Luther ___ als Erster die ganze Bibel ins Deutsche. (übersetzen / 過去形)", "übersetzte", ["setzte ... über", "übersetzt", "übersetzten"], "マルティン・ルターは初めて聖書全体をドイツ語に翻訳した。", "「翻訳する」の übersetzen は非分離動詞", "「翻訳する」意味の übersetzen は非分離動詞なので übersetzte となります。"]
+  ]
+};
+
+function buildKisoPool() {
+  const pool = [];
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const subjects = [
+    { de: "ich", ja: "私", idx: 0 },
+    { de: "du", ja: "君", idx: 1 },
+    { de: "er", ja: "彼", idx: 2 },
+    { de: "sie", ja: "彼女", idx: 2 },
+    { de: "wir", ja: "私たち", idx: 3 },
+    { de: "ihr", ja: "君たち", idx: 4 },
+    { de: "Sie", ja: "あなた", idx: 5 }
+  ];
+
+  function genKisoVariations(l) {
+    const out = [];
+    if (l === 1) {
+      const verbs = [
+        { inf: "lernen", forms: ["lerne","lernst","lernt","lernen","lernt","lernen"], tail: "Deutsch", ja: "ドイツ語を習う" },
+        { inf: "wohnen", forms: ["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"], tail: "in Köln", ja: "ケルンに住む" },
+        { inf: "arbeiten", forms: ["arbeite","arbeitest","arbeitet","arbeiten","arbeitet","arbeiten"], tail: "in Berlin", ja: "ベルリンで働く" },
+        { inf: "reisen", forms: ["reise","reist","reist","reisen","reist","reisen"], tail: "gern nach Wien", ja: "よくウィーンへ旅行する" },
+        { inf: "sein", forms: ["bin","bist","ist","sind","seid","sind"], tail: "aus Japan", ja: "日本出身である" },
+        { inf: "haben", forms: ["habe","hast","hat","haben","habt","haben"], tail: "jetzt Zeit", ja: "今時間がある" },
+        { inf: "werden", forms: ["werde","wirst","wird","werden","werdet","werden"], tail: "bald gesund", ja: "すぐ元気になる" }
+      ];
+      for (let i = 0; i < 40; i++) {
+        const v = verbs[i % verbs.length];
+        const s = subjects[(i + Math.floor(i / 7)) % subjects.length];
+        const ans = v.forms[s.idx];
+        const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
+        while (dist.length < 3) dist.push(v.inf);
+        out.push({
+          de: `${cap(s.de)} ___ ${v.tail}. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
+          hint: `${v.inf} の現在人称変化（主語: ${s.de}）`,
+          exp: `${s.de} に対する ${v.inf} の活用形は ${ans} です。`
+        });
+      }
+    } else if (l === 2) {
+      const nouns = [
+        { nom: "der Computer", dat: "dem", acc: "den", ja: "コンピューター" },
+        { nom: "der Hund", dat: "dem", acc: "den", ja: "犬" },
+        { nom: "die Tasche", dat: "der", acc: "die", ja: "かばん" },
+        { nom: "die Lampe", dat: "der", acc: "die", ja: "ランプ" },
+        { nom: "das Handy", dat: "dem", acc: "das", ja: "携帯電話" },
+        { nom: "das Buch", dat: "dem", acc: "das", ja: "本" },
+        { nom: "der Freund", dat: "dem", acc: "den", ja: "友人" },
+        { nom: "die Lehrerin", dat: "der", acc: "die", ja: "女性の先生" }
+      ];
+      const frames = [
+        { k: "acc", de: (n)=>`Ich kaufe ___ ${n.nom.split(' ')[1]} heute.`, ja: (n)=>`私は今日その${n.ja}を買います。`, h: "kaufen + 4格" },
+        { k: "acc", de: (n)=>`Wir finden ___ ${n.nom.split(' ')[1]} gut.`, ja: (n)=>`私たちはその${n.ja}を良いと思います。`, h: "finden + 4格" },
+        { k: "dat", de: (n)=>`Das Auto gehört ___ ${n.nom.split(' ')[1]}.`, ja: (n)=>`その車はその${n.ja}のものです。`, h: "gehören + 3格" },
+        { k: "dat", de: (n)=>`Wir helfen ___ ${n.nom.split(' ')[1]} gern.`, ja: (n)=>`私たちは喜んでその${n.ja}を手伝います。`, h: "helfen + 3格" },
+        { k: "acc", de: (n)=>`Sie braucht ___ ${n.nom.split(' ')[1]} sofort.`, ja: (n)=>`彼女はすぐにその${n.ja}を必要としています。`, h: "brauchen + 4格" }
+      ];
+      for (let i = 0; i < 40; i++) {
+        const n = nouns[i % nouns.length];
+        const f = frames[Math.floor(i / 8)];
+        const ans = n[f.k];
+        const dist = ["der","die","das","den","dem","des"].filter(x => x !== ans).slice(0, 3);
+        out.push({
+          de: f.de(n), ans, dist, ja: f.ja(n),
+          hint: `${f.h}（${n.nom}）`,
+          exp: `${f.h} なので ${n.nom} の定冠詞は ${ans} になります。`
+        });
+      }
+    } else if (l === 3) {
+      const irr = [
+        { inf: "fahren", forms: ["fahre","fährst","fährt","fahren","fahrt","fahren"], tail: "nach München", ja: "ミュンヘンへ行く" },
+        { inf: "sprechen", forms: ["spreche","sprichst","spricht","sprechen","sprecht","sprechen"], tail: "gut Deutsch", ja: "上手にドイツ語を話す" },
+        { inf: "lesen", forms: ["lese","liest","liest","lesen","lest","lesen"], tail: "einen Roman", ja: "小説を読む" },
+        { inf: "nehmen", forms: ["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"], tail: "ein Taxi", ja: "タクシーを使う" },
+        { inf: "sehen", forms: ["sehe","siehst","sieht","sehen","seht","sehen"], tail: "den Vogel", ja: "その鳥を見る" },
+        { inf: "schlafen", forms: ["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"], tail: "sehr tief", ja: "とてもぐっすり眠る" },
+        { inf: "laufen", forms: ["laufe","läufst","läuft","laufen","lauft","laufen"], tail: "sehr schnell", ja: "とても速く走る" }
+      ];
+      for (let i = 0; i < 40; i++) {
+        const v = irr[i % irr.length];
+        const s = subjects[(i + Math.floor(i / 7)) % subjects.length];
+        const ans = v.forms[s.idx];
+        const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
+        out.push({
+          de: `${cap(s.de)} ___ ${v.tail}. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
+          hint: `不規則動詞 ${v.inf}（主語: ${s.de}）`,
+          exp: `${v.inf} は du と er/sie/es で幹母音変化し、${s.de} では ${ans} になります。`
+        });
+      }
+    } else {
+      const seedList = KISO_SEEDS[l];
+      const names = ["Peter", "Katrin", "Jens", "Maria", "Thomas", "Anna", "Martin", "Jonas"];
+      const places = ["Berlin", "Köln", "Hamburg", "München", "Dresden", "Leipzig"];
+      for (let i = 0; i < 40; i++) {
+        const base = seedList[i % seedList.length];
+        const round = Math.floor(i / 10);
+        let de = base[0];
+        let ja = base[3];
+        if (round >= 1) {
+          const nm = names[(i + round) % names.length];
+          const pl = places[(i + round) % places.length];
+          if (de.includes("Er ")) { de = de.replace("Er ", nm + " "); ja = ja.replace("彼は", nm + "は"); }
+          else if (de.includes("Sie ")) { de = de.replace("Sie ", nm + " "); ja = ja.replace("彼女は", nm + "は"); }
+          else if (de.includes("Hamburg")) { de = de.replace("Hamburg", pl); ja = ja.replace("ハンブルク", pl); }
+          else if (de.includes("München")) { de = de.replace("München", pl); ja = ja.replace("ミュンヘン", pl); }
+        }
+        out.push({
+          de, ans: base[1], dist: base[2], ja,
+          hint: base[4],
+          exp: base[5]
+        });
+      }
+    }
+    return out;
+  }
+
+  for (let l = 1; l <= 10; l++) {
+    const lessonName = KISO_LESSON_TITLES[l - 1];
+    const seeds = KISO_SEEDS[l];
+    seeds.forEach((s, idx) => {
+      pool.push({
+        id: `kiso_${l}_orig_${idx + 1}`,
+        book: "kiso",
+        cat: "textbook",
+        lessonIdx: l,
+        lesson: lessonName,
+        subType: "orig",
+        lemma: `${lessonName.split(':')[0]}（本文）`,
+        de: s[0], ans: s[1], dist: s[2], ja: s[3], hint: s[4], exp: s[5]
+      });
+    });
+    const vars = genKisoVariations(l);
+    vars.forEach((v, idx) => {
+      pool.push({
+        id: `kiso_${l}_var_${idx + 1}`,
+        book: "kiso",
+        cat: "textbook",
+        lessonIdx: l,
+        lesson: lessonName,
+        subType: "var",
+        lemma: `${lessonName.split(':')[0]}（類題）`,
+        de: v.de, ans: v.ans, dist: v.dist, ja: v.ja, hint: v.hint, exp: v.exp
+      });
+    });
+  }
+  return pool;
+}
+
+const KISO_QUESTIONS = buildKisoPool();
 
 // --- 3. 動詞活用道場データ ---
 const CONJUGATION_VERBS = [
@@ -2425,6 +2710,275 @@ const LESSON_VOCAB = {
   ]
 };
 
+// --- 3.6 基礎固めのドイツ語 Lektion 1〜10 重要単語帳データ ---
+const KISO_VOCAB = {
+  1: [
+    { de: "lernen", pos: "動詞", ja: "学ぶ、習う", note: "語幹 lern + 語尾 en" },
+    { de: "kommen", pos: "動詞", ja: "来る", note: "ich komme aus Japan" },
+    { de: "tun", pos: "動詞", ja: "する", note: "tu + n（ich tue, du tust, er tut）" },
+    { de: "handeln", pos: "動詞", ja: "行動する", note: "handel + n（ich hand[e]le）" },
+    { de: "wohnen", pos: "動詞", ja: "住む", note: "Er wohnt jetzt in Köln." },
+    { de: "spielen", pos: "動詞", ja: "遊ぶ、（スポーツを）する", note: "Fußball spielen" },
+    { de: "machen", pos: "動詞", ja: "する、作る", note: "基本動詞" },
+    { de: "trinken", pos: "動詞", ja: "飲む", note: "Ich trinke gern Tee." },
+    { de: "gehen", pos: "動詞", ja: "行く", note: "Wohin geht ihr heute?" },
+    { de: "heißen", pos: "動詞", ja: "〜という名前である", note: "語幹末 -ß：du heißt" },
+    { de: "arbeiten", pos: "動詞", ja: "働く", note: "語幹末 -t：du arbeitest, er arbeitet" },
+    { de: "finden", pos: "動詞", ja: "見つける、〜と思う", note: "語幹末 -d：du findest, er findet" },
+    { de: "warten", pos: "動詞", ja: "待つ", note: "語幹末 -t：du wartest" },
+    { de: "reden", pos: "動詞", ja: "話す、語る", note: "語幹末 -d：du redest" },
+    { de: "rechnen", pos: "動詞", ja: "計算する", note: "語幹末 -chn：du rechnest" },
+    { de: "öffnen", pos: "動詞", ja: "開ける", note: "語幹末 -ffn：du öffnest" },
+    { de: "atmen", pos: "動詞", ja: "呼吸する", note: "語幹末 -tm：du atmest" },
+    { de: "reisen", pos: "動詞", ja: "旅行する", note: "語幹末 -s：du reist" },
+    { de: "tanzen", pos: "動詞", ja: "踊る", note: "語幹末 -z：du tanzt" },
+    { de: "sitzen", pos: "動詞", ja: "座る、座っている", note: "語幹末 -tz：du sitzt" },
+    { de: "küssen", pos: "動詞", ja: "キスする", note: "語幹末 -ss：du küsst" },
+    { de: "grüßen", pos: "動詞", ja: "あいさつする", note: "語幹末 -ß：du grüßt" },
+    { de: "wandern", pos: "動詞", ja: "ハイキングする", note: "語尾 -n（-rn）" },
+    { de: "sein", pos: "動詞", ja: "〜である、いる", note: "bin, bist, ist, sind, seid, sind" },
+    { de: "haben", pos: "動詞", ja: "持っている", note: "habe, hast, hat, haben, habt, haben" },
+    { de: "werden", pos: "動詞", ja: "〜になる", note: "werde, wirst, wird, werden, werdet, werden" },
+    { de: "der Tee (-s)", pos: "名詞・男", ja: "お茶、紅茶", note: "Ich trinke gern Tee." },
+    { de: "das Haustier (-e)", pos: "名詞・中", ja: "ペット", note: "Habt ihr ein Haustier?" },
+    { de: "der Hund (-e)", pos: "名詞・男", ja: "犬", note: "wir haben einen Hund" },
+    { de: "das Handy (-s)", pos: "名詞・中", ja: "携帯電話", note: "Haben Sie ein Handy?" },
+    { de: "fleißig", pos: "形容詞", ja: "勤勉な", note: "Sind Sie immer fleißig?" },
+    { de: "faul", pos: "形容詞", ja: "怠惰な、なまけ者の", note: "manchmal faul" },
+    { de: "gesund", pos: "形容詞", ja: "健康な", note: "Klaus wird bestimmt gesund." }
+  ],
+  2: [
+    { de: "der Vater (¨-)", pos: "名詞・男", ja: "父", note: "単数2格 des Vaters" },
+    { de: "die Mutter (¨-)", pos: "名詞・女", ja: "母", note: "女性名詞単数2格は無変化" },
+    { de: "das Kind (-er)", pos: "名詞・中", ja: "子ども", note: "単数2格 des Kind[e]s" },
+    { de: "die Eltern (pl)", pos: "名詞・複", ja: "両親", note: "複数形のみ" },
+    { de: "die Katze (-n)", pos: "名詞・女", ja: "猫", note: "女性名詞" },
+    { de: "das Pferd (-e)", pos: "名詞・中", ja: "馬", note: "中性名詞" },
+    { de: "die Leute (pl)", pos: "名詞・複", ja: "人々", note: "複数3格 den Leuten" },
+    { de: "der Computer (-)", pos: "名詞・男", ja: "コンピューター", note: "男性名詞" },
+    { de: "die Tasche (-n)", pos: "名詞・女", ja: "かばん", note: "女性名詞" },
+    { de: "die Ferien (pl)", pos: "名詞・複", ja: "休暇", note: "複数形のみ" },
+    { de: "das Mädchen (-)", pos: "名詞・中", ja: "少女、女の子", note: "-chen は中性名詞" },
+    { de: "der Brief (-e)", pos: "名詞・男", ja: "手紙", note: "einen Brief schreiben" },
+    { de: "das Heft (-e)", pos: "名詞・中", ja: "ノート", note: "ein Heft" },
+    { de: "die Zeitung (-en)", pos: "名詞・女", ja: "新聞", note: "eine Zeitung" },
+    { de: "der Bleistift (-e)", pos: "名詞・男", ja: "鉛筆", note: "zwei Bleistifte" },
+    { de: "die Brille (-n)", pos: "名詞・女", ja: "メガネ", note: "女性名詞" },
+    { de: "das Flugzeug (-e)", pos: "名詞・中", ja: "飛行機", note: "中性名詞" },
+    { de: "die Lampe (-n)", pos: "名詞・女", ja: "ランプ", note: "女性名詞" },
+    { de: "die Wohnung (-en)", pos: "名詞・女", ja: "住まい、アパート", note: "女性名詞" },
+    { de: "die Tür (-en)", pos: "名詞・女", ja: "ドア", note: "女性名詞" },
+    { de: "der Politiker (-)", pos: "名詞・男", ja: "政治家", note: "eines Politikers" },
+    { de: "die Kirche (-n)", pos: "名詞・女", ja: "教会", note: "女性名詞" },
+    { de: "das Bilderbuch (¨-er)", pos: "名詞・中", ja: "絵本", note: "ein Bilderbuch" },
+    { de: "der Autor (-en)", pos: "名詞・男", ja: "作者、著者", note: "単数2格 des Autors" },
+    { de: "gehören", pos: "動詞", ja: "〜のものである", note: "3格支配：Wem gehört das Auto?" },
+    { de: "danken", pos: "動詞", ja: "感謝する", note: "3格支配：Ich danke dem Lehrer." },
+    { de: "schenken", pos: "動詞", ja: "贈る、プレゼントする", note: "3格に4格を贈る" },
+    { de: "billig", pos: "形容詞", ja: "安い", note: "den Computer billig finden" }
+  ],
+  3: [
+    { de: "fahren (fährt)", pos: "不規則動詞", ja: "（乗り物で）行く", note: "a→ä 型" },
+    { de: "sprechen (spricht)", pos: "不規則動詞", ja: "話す", note: "e→i 型・du命令 Sprich!" },
+    { de: "sehen (sieht)", pos: "不規則動詞", ja: "見る", note: "e→ie 型" },
+    { de: "halten (hält)", pos: "不規則動詞", ja: "保つ、停まる", note: "du hältst, er hält" },
+    { de: "nehmen (nimmt)", pos: "不規則動詞", ja: "取る", note: "du nimmst, er nimmt・du命令 Nimm!" },
+    { de: "schlafen (schläft)", pos: "不規則動詞", ja: "眠る", note: "a→ä 型" },
+    { de: "treffen (trifft)", pos: "不規則動詞", ja: "会う", note: "e→i 型" },
+    { de: "waschen (wäscht)", pos: "不規則動詞", ja: "洗う", note: "a→ä 型" },
+    { de: "lesen (liest)", pos: "不規則動詞", ja: "読む", note: "e→ie 型・du命令 Lies!" },
+    { de: "helfen (hilft)", pos: "不規則動詞", ja: "助ける、手伝う", note: "3格支配・du命令 Hilf!" },
+    { de: "tragen (trägt)", pos: "不規則動詞", ja: "運ぶ、着ている", note: "a→ä 型" },
+    { de: "essen (isst)", pos: "不規則動詞", ja: "食べる", note: "e→i 型・du命令 Iss!" },
+    { de: "laufen (läuft)", pos: "不規則動詞", ja: "走る、上映される", note: "au→äu 型" },
+    { de: "geben (gibt)", pos: "不規則動詞", ja: "与える", note: "es gibt + 4格（〜がある）" },
+    { de: "fangen (fängt)", pos: "不規則動詞", ja: "捕える", note: "a→ä 型" },
+    { de: "treten (tritt)", pos: "不規則動詞", ja: "歩む、踏む", note: "du trittst, er tritt" },
+    { de: "stoßen (stößt)", pos: "不規則動詞", ja: "突く、ぶつかる", note: "o→ö 型" },
+    { de: "der Vogel (¨-)", pos: "名詞・男", ja: "鳥", note: "Siehst du den Vogel?" },
+    { de: "das Referat (-e)", pos: "名詞・中", ja: "レポート、発表", note: "ein Referat halten" },
+    { de: "das Gewitter (-)", pos: "名詞・中", ja: "雷雨", note: "Heute gibt es ein Gewitter." },
+    { de: "der Reis", pos: "名詞・男", ja: "米、ご飯", note: "man isst viel Reis" },
+    { de: "der Roman (-e)", pos: "名詞・男", ja: "小説", note: "einen Roman lesen" },
+    { de: "ruhig", pos: "形容詞", ja: "静かな", note: "Seien Sie bitte ruhig!" },
+    { de: "erwachsen", pos: "形容詞", ja: "大人の、大人らしい", note: "Werde erwachsen!" }
+  ],
+  4: [
+    { de: "das Jahr (-e)", pos: "名詞・中", ja: "年", note: "zehn Jahre alt" },
+    { de: "das Zeugnis (-se)", pos: "名詞・中", ja: "証明書、通知表", note: "-is は複数で s を重ねる" },
+    { de: "das Ei (-er)", pos: "名詞・中", ja: "卵", note: "-er 型複数" },
+    { de: "die Studentin (-nen)", pos: "名詞・女", ja: "女子大学生", note: "-in は複数で -innen" },
+    { de: "das Museum (Museen)", pos: "名詞・中", ja: "美術館、博物館", note: "-um → -en" },
+    { de: "das Datum (Daten)", pos: "名詞・中", ja: "日付（複数：データ）", note: "単数と複数で意味が異なる" },
+    { de: "das Zentrum (Zentren)", pos: "名詞・中", ja: "中心", note: "-um → -en" },
+    { de: "das Thema (Themen)", pos: "名詞・中", ja: "テーマ", note: "-a → -en" },
+    { de: "die Firma (Firmen)", pos: "名詞・女", ja: "会社", note: "-a → -en" },
+    { de: "das Glück", pos: "名詞・中", ja: "幸福", note: "複数形を持たない名詞" },
+    { de: "die Jugend", pos: "名詞・女", ja: "青春、若さ", note: "複数形を持たない名詞" },
+    { de: "der Mut", pos: "名詞・男", ja: "勇気", note: "複数形を持たない名詞" },
+    { de: "der Schnellzug (¨-e)", pos: "名詞・男", ja: "急行列車", note: "den Schnellzug nehmen" },
+    { de: "der Fahrplan (¨-e)", pos: "名詞・男", ja: "時刻表", note: "der Fahrplan dieses Zuges" },
+    { de: "dieser", pos: "定冠詞類", ja: "この", note: "der 型変化" },
+    { de: "jener", pos: "定冠詞類", ja: "あの", note: "der 型変化" },
+    { de: "welcher", pos: "定冠詞類", ja: "どの", note: "der 型変化" },
+    { de: "jeder", pos: "定冠詞類", ja: "どの〜も", note: "常に単数形で用いる" },
+    { de: "solcher", pos: "定冠詞類", ja: "そのような", note: "der 型変化" },
+    { de: "unser", pos: "所有冠詞", ja: "私たちの", note: "不定冠詞類" },
+    { de: "euer", pos: "所有冠詞", ja: "君たちの", note: "語尾がつくと e が落ちる（eure）" },
+    { de: "kein", pos: "否定冠詞", ja: "〜ない（名詞の否定）", note: "不定冠詞類と同じ変化" },
+    { de: "sondern", pos: "接続詞", ja: "そうではなく〜", note: "nicht ..., sondern ..." },
+    { de: "ähnlich", pos: "形容詞", ja: "似ている", note: "3格を要求する形容詞" }
+  ],
+  5: [
+    { de: "der Pullover (-)", pos: "名詞・男", ja: "セーター", note: "Nehmen Sie diesen Pullover?" },
+    { de: "das Kleid (-er)", pos: "名詞・中", ja: "服、ドレス", note: "Mir gefällt das Kleid." },
+    { de: "der Student (-en)", pos: "名詞・男", ja: "大学生", note: "男性弱変化名詞" },
+    { de: "der Junge (-n)", pos: "名詞・男", ja: "少年", note: "男性弱変化名詞" },
+    { de: "der Polizist (-en)", pos: "名詞・男", ja: "警官", note: "男性弱変化名詞" },
+    { de: "der Herr (-n, -en)", pos: "名詞・男", ja: "紳士、〜さん", note: "単数2・3・4格は Herrn" },
+    { de: "der Mensch (-en)", pos: "名詞・男", ja: "人間", note: "男性弱変化名詞" },
+    { de: "der Name (-n)", pos: "名詞・男", ja: "名前", note: "2格 des Namens、3・4格 Namen" },
+    { de: "der Wille (-n)", pos: "名詞・男", ja: "意志", note: "2格 des Willens、3・4格 Willen" },
+    { de: "das Herz (-ens, -en)", pos: "名詞・中", ja: "心臓、心", note: "中性唯一の特殊変化名詞" },
+    { de: "der Kollege (-n)", pos: "名詞・男", ja: "同僚", note: "男性弱変化名詞" },
+    { de: "der Geldautomat (-en)", pos: "名詞・男", ja: "自動支払機（ATM）", note: "男性弱変化名詞" },
+    { de: "der Ausflug (¨-e)", pos: "名詞・男", ja: "遠足、小旅行", note: "einen Ausflug machen" },
+    { de: "reparieren", pos: "動詞", ja: "修理する", note: "Wessen Auto reparieren Sie?" },
+    { de: "benutzen", pos: "動詞", ja: "使う、利用する", note: "Benutzen Sie dieses Handy noch?" },
+    { de: "leihen", pos: "動詞", ja: "貸す", note: "Ich leihe dir die CD." },
+    { de: "schmecken", pos: "動詞", ja: "おいしい、味がする", note: "3格支配：Schmeckt Ihnen das Essen?" },
+    { de: "wessen", pos: "疑問詞", ja: "誰の（2格）", note: "wer の2格" },
+    { de: "was für ein", pos: "疑問表現", ja: "どんな種類の〜", note: "Was für einen Wagen kaufen Sie?" }
+  ],
+  6: [
+    { de: "aus", pos: "3格前置詞", ja: "〜から、〜でできた", note: "ein Kleid aus Seide" },
+    { de: "bei", pos: "3格前置詞", ja: "〜のところで、〜のさいに", note: "bei meinem Großvater" },
+    { de: "gegenüber", pos: "3格前置詞", ja: "〜の向かいに", note: "Gegenüber der Kirche" },
+    { de: "mit", pos: "3格前置詞", ja: "〜と一緒に、〜を使って", note: "mit dem Fahrrad" },
+    { de: "nach", pos: "3格前置詞", ja: "〜へ、〜のあとで、〜によれば", note: "nach Paris / nach meiner Meinung" },
+    { de: "seit", pos: "3格前置詞", ja: "〜以来、〜前から", note: "seit einem Jahr" },
+    { de: "von", pos: "3格前置詞", ja: "〜から、〜について", note: "vom Bahnhof" },
+    { de: "zu", pos: "3格前置詞", ja: "〜へ", note: "zum Arzt / zur Uni" },
+    { de: "durch", pos: "4格前置詞", ja: "〜を通って", note: "durch den Park" },
+    { de: "für", pos: "4格前置詞", ja: "〜のために", note: "Für meine Familie." },
+    { de: "gegen", pos: "4格前置詞", ja: "〜に向かって、〜頃", note: "gegen 6 Uhr" },
+    { de: "ohne", pos: "4格前置詞", ja: "〜なしで", note: "Ohne Pause" },
+    { de: "um", pos: "4格前置詞", ja: "〜時に、〜のまわりに", note: "um 9 Uhr / um den Tisch" },
+    { de: "während", pos: "2格前置詞", ja: "〜のあいだ", note: "Während der Ferien" },
+    { de: "wegen", pos: "2格前置詞", ja: "〜の理由で", note: "Wegen eines Sturzes" },
+    { de: "trotz", pos: "2格前置詞", ja: "〜にもかかわらず", note: "Trotz des Regens" },
+    { de: "statt", pos: "2格前置詞", ja: "〜のかわりに", note: "Statt meines Vaters" },
+    { de: "an", pos: "3・4格前置詞", ja: "〜のきわに", note: "an der Wand / an die Nordsee" },
+    { de: "auf", pos: "3・4格前置詞", ja: "〜の上に", note: "auf dem Tisch / auf den Tisch" },
+    { de: "über", pos: "3・4格前置詞", ja: "〜の上方に、〜について", note: "über dem Wald / über den Wald" },
+    { de: "unter", pos: "3・4格前置詞", ja: "〜の下に", note: "unter dem Baum" },
+    { de: "zwischen", pos: "3・4格前置詞", ja: "〜の間に", note: "場所=3格 / 方向=4格" },
+    { de: "womit", pos: "疑問副詞", ja: "何を使って", note: "was + mit" },
+    { de: "worauf", pos: "疑問副詞", ja: "何の上に・何を", note: "was + r + auf" },
+    { de: "halb", pos: "時刻表現", ja: "〜半", note: "halb 6（5時30分）" },
+    { de: "Viertel", pos: "時刻表現", ja: "15分（4分の1）", note: "Viertel nach 5 / Viertel vor 6" }
+  ],
+  7: [
+    { de: "das Volkslied (-er)", pos: "名詞・中", ja: "民謡", note: "ein schönes Volkslied" },
+    { de: "der Salat (-e)", pos: "名詞・男", ja: "サラダ", note: "grüner Salat" },
+    { de: "die Suppe (-n)", pos: "名詞・女", ja: "スープ", note: "warme Suppe" },
+    { de: "das Obst", pos: "名詞・中", ja: "果物", note: "frisches Obst" },
+    { de: "die Laune (-n)", pos: "名詞・女", ja: "気分、機嫌", note: "guter Laune sein（機嫌がよい）" },
+    { de: "der Himmel", pos: "名詞・男", ja: "空", note: "der blaue Himmel" },
+    { de: "die Luft", pos: "名詞・女", ja: "空気", note: "die frische Luft" },
+    { de: "die Wolke (-n)", pos: "名詞・女", ja: "雲", note: "die weißen Wolken" },
+    { de: "der Turm (¨-e)", pos: "名詞・男", ja: "塔", note: "der hohe Turm" },
+    { de: "hoch", pos: "形容詞", ja: "高い", note: "付加語用法では hoh-（der hohe Turm）" },
+    { de: "teuer", pos: "形容詞", ja: "高価な", note: "語尾がつくと e 脱落（teurer / teuren）" },
+    { de: "streng", pos: "形容詞", ja: "厳しい", note: "sehr streng" },
+    { de: "schwierig", pos: "形容詞", ja: "難しい", note: "schwierige Hausaufgaben" },
+    { de: "berühmt", pos: "形容詞", ja: "有名な", note: "ein altes, berühmtes Gasthaus" },
+    { de: "der Alte (-n)", pos: "名詞化形容詞", ja: "老人（男性）", note: "形容詞の名詞化" },
+    { de: "der Deutsche (-n)", pos: "名詞化形容詞", ja: "ドイツ人（男性）", note: "形容詞の名詞化" },
+    { de: "der Angestellte (-n)", pos: "名詞化分詞", ja: "社員、職員", note: "過去分詞の名詞化" },
+    { de: "der Bekannte (-n)", pos: "名詞化形容詞", ja: "知り合い", note: "eine Bekannte" },
+    { de: "der Fremde (-n)", pos: "名詞化形容詞", ja: "外国人、見知らぬ人", note: "einen Fremden" },
+    { de: "der Verwandte (-n)", pos: "名詞化形容詞", ja: "親戚", note: "Ihre Verwandte" },
+    { de: "der Reisende (-n)", pos: "名詞化分詞", ja: "旅行者", note: "現在分詞の名詞化" },
+    { de: "der Verletzte (-n)", pos: "名詞化分詞", ja: "けが人", note: "die Verletzten" },
+    { de: "das Jahrhundert (-e)", pos: "名詞・中", ja: "世紀", note: "im 21. Jahrhundert" },
+    { de: "erst", pos: "序数", ja: "第1の", note: "der erste Mai" },
+    { de: "dritt", pos: "序数", ja: "第3の", note: "der dritte Mai" }
+  ],
+  8: [
+    { de: "können", pos: "話法の助動詞", ja: "〜できる、〜かもしれない", note: "ich/er kann, du kannst" },
+    { de: "müssen", pos: "話法の助動詞", ja: "〜ねばならない、〜に違いない", note: "ich/er muss, du musst" },
+    { de: "wollen", pos: "話法の助動詞", ja: "〜するつもりである", note: "ich/er will, du willst" },
+    { de: "dürfen", pos: "話法の助動詞", ja: "〜してもよい", note: "ich/er darf, du darfst" },
+    { de: "sollen", pos: "話法の助動詞", ja: "〜するべきである", note: "ich/er soll, du sollst" },
+    { de: "mögen", pos: "話法の助動詞", ja: "〜かもしれない、好む", note: "ich/er mag, du magst" },
+    { de: "möchte", pos: "助動詞・動詞", ja: "〜したい", note: "mögen の接続法II式" },
+    { de: "wissen", pos: "不規則動詞", ja: "（知識として）知っている", note: "ich/er weiß, du weißt" },
+    { de: "üben", pos: "動詞", ja: "練習する", note: "Du musst viel üben." },
+    { de: "stören", pos: "動詞", ja: "邪魔する", note: "Darf ich Sie kurz stören?" },
+    { de: "geschäftlich", pos: "副詞・形容詞", ja: "仕事で、出張で", note: "geschäftlich nach München" },
+    { de: "das Trinkgeld (-er)", pos: "名詞・中", ja: "チップ", note: "kein Trinkgeld geben" },
+    { de: "aufräumen", pos: "分離動詞", ja: "片づける", note: "dein Zimmer aufräumen" },
+    { de: "verraten", pos: "非分離動詞", ja: "裏切る、漏らす", note: "Ich werde dich nie verraten." },
+    { de: "lassen", pos: "使役の助動詞", ja: "〜させる、〜してもらう、置いておく", note: "du lässt, er lässt" },
+    { de: "schreien", pos: "知覚動詞と併用", ja: "叫ぶ、鳴く", note: "laut schreien" },
+    { de: "unbedingt", pos: "副詞", ja: "絶対に", note: "今晩ぼくは絶対に踊るつもりだ" }
+  ],
+  9: [
+    { de: "abfahren", pos: "分離動詞", ja: "出発する", note: "Der Zug fährt bald ab." },
+    { de: "ankommen", pos: "分離動詞", ja: "到着する", note: "Er kommt in Hamburg an." },
+    { de: "umsteigen", pos: "分離動詞", ja: "乗り換える", note: "Steigen Sie in Hamburg um!" },
+    { de: "abfliegen", pos: "分離動詞", ja: "（飛行機で）出発する", note: "er fliegt bald ab" },
+    { de: "anfangen", pos: "分離動詞", ja: "始まる、始める", note: "Wann fängt der Unterricht an?" },
+    { de: "anrufen", pos: "分離動詞", ja: "電話をかける", note: "Rufen Sie mich an!" },
+    { de: "aufmachen", pos: "分離動詞", ja: "開ける", note: "das Fenster aufmachen" },
+    { de: "aufstehen", pos: "分離動詞", ja: "起きる", note: "Um wie viel Uhr stehst du auf?" },
+    { de: "aussteigen", pos: "分離動詞", ja: "降りる", note: "乗り物の乗り降り" },
+    { de: "einladen", pos: "分離動詞", ja: "招待する", note: "Ich lade Sie zum Essen ein." },
+    { de: "einschlafen", pos: "分離動詞", ja: "寝入る", note: "sie schläft sofort ein" },
+    { de: "einsteigen", pos: "分離動詞", ja: "乗り込む", note: "乗り物の乗り降り" },
+    { de: "fernsehen", pos: "分離動詞", ja: "テレビを見る", note: "Ich sehe nicht lange fern." },
+    { de: "mitbringen", pos: "分離動詞", ja: "持ってくる", note: "einen Blumenstrauß mitbringen" },
+    { de: "stattfinden", pos: "分離動詞", ja: "催される、行われる", note: "Das Konzert findet am Freitag statt." },
+    { de: "teilnehmen", pos: "分離動詞", ja: "参加する", note: "an et. (3格) teilnehmen" },
+    { de: "vorhaben", pos: "分離動詞", ja: "予定している、つもりである", note: "Was hast du morgen vor?" },
+    { de: "umziehen", pos: "分離動詞", ja: "引っ越す", note: "分離動詞" },
+    { de: "zumachen", pos: "分離動詞", ja: "閉める", note: "Mach ich das Fenster zu?" },
+    { de: "zurückgeben", pos: "分離動詞", ja: "返す", note: "Gib mir das Buch bald zurück!" },
+    { de: "zurückkommen", pos: "分離動詞", ja: "戻ってくる", note: "Wann kommt ihr zurück?" },
+    { de: "besichtigen", pos: "非分離動詞", ja: "見学する、視察する", note: "alte Kirchen besichtigen" },
+    { de: "bestehen", pos: "非分離動詞", ja: "合格する、成り立つ", note: "die Prüfung bestehen" },
+    { de: "empfehlen", pos: "非分離動詞", ja: "推薦する、薦める", note: "er empfiehlt" },
+    { de: "entstehen", pos: "非分離動詞", ja: "生じる、成立する", note: "ent- は非分離" },
+    { de: "erleben", pos: "非分離動詞", ja: "経験する", note: "viel erleben" },
+    { de: "erkennen", pos: "非分離動詞", ja: "認識する、見分ける", note: "an ihrer Stimme erkennen" },
+    { de: "zerstören", pos: "非分離動詞", ja: "破壊する", note: "zer- は分裂・破壊" },
+    { de: "missverstehen", pos: "非分離動詞", ja: "誤解する", note: "miss- は誤り・否定" }
+  ],
+  10: [
+    { de: "bringen (brachte, gebracht)", pos: "混合変化動詞", ja: "持ってくる", note: "三基本形" },
+    { de: "denken (dachte, gedacht)", pos: "混合変化動詞", ja: "考える", note: "三基本形" },
+    { de: "kennen (kannte, gekannt)", pos: "混合変化動詞", ja: "知っている", note: "三基本形" },
+    { de: "wissen (wusste, gewusst)", pos: "混合変化動詞", ja: "知っている", note: "三基本形" },
+    { de: "können (konnte, gekonnt)", pos: "混合変化動詞", ja: "〜できる", note: "三基本形" },
+    { de: "bekommen (bekam, bekommen)", pos: "非分離動詞", ja: "手に入れる、受け取る", note: "ge- をつけない" },
+    { de: "verstehen (verstand, verstanden)", pos: "非分離動詞", ja: "理解する", note: "ge- をつけない" },
+    { de: "übersetzen (setzte ... über, übergesetzt)", pos: "分離動詞", ja: "向こうへ渡す", note: "前つづりにアクセントがあるとき分離" },
+    { de: "übersetzen (übersetzte, übersetzt)", pos: "非分離動詞", ja: "翻訳する", note: "前つづりにアクセントがないとき非分離" },
+    { de: "informieren (informierte, informiert)", pos: "動詞", ja: "知らせる、情報を与える", note: "-ieren 動詞は ge- なし" },
+    { de: "kontrollieren (kontrollierte, kontrolliert)", pos: "動詞", ja: "点検する、管理する", note: "-ieren 動詞は ge- なし" },
+    { de: "wiederholen (wiederholte, wiederholt)", pos: "非分離動詞", ja: "繰り返す、復習する", note: "非分離動詞" },
+    { de: "vollenden (vollendete, vollendet)", pos: "非分離動詞", ja: "完成させる", note: "非分離動詞" },
+    { de: "widersprechen (widersprach, widersprochen)", pos: "非分離動詞", ja: "反論する、矛盾する", note: "非分離動詞" },
+    { de: "verlassen (verließ, verlassen)", pos: "不規則動詞", ja: "離れる、去る", note: "Mozart verließ Salzburg." },
+    { de: "der Graf (-en)", pos: "名詞・男", ja: "伯爵", note: "ein alter Graf" },
+    { de: "der Meister (-)", pos: "名詞・男", ja: "師匠、マイスター", note: "einem berühmten Meister" },
+    { de: "die Heimatstadt (¨-e)", pos: "名詞・女", ja: "故郷の町", note: "seine Heimatstadt Salzburg" },
+    { de: "der Nobelpreis (-e)", pos: "名詞・男", ja: "ノーベル賞", note: "den ersten Nobelpreis" },
+    { de: "die Bibel (-n)", pos: "名詞・女", ja: "聖書", note: "die ganze Bibel" }
+  ]
+};
+
 // --- アプリ状態管理 ---
 let customQuestions = JSON.parse(localStorage.getItem("de_drill_custom_v3") || "[]");
 let wrongIds = new Set(JSON.parse(localStorage.getItem("de_drill_wrong_v3") || "[]"));
@@ -2461,8 +3015,22 @@ let conjIdx = 0;
 let irregIdx = 0;
 let activeConjInput = null;
 
+function getBookTitles() {
+  return activeBook === "kiso" ? KISO_LESSON_TITLES : LESSON_TITLES;
+}
+
+function getBookQuestions() {
+  return activeBook === "kiso" ? KISO_QUESTIONS : TEXTBOOK_QUESTIONS;
+}
+
+function getBookVocab() {
+  return activeBook === "kiso" ? KISO_VOCAB : LESSON_VOCAB;
+}
+
 function getAllQuestions() {
-  return [...TEXTBOOK_QUESTIONS, ...customQuestions];
+  const base = getBookQuestions();
+  const custom = customQuestions.filter(q => (q.book || "ideal") === activeBook);
+  return [...base, ...custom];
 }
 
 function populateConjSelect() {
@@ -2496,13 +3064,7 @@ function init() {
     document.getElementById("themeBtn").querySelector("strong").textContent = "ライト";
   }
 
-  const sel = document.getElementById("lessonSelect");
-  LESSON_TITLES.forEach((title, i) => {
-    const opt = document.createElement("option");
-    opt.value = i + 1;
-    opt.textContent = title;
-    sel.appendChild(opt);
-  });
+  populateLessonSelect();
 
   populateConjSelect();
 
@@ -2575,17 +3137,33 @@ function resetQuestionHistory() {
   updatePrevBtn();
 }
 
+function populateLessonSelect() {
+  const sel = document.getElementById("lessonSelect");
+  const titles = getBookTitles();
+  if (selectedLesson > titles.length) selectedLesson = 1;
+  sel.innerHTML = "";
+  titles.forEach((title, i) => {
+    const opt = document.createElement("option");
+    opt.value = i + 1;
+    opt.textContent = title;
+    sel.appendChild(opt);
+  });
+  sel.value = selectedLesson;
+}
+
 function setBook(book) {
   activeBook = book;
   const sel = document.getElementById("bookSelect");
   if (sel) sel.value = book;
+  populateLessonSelect();
   resetQuestionHistory();
+  currentVocab = null;
   renderTabs();
   nextQuestion();
 }
 
 function renderTabs() {
-  const all = activeBook === "ideal" ? getAllQuestions() : [];
+  const all = getAllQuestions();
   const tabs = [
     { id: "textbook", label: "教科書問題", count: all.length, isTb: true },
     { id: "wrong", label: "苦手復習", count: all.filter(q => wrongIds.has(q.id)).length }
@@ -2606,7 +3184,7 @@ function renderTabs() {
   });
 
   const tbBar = document.getElementById("tbFilterBar");
-  if (activeBook === "ideal" && activeTab === "textbook") {
+  if (activeTab === "textbook") {
     tbBar.classList.add("show");
     updateLessonProgress();
   } else {
@@ -2617,6 +3195,7 @@ function renderTabs() {
 function onLessonChange() {
   selectedLesson = parseInt(document.getElementById("lessonSelect").value, 10);
   resetQuestionHistory();
+  currentVocab = null;
   updateLessonProgress();
   nextQuestion();
 }
@@ -2631,14 +3210,14 @@ function setSubFilter(sub) {
 }
 
 function updateLessonProgress() {
-  const lessonQs = TEXTBOOK_QUESTIONS.filter(q => q.lessonIdx === selectedLesson);
+  const lessonQs = getBookQuestions().filter(q => q.lessonIdx === selectedLesson);
   const cleared = lessonQs.filter(q => solvedIds.has(q.id)).length;
-  document.getElementById("lessonProgressCount").textContent = `${cleared} / ${lessonQs.length} 問`;
-  document.getElementById("lessonProgressFill").style.width = `${Math.round((cleared / lessonQs.length) * 100)}%`;
+  const total = lessonQs.length;
+  document.getElementById("lessonProgressCount").textContent = `${cleared} / ${total} 問`;
+  document.getElementById("lessonProgressFill").style.width = total > 0 ? `${Math.round((cleared / total) * 100)}%` : "0%";
 }
 
 function getFilteredPool() {
-  if (activeBook !== "ideal") return [];
   const all = getAllQuestions();
   if (activeTab === "wrong") {
     return all.filter(q => wrongIds.has(q.id));
@@ -2661,19 +3240,21 @@ function buildFullGermanSentence(q) {
 }
 
 function getVocabPool() {
-  if (activeBook !== "ideal") return [];
+  const vocabMap = getBookVocab();
+  const titles = getBookTitles();
+  const prefix = activeBook === "kiso" ? "kv" : "v";
   const list = [];
   if (activeTab === "wrong") {
-    for (let l = 1; l <= 20; l++) {
-      (LESSON_VOCAB[l] || []).forEach((v, idx) => {
-        const id = `v_${l}_${idx}`;
-        if (vocabWeakIds.has(id)) list.push({ ...v, id, lessonIdx: l, lesson: LESSON_TITLES[l - 1] });
+    for (let l = 1; l <= titles.length; l++) {
+      (vocabMap[l] || []).forEach((v, idx) => {
+        const id = `${prefix}_${l}_${idx}`;
+        if (vocabWeakIds.has(id)) list.push({ ...v, id, lessonIdx: l, lesson: titles[l - 1] });
       });
     }
     return list;
   }
-  (LESSON_VOCAB[selectedLesson] || []).forEach((v, idx) => {
-    list.push({ ...v, id: `v_${selectedLesson}_${idx}`, lessonIdx: selectedLesson, lesson: LESSON_TITLES[selectedLesson - 1] });
+  (vocabMap[selectedLesson] || []).forEach((v, idx) => {
+    list.push({ ...v, id: `${prefix}_${selectedLesson}_${idx}`, lessonIdx: selectedLesson, lesson: titles[selectedLesson - 1] });
   });
   return list;
 }
@@ -3258,12 +3839,17 @@ function openDashboard() {
     <div class="dash-stat"><div class="dash-val" style="color:var(--danger);">${wrongIds.size}</div><div class="dash-lbl">苦手復習リスト</div></div>
   `;
 
+  const titles = getBookTitles();
+  const bookQs = getBookQuestions();
+  const bookLabel = activeBook === "kiso" ? "基礎固めのドイツ語" : "ideal";
+  document.getElementById("dashBookTitle").textContent = `${bookLabel} 全${titles.length}課の達成状況`;
+
   const list = document.getElementById("dashLessonList");
   list.innerHTML = "";
-  for (let l = 1; l <= 20; l++) {
-    const lQs = TEXTBOOK_QUESTIONS.filter(q => q.lessonIdx === l);
+  for (let l = 1; l <= titles.length; l++) {
+    const lQs = bookQs.filter(q => q.lessonIdx === l);
     const cleared = lQs.filter(q => solvedIds.has(q.id)).length;
-    const pct = Math.round((cleared / lQs.length) * 100);
+    const pct = lQs.length > 0 ? Math.round((cleared / lQs.length) * 100) : 0;
     const item = document.createElement("div");
     item.className = "dash-lesson";
     item.innerHTML = `
@@ -3347,6 +3933,7 @@ function saveCustomQuestion() {
   }
   customQuestions.push({
     id: "custom_" + Date.now(),
+    book: activeBook,
     cat: "textbook",
     lessonIdx: selectedLesson,
     lesson,
