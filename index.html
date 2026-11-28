@@ -1155,9 +1155,9 @@ const LESSON_SEEDS = {
     ["Wie heißt das Mädchen? - ___ heißt Michaela.", "Es", ["Sie", "Er", "Ihm"], "その女の子は何という名前？ - ミヒャエーラです。", "中性名詞 das Mädchen を受ける代名詞", "Mädchen は文法上の中性名詞なので es で受けます。"],
     ["Gibst du ___ bitte das Salz?", "mir", ["mich", "ich", "mein"], "私にお塩を取ってくれる？", "ich の3格人称代名詞", "geben + 3格（〜に）なので mir を使います。"],
     ["Bringst du ___ nach Hause?", "mich", ["mir", "ich", "mein"], "私を家まで送ってくれる？", "ich の4格人称代名詞", "bringen + 4格（〜を）なので mich を使います。"],
-    ["Ich danke ___ ganz herzlich.", "Ihnen", ["Sie", "Ihr", "ihnen"], "私はあなたに心から感謝します。", "danken + 3格（敬称 Sie の3格）", "danken は3格支配動詞。敬称 Sie の3格は Ihnen（大文字）です。"],
+    ["Ich danke ___ ganz herzlich.", "Ihnen", ["Sie", "Ihr", "euch"], "私はあなたに心から感謝します。", "danken + 3格（敬称 Sie の3格）", "danken は3格支配動詞。敬称 Sie の3格は Ihnen（大文字）です。"],
     ["Das Kind hat eine Puppe. Sie gefällt ___ sehr.", "ihm", ["es", "ihn", "ihr"], "その子は人形を持っている。その子はそれがとても気に入っている。", "das Kind (= es) の3格", "gefallen + 3格。中性単数 es の3格は ihm です。"],
-    ["Ich glaube ___ nicht.", "ihnen", ["sie", "ihr", "Ihnen"], "私は彼らの言うことを信じません。", "glauben + 3格（複数 sie の3格）", "3人称複数 sie の3格は ihnen です。"],
+    ["Ich glaube ___ nicht.", "ihnen", ["sie", "ihr", "euch"], "私は彼らの言うことを信じません。", "glauben + 3格（複数 sie の3格）", "3人称複数 sie の3格は ihnen です。"],
     ["Kennst du ___ Mann? (dieser)", "diesen", ["dieser", "diesem", "dieses"], "この男の人を知っていますか？", "dieser 型の男性単数4格", "定冠詞 der と同じ語尾変化をするので diesen です。"],
     ["Er gibt ___ Kind ein Geschenk. (jeder)", "jedem", ["jedes", "jeden", "jeder"], "彼はどの子にもプレゼントをあげます。", "jeder 型の単数3格（das Kind）", "中性単数3格なので jedem になります。"],
     ["Schenken Sie das Buch ___ Tochter? (Ihre)", "Ihrer", ["Ihre", "Ihrem", "Ihren"], "その本をあなたの娘さんに贈るのですか？", "所有冠詞の女性単数3格", "schenken + 3格（女性名詞 Tochter）なので Ihrer です。"]
@@ -1417,8 +1417,10 @@ function buildTextbookPool() {
         const s = subjects[(i + Math.floor(i/7)) % subjects.length];
         const ans = v.forms[s.idx];
         const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
+        const tail = (v.inf === "geben" && s.de === "ich") ? "dir ein Buch" : v.tail;
+        const jaTail = (v.inf === "geben" && s.de === "ich") ? "君に本をあげる" : v.ja;
         out.push({
-          de: `${cap(s.de)} ___ ${v.tail}. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
+          de: `${cap(s.de)} ___ ${tail}. (${v.inf})`, ans, dist, ja: `${s.ja}は${jaTail}。`,
           hint: `幹母音変化動詞 ${v.inf}（主語: ${s.de}）`,
           exp: `${v.inf} は du と er/sie/es でのみ幹母音が変化し、${s.de} のときは ${ans} になります。`
         });
@@ -1429,7 +1431,7 @@ function buildTextbookPool() {
         { g: "m", nom: "der Freund", dat: "dem", acc: "den", gen: "des", ja: "友人" },
         { g: "f", nom: "die Lehrerin", dat: "der", acc: "die", gen: "der", ja: "女性の先生" },
         { g: "n", nom: "das Kind", dat: "dem", acc: "das", gen: "des", ja: "子ども" },
-        { g: "m", nom: "der Kollege", dat: "dem", acc: "den", gen: "des", ja: "同僚" },
+        { g: "m", nom: "der Bruder", dat: "dem", acc: "den", gen: "des", ja: "兄" },
         { g: "f", nom: "die Freundin", dat: "der", acc: "die", gen: "der", ja: "女友達" },
         { g: "n", nom: "das Mädchen", dat: "dem", acc: "das", gen: "des", ja: "女の子" },
         { g: "m", nom: "der Arzt", dat: "dem", acc: "den", gen: "des", ja: "医者" }
@@ -1464,11 +1466,11 @@ function buildTextbookPool() {
         ["Sie", "Ihnen", "Sie", "あなた"]
       ];
       const verbs3 = [
-        { de: (p)=>`Ich helfe ___ gern.`, ja: (p)=>`私は喜んで${p[3]}を手伝います。`, k: 1, exp: "helfen + 3格" },
-        { de: (p)=>`Ich sehe ___ jeden Tag.`, ja: (p)=>`私は毎日${p[3]}を見かけます。`, k: 2, exp: "sehen + 4格" },
-        { de: (p)=>`Das Geschenk gefällt ___ sehr.`, ja: (p)=>`${p[3]}はそのプレゼントをとても気に入っています。`, k: 1, exp: "gefallen + 3格" },
-        { de: (p)=>`Wir danken ___ herzlich.`, ja: (p)=>`私たちは${p[3]}に心から感謝します。`, k: 1, exp: "danken + 3格" },
-        { de: (p)=>`Er besucht ___ am Wochenende.`, ja: (p)=>`彼は週末に${p[3]}を訪ねます。`, k: 2, exp: "besuchen + 4格" }
+        { de: (p)=>(p[0]==="ich"||p[0]==="wir") ? "Er hilft ___ gern." : "Ich helfe ___ gern.", ja: (p)=>(p[0]==="ich"||p[0]==="wir") ? `彼は喜んで${p[3]}を手伝います。` : `私は喜んで${p[3]}を手伝います。`, k: 1, exp: "helfen + 3格" },
+        { de: (p)=>(p[0]==="ich"||p[0]==="wir") ? "Er sieht ___ jeden Tag." : "Ich sehe ___ jeden Tag.", ja: (p)=>(p[0]==="ich"||p[0]==="wir") ? `彼は毎日${p[3]}を見かけます。` : `私は毎日${p[3]}を見かけます。`, k: 2, exp: "sehen + 4格" },
+        { de: ()=>"Das Geschenk gefällt ___ sehr.", ja: (p)=>`${p[3]}はそのプレゼントをとても気に入っています。`, k: 1, exp: "gefallen + 3格" },
+        { de: (p)=>(p[0]==="ich"||p[0]==="wir") ? "Sie danken ___ herzlich." : "Wir danken ___ herzlich.", ja: (p)=>(p[0]==="ich"||p[0]==="wir") ? `彼らは${p[3]}に心から感謝します。` : `私たちは${p[3]}に心から感謝します。`, k: 1, exp: "danken + 3格" },
+        { de: (p)=>(p[0]==="er") ? "Sie besucht ___ am Wochenende." : "Er besucht ___ am Wochenende.", ja: (p)=>(p[0]==="er") ? `彼女は週末に${p[3]}を訪ねます。` : `彼は週末に${p[3]}を訪ねます。`, k: 2, exp: "besuchen + 4格" }
       ];
       for (let i = 0; i < 40; i++) {
         const p = pairs[i % pairs.length];
@@ -1496,7 +1498,8 @@ function buildTextbookPool() {
         const s = subjects[(i + Math.floor(i/6)) % subjects.length];
         const stem = v.stems[s.idx];
         const ans = `${stem} ... ${v.pre}`;
-        const dist = [`${v.pre}${stem}`, `${v.stems[(s.idx+1)%6]} ... ${v.pre}`, `${v.inf}`];
+        const otherStems = [...new Set(v.stems.filter(st => st !== stem))].map(st => `${st} ... ${v.pre}`);
+        const dist = [...new Set([`${v.pre}${stem}`, ...otherStems, `${v.inf}`].filter(x => x !== ans))].slice(0, 3);
         out.push({
           de: `${cap(s.de)} ___ ${v.ctx} ___. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
           hint: `分離動詞 ${v.inf}（主語: ${s.de}）`,
@@ -1532,7 +1535,8 @@ function buildTextbookPool() {
       }
     } else {
       const seedList = LESSON_SEEDS[l];
-      const names = ["Lukas", "Mia", "Jonas", "Lea", "Tim", "Anna", "Paul", "Laura"];
+      const maleNames = ["Lukas", "Jonas", "Tim", "Paul"];
+      const femaleNames = ["Mia", "Lea", "Anna", "Laura"];
       const places = ["Berlin", "München", "Hamburg", "Wien", "Köln", "Frankfurt"];
       for (let i = 0; i < 40; i++) {
         const base = seedList[i % seedList.length];
@@ -1540,12 +1544,22 @@ function buildTextbookPool() {
         let de = base[0];
         let ja = base[3];
         if (round >= 1) {
-          const nm = names[(i + round) % names.length];
+          const mNm = maleNames[(i + round) % maleNames.length];
+          const fNm = femaleNames[(i + round) % femaleNames.length];
           const pl = places[(i + round) % places.length];
-          if (de.includes("Er ")) { de = de.replace("Er ", nm + " "); ja = ja.replace("彼", nm); }
-          else if (de.includes("Sie ")) { de = de.replace("Sie ", nm + " "); ja = ja.replace("彼女", nm); }
-          else if (de.includes("Berlin")) { de = de.replace("Berlin", pl); ja = ja.replace("ベルリン", pl); }
-          else if (de.includes("München")) { de = de.replace("München", pl); ja = ja.replace("ミュンヘン", pl); }
+          if (/^Er /.test(de) && ja.startsWith("彼は") && !/\b(seine|seinem|seinen|seiner|seines|ihm|ihn)\b/i.test(de)) {
+            de = de.replace(/^Er /, mNm + " ");
+            ja = ja.replace("彼は", mNm + "は");
+          } else if (/^Sie /.test(de) && ja.startsWith("彼女は") && !/\b(ihre|ihrem|ihren|ihrer|ihres|ihr)\b/i.test(de)) {
+            de = de.replace(/^Sie /, fNm + " ");
+            ja = ja.replace("彼女は", fNm + "は");
+          } else if (de.includes("Berlin") && ja.includes("ベルリン")) {
+            de = de.replace("Berlin", pl);
+            ja = ja.replace("ベルリン", pl);
+          } else if (de.includes("München") && ja.includes("ミュンヘン")) {
+            de = de.replace("München", pl);
+            ja = ja.replace("ミュンヘン", pl);
+          }
         }
         out.push({
           de, ans: base[1], dist: base[2], ja,
@@ -1692,7 +1706,7 @@ const KISO_SEEDS = {
     ["Der ___ Himmel gefällt mir sehr. (blau)", "blaue", ["blauer", "blauen", "blaues"], "青い空がとても気に入っています。", "定冠詞 + 男性1格 → 弱変化", "定冠詞 der の後の男性1格は -e です。"],
     ["Der ___ Turm steht im Zentrum. (hoch)", "hohe", ["hoche", "hoher", "hohen"], "その高い塔は中心部に立っている。", "hoch の付加語用法は c が落ちる", "hoch に格語尾がつくと hoh- になり、hohe となります。"],
     ["Der reiche Mann kauft seiner jungen Braut einen ___ Ring. (teuer)", "teuren", ["teueren", "teure", "teurer"], "その金持ちの男は若い花嫁に高価な指輪を買ってやる。", "teuer は語尾がつくと語幹の e が落ちる", "teuer + en → teuren になります。"],
-    ["Steht etwas ___ in der Zeitung? (neu)", "Neues", ["neues", "Neue", "Neuen"], "新聞に何か新しいことは載っていますか？", "etwas の後の形容詞は中性名詞化して大文字", "etwas + 形容詞は中性1・4格（-es）になり頭文字を大文字にします。"],
+    ["Steht etwas ___ in der Zeitung? (neu)", "Neues", ["Neuer", "Neue", "Neuen"], "新聞に何か新しいことは載っていますか？", "etwas の後の形容詞は中性名詞化して大文字", "etwas + 形容詞は中性1・4格（-es）になり頭文字を大文字にします。"],
     ["Heute ist der ___ Mai. (15.)", "fünfzehnte", ["fünfzehnten", "fünfzehnter", "fünfzehntes"], "きょうは5月15日です。", "1〜19の序数は基数 + -t + 格語尾", "der の後ろ（男性1格）なので fünfzehnt + e = fünfzehnte です。"],
     ["Am ___ Januar fahre ich nach Osaka. (23.)", "dreiundzwanzigsten", ["dreiundzwanzigste", "dreiundzwanzigster", "dreiundzwanzigst"], "1月23日に私は大阪へ行きます。", "20以上の序数は -st + 格語尾（am + 3格）", "am (an dem) の後ろは3格なので -sten になります。"]
   ],
@@ -1851,7 +1865,7 @@ function buildKisoPool() {
         { inf: "wohnen", forms: ["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"], tail: "in Köln", ja: "ケルンに住む" },
         { inf: "arbeiten", forms: ["arbeite","arbeitest","arbeitet","arbeiten","arbeitet","arbeiten"], tail: "in Berlin", ja: "ベルリンで働く" },
         { inf: "reisen", forms: ["reise","reist","reist","reisen","reist","reisen"], tail: "gern nach Wien", ja: "よくウィーンへ旅行する" },
-        { inf: "sein", forms: ["bin","bist","ist","sind","seid","sind"], tail: "aus Japan", ja: "日本出身である" },
+        { inf: "sein", forms: ["bin","bist","ist","sind","seid","sind"], tail: "müde", ja: "疲れている" },
         { inf: "haben", forms: ["habe","hast","hat","haben","habt","haben"], tail: "jetzt Zeit", ja: "今時間がある" },
         { inf: "werden", forms: ["werde","wirst","wird","werden","werdet","werden"], tail: "bald gesund", ja: "すぐ元気になる" }
       ];
@@ -1859,8 +1873,8 @@ function buildKisoPool() {
         const v = verbs[i % verbs.length];
         const s = subjects[(i + Math.floor(i / 7)) % subjects.length];
         const ans = v.forms[s.idx];
-        const dist = [...new Set(v.forms.filter(f => f !== ans))].slice(0, 3);
-        while (dist.length < 3) dist.push(v.inf);
+        const fallbacks = [v.inf + "te", v.inf + "st", v.inf + "e", "ge" + v.inf];
+        const dist = [...new Set([...v.forms, ...fallbacks].filter(f => f !== ans))].slice(0, 3);
         out.push({
           de: `${cap(s.de)} ___ ${v.tail}. (${v.inf})`, ans, dist, ja: `${s.ja}は${v.ja}。`,
           hint: `${v.inf} の現在人称変化（主語: ${s.de}）`,
@@ -1868,26 +1882,30 @@ function buildKisoPool() {
         });
       }
     } else if (l === 2) {
-      const nouns = [
+      const thingNouns = [
         { nom: "der Computer", dat: "dem", acc: "den", ja: "コンピューター" },
-        { nom: "der Hund", dat: "dem", acc: "den", ja: "犬" },
         { nom: "die Tasche", dat: "der", acc: "die", ja: "かばん" },
         { nom: "die Lampe", dat: "der", acc: "die", ja: "ランプ" },
         { nom: "das Handy", dat: "dem", acc: "das", ja: "携帯電話" },
-        { nom: "das Buch", dat: "dem", acc: "das", ja: "本" },
+        { nom: "das Buch", dat: "dem", acc: "das", ja: "本" }
+      ];
+      const personNouns = [
         { nom: "der Freund", dat: "dem", acc: "den", ja: "友人" },
-        { nom: "die Lehrerin", dat: "der", acc: "die", ja: "女性の先生" }
+        { nom: "die Lehrerin", dat: "der", acc: "die", ja: "女性の先生" },
+        { nom: "das Kind", dat: "dem", acc: "das", ja: "子ども" },
+        { nom: "der Arzt", dat: "dem", acc: "den", ja: "医者" },
+        { nom: "die Freundin", dat: "der", acc: "die", ja: "女友達" }
       ];
       const frames = [
-        { k: "acc", de: (n)=>`Ich kaufe ___ ${n.nom.split(' ')[1]} heute.`, ja: (n)=>`私は今日その${n.ja}を買います。`, h: "kaufen + 4格" },
-        { k: "acc", de: (n)=>`Wir finden ___ ${n.nom.split(' ')[1]} gut.`, ja: (n)=>`私たちはその${n.ja}を良いと思います。`, h: "finden + 4格" },
-        { k: "dat", de: (n)=>`Das Auto gehört ___ ${n.nom.split(' ')[1]}.`, ja: (n)=>`その車はその${n.ja}のものです。`, h: "gehören + 3格" },
-        { k: "dat", de: (n)=>`Wir helfen ___ ${n.nom.split(' ')[1]} gern.`, ja: (n)=>`私たちは喜んでその${n.ja}を手伝います。`, h: "helfen + 3格" },
-        { k: "acc", de: (n)=>`Sie braucht ___ ${n.nom.split(' ')[1]} sofort.`, ja: (n)=>`彼女はすぐにその${n.ja}を必要としています。`, h: "brauchen + 4格" }
+        { k: "acc", pool: thingNouns, de: (n)=>`Ich kaufe ___ ${n.nom.split(' ')[1]} heute.`, ja: (n)=>`私は今日その${n.ja}を買います。`, h: "kaufen + 4格" },
+        { k: "acc", pool: thingNouns, de: (n)=>`Wir finden ___ ${n.nom.split(' ')[1]} gut.`, ja: (n)=>`私たちはその${n.ja}を良いと思います。`, h: "finden + 4格" },
+        { k: "dat", pool: personNouns, de: (n)=>`Das Auto gehört ___ ${n.nom.split(' ')[1]}.`, ja: (n)=>`その車はその${n.ja}のものです。`, h: "gehören + 3格" },
+        { k: "dat", pool: personNouns, de: (n)=>`Wir helfen ___ ${n.nom.split(' ')[1]} gern.`, ja: (n)=>`私たちは喜んでその${n.ja}を手伝います。`, h: "helfen + 3格" },
+        { k: "acc", pool: thingNouns, de: (n)=>`Sie braucht ___ ${n.nom.split(' ')[1]} sofort.`, ja: (n)=>`彼女はすぐにその${n.ja}を必要としています。`, h: "brauchen + 4格" }
       ];
       for (let i = 0; i < 40; i++) {
-        const n = nouns[i % nouns.length];
         const f = frames[Math.floor(i / 8)];
+        const n = f.pool[i % f.pool.length];
         const ans = n[f.k];
         const dist = ["der","die","das","den","dem","des"].filter(x => x !== ans).slice(0, 3);
         out.push({
@@ -1919,7 +1937,8 @@ function buildKisoPool() {
       }
     } else {
       const seedList = KISO_SEEDS[l];
-      const names = ["Peter", "Katrin", "Jens", "Maria", "Thomas", "Anna", "Martin", "Jonas"];
+      const maleNames = ["Peter", "Jens", "Thomas", "Martin", "Jonas"];
+      const femaleNames = ["Katrin", "Maria", "Anna", "Laura", "Julia"];
       const places = ["Berlin", "Köln", "Hamburg", "München", "Dresden", "Leipzig"];
       for (let i = 0; i < 40; i++) {
         const base = seedList[i % seedList.length];
@@ -1927,12 +1946,22 @@ function buildKisoPool() {
         let de = base[0];
         let ja = base[3];
         if (round >= 1) {
-          const nm = names[(i + round) % names.length];
+          const mNm = maleNames[(i + round) % maleNames.length];
+          const fNm = femaleNames[(i + round) % femaleNames.length];
           const pl = places[(i + round) % places.length];
-          if (de.includes("Er ")) { de = de.replace("Er ", nm + " "); ja = ja.replace("彼は", nm + "は"); }
-          else if (de.includes("Sie ")) { de = de.replace("Sie ", nm + " "); ja = ja.replace("彼女は", nm + "は"); }
-          else if (de.includes("Hamburg")) { de = de.replace("Hamburg", pl); ja = ja.replace("ハンブルク", pl); }
-          else if (de.includes("München")) { de = de.replace("München", pl); ja = ja.replace("ミュンヘン", pl); }
+          if (/^Er /.test(de) && ja.startsWith("彼は") && !/\b(seine|seinem|seinen|seiner|seines|ihm|ihn)\b/i.test(de)) {
+            de = de.replace(/^Er /, mNm + " ");
+            ja = ja.replace("彼は", mNm + "は");
+          } else if (/^Sie /.test(de) && ja.startsWith("彼女は") && !/\b(ihre|ihrem|ihren|ihrer|ihres|ihr)\b/i.test(de)) {
+            de = de.replace(/^Sie /, fNm + " ");
+            ja = ja.replace("彼女は", fNm + "は");
+          } else if (de.includes("Hamburg") && ja.includes("ハンブルク")) {
+            de = de.replace("Hamburg", pl);
+            ja = ja.replace("ハンブルク", pl);
+          } else if (de.includes("München") && ja.includes("ミュンヘン")) {
+            de = de.replace("München", pl);
+            ja = ja.replace("ミュンヘン", pl);
+          }
         }
         out.push({
           de, ans: base[1], dist: base[2], ja,
