@@ -490,7 +490,7 @@
   .btn-secondary { background: var(--bg-subtle); color: var(--text); border-color: var(--border-strong); }
   .btn-secondary:disabled { opacity: 0.45; cursor: default; }
   .btn-danger { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-border); }
-  #drillCard .next-row button, #listeningArea .next-row button { min-width: 148px; }
+  #drillCard .next-row button { min-width: 148px; }
   #conjugationArea .next-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   #conjugationArea .next-row button { width: 100%; min-width: 0; padding: 10px 6px; }
   #conjugationArea .audio-btn { padding: 9px 16px; font-size: 0.9rem; white-space: nowrap; flex-shrink: 0; }
@@ -548,28 +548,46 @@
   .conj-input.ok { border-color: var(--success); background: var(--success-bg); color: var(--success-text); }
   .conj-input.ng { border-color: var(--danger); background: var(--danger-bg); color: var(--danger-text); }
 
-  /* Listening Mode */
-  .listen-box {
-    text-align: center;
-    padding: 26px 16px;
-    background: var(--card-elevated);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
+  /* Test Control Bar (SRS & Range Selection) */
+  .test-control-bar {
+    background: var(--tb-bg);
+    border: 1px solid var(--tb-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
   }
-  .listen-play-big {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 99px;
-    font-size: 1.05rem;
-    font-weight: 800;
+  .test-control-bar.show { display: flex; }
+  .test-top-row {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
+  }
+  .test-status {
+    font-size: 0.82rem; font-weight: 700; color: var(--tb-text);
+  }
+  .lesson-chip-grid {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .lesson-chip {
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--tb-border);
+    background: var(--card);
+    color: var(--tb-text);
+    font-size: 0.78rem;
+    font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-    transition: 0.15s;
+    transition: 0.12s;
   }
-  .listen-play-big:hover { transform: scale(1.03); background: var(--primary-hover); }
+  .lesson-chip.active {
+    background: var(--tb);
+    color: #fff;
+    border-color: var(--tb);
+  }
+  .test-range-actions {
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+  }
 
   /* Modal */
   .modal-backdrop {
@@ -636,7 +654,7 @@
     .card { padding: 18px 16px; }
     .opt-key { display: none; }
     .shortcut-hint { display: none; }
-    #drillCard .next-row > button, #listeningArea .next-row > button { flex: 1; min-width: 0; }
+    #drillCard .next-row > button { flex: 1; min-width: 0; }
     #conjugationArea .next-row button { font-size: 0.82rem; padding: 10px 4px; }
   }
 </style>
@@ -670,7 +688,7 @@
     <button class="mode-btn active" data-mode="drill" onclick="setMode('drill')">練習問題</button>
     <button class="mode-btn" data-mode="flashcard" onclick="setMode('flashcard')">単語・例文カード</button>
     <button class="mode-btn" data-mode="conjugation" onclick="setMode('conjugation')">動詞活用</button>
-    <button class="mode-btn" data-mode="listening" onclick="setMode('listening')">リスニング</button>
+    <button class="mode-btn" data-mode="test" onclick="setMode('test')">テスト</button>
   </div>
 
   <!-- 教科書・フィルタ（ドリル／カード／リスニング共通） -->
@@ -691,6 +709,24 @@
         <div class="progress-bar"><div class="progress-fill" id="lessonProgressFill"></div></div>
         <span class="progress-count" id="lessonProgressCount">0 / 50 問</span>
       </div>
+    </div>
+  </div>
+
+  <!-- テスト用コントロールバー（分散学習 / 範囲選択） -->
+  <div class="test-control-bar" id="testControlBar">
+    <div class="test-top-row">
+      <div class="type-pills">
+        <button class="pill active" id="testModeSrs" onclick="setTestSubMode('srs')">分散学習</button>
+        <button class="pill" id="testModeRange" onclick="setTestSubMode('range')">範囲選択</button>
+      </div>
+      <span class="test-status" id="testStatusText">今日の復習: 0問</span>
+    </div>
+    <div id="testRangeWrap" style="display:none; flex-direction:column; gap:8px;">
+      <div class="test-range-actions">
+        <button type="button" class="mini-toggle" onclick="selectAllTestLessons(true)">すべて選択</button>
+        <button type="button" class="mini-toggle" onclick="selectAllTestLessons(false)">選択解除</button>
+      </div>
+      <div class="lesson-chip-grid" id="testLessonChips"></div>
     </div>
   </div>
 
@@ -790,25 +826,7 @@
     </div>
   </div>
 
-  <!-- 4. リスニングモードエリア -->
-  <div class="card" id="listeningArea" style="display:none;">
-    <div class="card-top">
-      <div class="tag-group" id="listenTags"></div>
-    </div>
-    <div class="listen-box">
-      <button class="listen-play-big" onclick="speakCurrent()">ドイツ語を聞く</button>
-      <p style="font-size:0.86rem; color:var(--muted); margin:10px 0 0;">音声を聞いて、空欄に入る正しい語句を選んでください</p>
-      <div class="sentence-de" id="listenMaskedSentence" style="margin-top:14px; font-size:1.25rem;"></div>
-      <div class="sentence-ja" id="listenJa" style="display:none; margin-top:6px;"></div>
-    </div>
 
-    <div class="options-grid" id="listenOptionsGrid"></div>
-    <div class="feedback" id="listenFeedback"></div>
-    <div class="next-row">
-      <button class="btn-secondary" onclick="toggleListenScript()">原文・訳を見る</button>
-      <button class="btn-primary" onclick="nextQuestion()">次の問題</button>
-    </div>
-  </div>
 </div>
 
 <!-- 設定・メニューモーダル -->
@@ -3263,6 +3281,7 @@ let solvedIds = new Set(JSON.parse(localStorage.getItem("de_drill_solved_v3") ||
 let vocabKnownIds = new Set(JSON.parse(localStorage.getItem("de_drill_vocab_known_v1") || "[]"));
 let vocabWeakIds = new Set(JSON.parse(localStorage.getItem("de_drill_vocab_weak_v1") || "[]"));
 let stats = JSON.parse(localStorage.getItem("de_drill_stats_v1") || '{"total":0,"correct":0,"bestStreak":0}');
+let srsData = JSON.parse(localStorage.getItem("de_drill_srs_v1") || "{}");
 
 let currentMode = "drill";
 let fcType = "vocab";
@@ -3270,6 +3289,9 @@ let activeBook = "ideal";
 let activeTab = "textbook";
 let selectedLesson = 1;
 let subFilter = "all";
+let testSubMode = "srs";
+let testSelectedLessons = new Set([1]);
+let testAheadMode = false;
 let currentVocab = null;
 let showHint = false;
 let typingMode = true;
@@ -3283,7 +3305,6 @@ let questionHistory = [];
 let historyIndex = -1;
 let answered = false;
 let fcFlipped = false;
-let listenShowText = false;
 let sessionCorrect = 0;
 let sessionTotal = 0;
 let streak = 0;
@@ -3291,6 +3312,43 @@ let conjMode = "present";
 let conjIdx = 0;
 let irregIdx = 0;
 let activeConjInput = null;
+
+function getTodayStr() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function addDaysStr(dateStr, days) {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + days);
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+}
+
+function updateSrs(id, isCorrect) {
+  const today = getTodayStr();
+  const cur = srsData[id] || { reps: 0, interval: 0, nextDue: today, lastReviewed: today };
+  if (!isCorrect) {
+    srsData[id] = { reps: 0, interval: 0, nextDue: today, lastReviewed: today };
+  } else {
+    let nextInterval = 1;
+    if (cur.reps === 0) nextInterval = 1;
+    else if (cur.reps === 1) nextInterval = 3;
+    else if (cur.reps === 2) nextInterval = 7;
+    else if (cur.reps === 3) nextInterval = 14;
+    else nextInterval = Math.min(60, Math.round(cur.interval * 2));
+    srsData[id] = {
+      reps: cur.reps + 1,
+      interval: nextInterval,
+      nextDue: addDaysStr(today, nextInterval),
+      lastReviewed: today
+    };
+  }
+  localStorage.setItem("de_drill_srs_v1", JSON.stringify(srsData));
+}
 
 function getBookTitles() {
   return activeBook === "kiso" ? KISO_LESSON_TITLES : LESSON_TITLES;
@@ -3360,7 +3418,7 @@ function handleGlobalKey(e) {
   }
   if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
-  if (currentMode === "drill") {
+  if (currentMode === "drill" || currentMode === "test") {
     if (!typingMode && !answered && ["1","2","3","4"].includes(e.key)) {
       const idx = parseInt(e.key, 10) - 1;
       const btns = document.querySelectorAll("#optionsGrid .opt-btn");
@@ -3377,34 +3435,117 @@ function handleGlobalKey(e) {
     if (e.key === " ") { e.preventDefault(); flipFlashcard(); }
     else if (e.key === "ArrowRight") nextQuestion();
     else if (e.key.toLowerCase() === "r") speakCurrent();
-  } else if (currentMode === "listening") {
-    if (!answered && ["1","2","3","4"].includes(e.key)) {
-      const idx = parseInt(e.key, 10) - 1;
-      const btns = document.querySelectorAll("#listenOptionsGrid .opt-btn");
-      if (btns[idx]) btns[idx].click();
-    } else if (answered && (e.key === "Enter" || e.key === "ArrowRight")) {
-      e.preventDefault();
-      nextQuestion();
-    } else if (e.key.toLowerCase() === "r") {
-      speakCurrent();
-    }
   }
 }
 
 function setMode(mode) {
   currentMode = mode;
   document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
-  document.getElementById("filterContainer").style.display = mode === "conjugation" ? "none" : "block";
-  document.getElementById("drillCard").style.display = mode === "drill" ? "block" : "none";
+  document.getElementById("filterContainer").style.display = (mode === "drill" || mode === "flashcard") ? "block" : "none";
+  document.getElementById("testControlBar").classList.toggle("show", mode === "test");
+  document.getElementById("drillCard").style.display = (mode === "drill" || mode === "test") ? "block" : "none";
   document.getElementById("fcTypeBar").style.display = mode === "flashcard" ? "flex" : "none";
   document.getElementById("flashcardArea").style.display = mode === "flashcard" ? "block" : "none";
   document.getElementById("conjTypeBar").style.display = mode === "conjugation" ? "flex" : "none";
   document.getElementById("conjugationArea").style.display = mode === "conjugation" ? "block" : "none";
-  document.getElementById("listeningArea").style.display = mode === "listening" ? "block" : "none";
 
-  if (mode === "flashcard" && fcType === "vocab" && !currentVocab) nextQuestion();
-  else if (mode !== "conjugation") renderQuestion();
-  if (mode === "listening") setTimeout(speakCurrent, 150);
+  if (mode === "test") {
+    testAheadMode = false;
+    renderTestControls();
+    resetQuestionHistory();
+    nextQuestion();
+  } else if (mode === "flashcard" && fcType === "vocab" && !currentVocab) {
+    nextQuestion();
+  } else if (mode === "drill") {
+    resetQuestionHistory();
+    nextQuestion();
+  } else if (mode !== "conjugation") {
+    renderQuestion();
+  }
+}
+
+function setTestSubMode(sub) {
+  testSubMode = sub;
+  testAheadMode = false;
+  renderTestControls();
+  resetQuestionHistory();
+  nextQuestion();
+}
+
+function toggleTestLesson(l) {
+  if (testSelectedLessons.has(l)) testSelectedLessons.delete(l);
+  else testSelectedLessons.add(l);
+  renderTestControls();
+  resetQuestionHistory();
+  nextQuestion();
+}
+
+function selectAllTestLessons(flag) {
+  const total = getBookTitles().length;
+  testSelectedLessons.clear();
+  if (flag) {
+    for (let i = 1; i <= total; i++) testSelectedLessons.add(i);
+  }
+  renderTestControls();
+  resetQuestionHistory();
+  nextQuestion();
+}
+
+function startAheadReview() {
+  testAheadMode = true;
+  nextQuestion();
+}
+
+function getTestSrsPool() {
+  const today = getTodayStr();
+  return getAllQuestions()
+    .filter(q => srsData[q.id] && srsData[q.id].nextDue <= today)
+    .sort((a, b) => {
+      const wa = wrongIds.has(a.id) ? 0 : 1;
+      const wb = wrongIds.has(b.id) ? 0 : 1;
+      if (wa !== wb) return wa - wb;
+      return srsData[a.id].nextDue.localeCompare(srsData[b.id].nextDue);
+    });
+}
+
+function getTestAheadPool() {
+  return getAllQuestions()
+    .filter(q => srsData[q.id])
+    .sort((a, b) => srsData[a.id].nextDue.localeCompare(srsData[b.id].nextDue));
+}
+
+function getTestRangePool() {
+  return getAllQuestions().filter(q => testSelectedLessons.has(q.lessonIdx || 1));
+}
+
+function renderTestControls() {
+  document.getElementById("testModeSrs").classList.toggle("active", testSubMode === "srs");
+  document.getElementById("testModeRange").classList.toggle("active", testSubMode === "range");
+  const rangeWrap = document.getElementById("testRangeWrap");
+  rangeWrap.style.display = testSubMode === "range" ? "flex" : "none";
+
+  const titles = getBookTitles();
+  const chipsEl = document.getElementById("testLessonChips");
+  chipsEl.innerHTML = "";
+  for (let i = 1; i <= titles.length; i++) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `lesson-chip ${testSelectedLessons.has(i) ? "active" : ""}`;
+    btn.textContent = `L${i}`;
+    btn.onclick = () => toggleTestLesson(i);
+    chipsEl.appendChild(btn);
+  }
+
+  const statusEl = document.getElementById("testStatusText");
+  if (testSubMode === "srs") {
+    const all = getAllQuestions();
+    const dueCount = getTestSrsPool().length;
+    const learnedCount = all.filter(q => srsData[q.id]).length;
+    statusEl.textContent = `今日の復習: ${dueCount}問 / 学習済み: ${learnedCount}問`;
+  } else {
+    const cnt = getTestRangePool().length;
+    statusEl.textContent = `選択中: ${testSelectedLessons.size}課（${cnt}問）`;
+  }
 }
 
 function resetQuestionHistory() {
@@ -3432,10 +3573,15 @@ function setBook(book) {
   activeBook = book;
   const sel = document.getElementById("bookSelect");
   if (sel) sel.value = book;
+  const maxL = getBookTitles().length;
+  testSelectedLessons = new Set([...testSelectedLessons].filter(l => l <= maxL));
+  if (testSelectedLessons.size === 0) testSelectedLessons.add(1);
+  testAheadMode = false;
   populateLessonSelect();
   resetQuestionHistory();
   currentVocab = null;
   renderTabs();
+  if (currentMode === "test") renderTestControls();
   nextQuestion();
 }
 
@@ -3558,25 +3704,86 @@ function nextQuestion() {
     return;
   }
 
+  if (currentMode === "test") {
+    renderTestControls();
+    let pool = [];
+    if (testSubMode === "srs") {
+      pool = getTestSrsPool();
+      if (pool.length === 0 && testAheadMode) {
+        pool = getTestAheadPool();
+      }
+    } else {
+      pool = getTestRangePool();
+    }
+
+    if (pool.length === 0) {
+      currentQ = null;
+      document.getElementById("optionsGrid").innerHTML = "";
+      document.getElementById("optionsGrid").style.display = "none";
+      document.getElementById("typingArea").classList.remove("show");
+      document.getElementById("hintBox").classList.add("hidden");
+      const fb = document.getElementById("feedbackBox");
+      fb.className = "feedback";
+      fb.innerHTML = "";
+
+      if (testSubMode === "range") {
+        document.getElementById("baseLemma").textContent = "範囲未選択";
+        document.getElementById("sentenceDe").textContent = "出題するLektionを選択してください。";
+        document.getElementById("sentenceJa").textContent = "上のボタンから1つ以上の課を選ぶと問題が出題されます。";
+      } else {
+        const learned = getAllQuestions().filter(q => srsData[q.id]);
+        if (learned.length === 0) {
+          document.getElementById("baseLemma").textContent = "分散学習";
+          document.getElementById("sentenceDe").textContent = "まだ学習履歴がありません。";
+          document.getElementById("sentenceJa").textContent = "練習問題で解くか、「範囲選択」からLektionを選んでテストを始めてください。";
+        } else {
+          const sorted = [...learned].sort((a, b) => srsData[a.id].nextDue.localeCompare(srsData[b.id].nextDue));
+          const nextDue = srsData[sorted[0].id].nextDue;
+          document.getElementById("baseLemma").textContent = "今日の復習完了";
+          document.getElementById("sentenceDe").textContent = "本日の復習はすべて完了しました。";
+          document.getElementById("sentenceJa").textContent = `次回の復習予定日: ${nextDue}`;
+          fb.className = "feedback show ok";
+          fb.innerHTML = `<button class="btn-secondary" onclick="startAheadReview()">予定を先取りして復習する</button>`;
+        }
+      }
+      return;
+    }
+
+    let source = pool;
+    if (testSubMode === "range") {
+      const today = getTodayStr();
+      const dueInPool = pool.filter(q => srsData[q.id] && srsData[q.id].nextDue <= today);
+      const unsolvedInPool = pool.filter(q => !solvedIds.has(q.id));
+      if (dueInPool.length > 0) source = dueInPool;
+      else if (unsolvedInPool.length > 0) source = unsolvedInPool;
+    } else {
+      source = pool.slice(0, Math.min(pool.length, 5));
+    }
+
+    let candidate = source[Math.floor(Math.random() * source.length)];
+    if (source.length > 1 && currentQ && candidate.id === currentQ.id) {
+      candidate = source[(source.indexOf(candidate) + 1) % source.length];
+    }
+    questionHistory = questionHistory.slice(0, historyIndex + 1);
+    questionHistory.push(candidate);
+    if (questionHistory.length > 50) questionHistory.shift();
+    historyIndex = questionHistory.length - 1;
+    currentQ = candidate;
+    currentChoices = shuffle([currentQ.ans, ...currentQ.dist.slice(0, 3)]);
+    answered = false;
+    fcFlipped = false;
+    updatePrevBtn();
+    renderQuestion();
+    return;
+  }
+
   const pool = getFilteredPool();
   const poolEl = document.getElementById("poolInfo");
   if (poolEl) poolEl.textContent = `出題対象: ${pool.length}問`;
 
   if (pool.length === 0) {
     currentQ = null;
-    if (activeBook === "kiso") {
-      document.getElementById("baseLemma").textContent = "教材準備中";
-      document.getElementById("sentenceDe").textContent = "「基礎固めのドイツ語」の教材データを待っています。";
-      document.getElementById("sentenceJa").textContent = "教材が追加されると、ここに課ごとの問題と単語カードが表示されます。";
-      document.getElementById("hintBox").classList.add("hidden");
-      document.getElementById("optionsGrid").innerHTML = "";
-      document.getElementById("feedbackBox").className = "feedback";
-      document.getElementById("listenTags").innerHTML = `<span class="tag orig-badge">基礎固めのドイツ語</span>`;
-      document.getElementById("listenMaskedSentence").textContent = "教材準備中";
-      document.getElementById("listenMaskedSentence").style.filter = "none";
-      document.getElementById("listenOptionsGrid").innerHTML = "";
-      document.getElementById("listenFeedback").className = "feedback";
-    } else if (activeTab === "wrong") {
+    if (activeTab === "wrong") {
       document.getElementById("baseLemma").textContent = "苦手問題ゼロ";
       document.getElementById("sentenceDe").textContent = "現在、復習リストに問題はありません。";
       document.getElementById("sentenceJa").textContent = "他のタブで問題を解いて、間違えた問題がここに自動で溜まります。";
@@ -3601,10 +3808,8 @@ function nextQuestion() {
   currentChoices = shuffle([currentQ.ans, ...currentQ.dist.slice(0, 3)]);
   answered = false;
   fcFlipped = false;
-  listenShowText = false;
   updatePrevBtn();
   renderQuestion();
-  if (currentMode === "listening") setTimeout(speakCurrent, 150);
 }
 
 function prevQuestion() {
@@ -3614,7 +3819,6 @@ function prevQuestion() {
   currentChoices = shuffle([currentQ.ans, ...currentQ.dist.slice(0, 3)]);
   answered = false;
   fcFlipped = false;
-  listenShowText = false;
   updatePrevBtn();
   renderQuestion();
 }
@@ -3646,13 +3850,13 @@ function renderQuestion() {
   if (!currentQ) return;
   const q = currentQ;
 
-  // --- 1. 練習問題表示 ---
+  // --- 1. 練習問題・テスト表示 ---
   document.getElementById("baseLemma").textContent = q.lemma;
   document.getElementById("sentenceDe").innerHTML = formatSentenceWithBlanks(q.de, "blankSlot");
   document.getElementById("sentenceJa").textContent = q.ja;
 
   const hintBox = document.getElementById("hintBox");
-  hintBox.textContent = `💡 ヒント: ${q.hint}`;
+  hintBox.textContent = `ヒント: ${q.hint}`;
   hintBox.classList.toggle("hidden", !showHint);
 
   const fb = document.getElementById("feedbackBox");
@@ -3676,7 +3880,7 @@ function renderQuestion() {
       const btn = document.createElement("button");
       btn.className = "opt-btn";
       btn.innerHTML = `<span class="opt-key">${idx + 1}</span><span>${c}</span>`;
-      btn.onclick = () => checkAnswer(c, btn, false);
+      btn.onclick = () => checkAnswer(c, btn);
       grid.appendChild(btn);
     });
   }
@@ -3684,7 +3888,7 @@ function renderQuestion() {
   // --- 2. フラッシュカード表示 ---
   if (fcType === "vocab") {
     if (!currentVocab) {
-      document.getElementById("fcTags").innerHTML = `<span class="tag orig-badge">🎉 復習完了</span>`;
+      document.getElementById("fcTags").innerHTML = `<span class="tag orig-badge">復習完了</span>`;
       document.getElementById("fcFront").textContent = "苦手な単語はありません！";
       document.getElementById("fcJa").textContent = "";
       document.getElementById("fcExp").textContent = "";
@@ -3709,34 +3913,13 @@ function renderQuestion() {
     document.getElementById("fcBack").classList.toggle("show", fcFlipped);
     document.getElementById("fcPrompt").style.display = fcFlipped ? "none" : "block";
   }
-
-  // --- 3. リスニング表示 ---
-  document.getElementById("listenTags").innerHTML = buildTagsHtml(q);
-  const listenEl = document.getElementById("listenMaskedSentence");
-  listenEl.innerHTML = formatSentenceWithBlanks(q.de, "listenBlank");
-  listenEl.style.filter = listenShowText ? "none" : "blur(7px)";
-  listenEl.style.userSelect = listenShowText ? "auto" : "none";
-  document.getElementById("listenJa").textContent = q.ja;
-  document.getElementById("listenJa").style.display = listenShowText ? "block" : "none";
-  document.getElementById("listenFeedback").className = "feedback";
-  document.getElementById("listenFeedback").innerHTML = "";
-
-  const lGrid = document.getElementById("listenOptionsGrid");
-  lGrid.innerHTML = "";
-  currentChoices.forEach((c, idx) => {
-    const btn = document.createElement("button");
-    btn.className = "opt-btn";
-    btn.innerHTML = `<span class="opt-key">${idx + 1}</span><span>${c}</span>`;
-    btn.onclick = () => checkAnswer(c, btn, true);
-    lGrid.appendChild(btn);
-  });
 }
 
 function normalizeAns(s) {
   return s.trim().toLowerCase().replace(/\s*\.\.\.\s*/g, " ").replace(/\s+/g, " ");
 }
 
-function checkAnswer(userAns, clickedBtn = null, isListen = false) {
+function checkAnswer(userAns, clickedBtn = null) {
   if (answered || !currentQ) return;
   answered = true;
   sessionTotal++;
@@ -3745,10 +3928,8 @@ function checkAnswer(userAns, clickedBtn = null, isListen = false) {
   const isCorrect = normalizeAns(userAns) === normalizeAns(currentQ.ans);
   const ansParts = currentQ.ans.split(/\s*\.\.\.\s*/);
 
-  // 穴埋め空欄をすべて埋める
-  const prefix = isListen ? "listenBlank" : "blankSlot";
   for (let i = 0; i < 4; i++) {
-    const slot = document.getElementById(`${prefix}_${i}`);
+    const slot = document.getElementById(`blankSlot_${i}`);
     if (slot) {
       slot.textContent = ansParts[i] || ansParts[0];
       slot.classList.add("solved");
@@ -3767,6 +3948,8 @@ function checkAnswer(userAns, clickedBtn = null, isListen = false) {
     wrongIds.add(currentQ.id);
   }
 
+  updateSrs(currentQ.id, isCorrect);
+
   localStorage.setItem("de_drill_wrong_v3", JSON.stringify([...wrongIds]));
   localStorage.setItem("de_drill_solved_v3", JSON.stringify([...solvedIds]));
   localStorage.setItem("de_drill_stats_v1", JSON.stringify(stats));
@@ -3774,44 +3957,29 @@ function checkAnswer(userAns, clickedBtn = null, isListen = false) {
   const scoreEl = document.getElementById("sessionScore");
   if (scoreEl) scoreEl.textContent = `${sessionCorrect} / ${sessionTotal}`;
 
-  if (isListen) {
-    const listenEl = document.getElementById("listenMaskedSentence");
-    listenEl.style.filter = "none";
-    listenEl.style.userSelect = "auto";
-    document.getElementById("listenJa").style.display = "block";
-    document.querySelectorAll("#listenOptionsGrid .opt-btn").forEach(b => {
+  if (!typingMode) {
+    document.querySelectorAll("#optionsGrid .opt-btn").forEach(b => {
       b.disabled = true;
       const txt = b.querySelector("span:last-child").textContent;
       if (txt === currentQ.ans) b.classList.add("correct");
       else if (b === clickedBtn && !isCorrect) b.classList.add("wrong");
     });
-    const lfb = document.getElementById("listenFeedback");
-    lfb.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
-    lfb.innerHTML = `<strong>${isCorrect ? "正解！" : `不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
   } else {
-    if (!typingMode) {
-      document.querySelectorAll("#optionsGrid .opt-btn").forEach(b => {
-        b.disabled = true;
-        const txt = b.querySelector("span:last-child").textContent;
-        if (txt === currentQ.ans) b.classList.add("correct");
-        else if (b === clickedBtn && !isCorrect) b.classList.add("wrong");
-      });
-    } else {
-      document.getElementById("typingInput").disabled = true;
-    }
-    const fb = document.getElementById("feedbackBox");
-    fb.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
-    fb.innerHTML = `<strong>${isCorrect ? "正解！" : `不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
+    document.getElementById("typingInput").disabled = true;
   }
+  const fb = document.getElementById("feedbackBox");
+  fb.className = `feedback show ${isCorrect ? "ok" : "ng"}`;
+  fb.innerHTML = `<strong>${isCorrect ? "正解！" : `不正解（正解: ${currentQ.ans}）`}</strong><br>${currentQ.exp}`;
 
   renderTabs();
-  if (autoSpeak && !isListen) speakCurrent();
+  if (currentMode === "test") renderTestControls();
+  if (autoSpeak) speakCurrent();
 }
 
 function submitTyping() {
   const val = document.getElementById("typingInput").value;
   if (!val.trim()) return;
-  checkAnswer(val, null, false);
+  checkAnswer(val, null);
 }
 
 // --- フラッシュカード操作 ---
@@ -3850,6 +4018,7 @@ function markFlashcard(known) {
   } else {
     wrongIds.add(currentQ.id);
   }
+  updateSrs(currentQ.id, known);
   localStorage.setItem("de_drill_wrong_v3", JSON.stringify([...wrongIds]));
   localStorage.setItem("de_drill_solved_v3", JSON.stringify([...solvedIds]));
   renderTabs();
@@ -4008,14 +4177,6 @@ function speakConjugation() {
   }
 }
 
-// --- リスニング操作 ---
-function toggleListenScript() {
-  listenShowText = !listenShowText;
-  const listenEl = document.getElementById("listenMaskedSentence");
-  listenEl.style.filter = listenShowText ? "none" : "blur(7px)";
-  listenEl.style.userSelect = listenShowText ? "auto" : "none";
-  document.getElementById("listenJa").style.display = listenShowText ? "block" : "none";
-}
 
 // --- ユーティリティ・音声・設定 ---
 function insertChar(inputId, ch) {
@@ -4110,9 +4271,12 @@ function closeModal(id) { document.getElementById(id).classList.remove("show"); 
 // --- 学習ダッシュボード ---
 function openDashboard() {
   const acc = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+  const today = getTodayStr();
+  const srsDueCount = getAllQuestions().filter(q => srsData[q.id] && srsData[q.id].nextDue <= today).length;
   document.getElementById("dashSummary").innerHTML = `
     <div class="dash-stat"><div class="dash-val">${solvedIds.size}</div><div class="dash-lbl">クリア済み問題</div></div>
     <div class="dash-stat"><div class="dash-val">${acc}%</div><div class="dash-lbl">通算正答率 (${stats.correct}/${stats.total})</div></div>
+    <div class="dash-stat"><div class="dash-val" style="color:var(--tb);">${srsDueCount}</div><div class="dash-lbl">今日の復習予定</div></div>
     <div class="dash-stat"><div class="dash-val" style="color:var(--danger);">${wrongIds.size}</div><div class="dash-lbl">苦手復習リスト</div></div>
   `;
 
@@ -4153,16 +4317,19 @@ function resetAllProgress() {
   if (!confirm("クリア済み問題・正答率など、すべての学習履歴をリセットしますか？")) return;
   wrongIds.clear();
   solvedIds.clear();
+  srsData = {};
   stats = { total: 0, correct: 0, bestStreak: 0 };
   sessionCorrect = 0;
   sessionTotal = 0;
   streak = 0;
   localStorage.removeItem("de_drill_wrong_v3");
   localStorage.removeItem("de_drill_solved_v3");
+  localStorage.removeItem("de_drill_srs_v1");
   localStorage.removeItem("de_drill_stats_v1");
   const scoreEl = document.getElementById("sessionScore");
   if (scoreEl) scoreEl.textContent = "0 / 0";
   renderTabs();
+  if (currentMode === "test") renderTestControls();
   updateLessonProgress();
   openDashboard();
 }
